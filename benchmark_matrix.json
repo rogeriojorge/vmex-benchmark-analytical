@@ -451,6 +451,16 @@
       "status": "failed",
       "artifact": "results/vmex/integer_3d_iota_ns129_niter3000_projected_ftol1e-10/native_scores.json",
       "scope": "Explicit 1e-10 roots return but all native physical error targets fail; diagnostic, not accepted recovery"
+    },
+    {
+      "id": "S02d",
+      "phase": "P3",
+      "capability": "Same-grid VMEX invariant-force comparison for projected seed and loose root",
+      "cases": "integer_3d prescribed iota at NS=33,65,129",
+      "evidence": "vmex_invariant_force_comparison",
+      "status": "diagnostic_only",
+      "artifact": "results/vmex/integer_3d_raw_residual_comparison.json",
+      "scope": "Projected R/Z invariant residuals are large despite small continuous physical errors; WOUT-restarted loose roots reproduce solver residuals but fail independent physical targets"
     }
   ]
 }

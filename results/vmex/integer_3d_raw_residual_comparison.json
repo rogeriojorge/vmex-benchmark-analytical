@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "evidence": "vmex_invariant_force_comparison",
+  "status": "diagnostic_only",
+  "vmex_commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+  "common_deck": "inputs/input.integer_3d_iota",
+  "common_ftol": 1e-10,
+  "common_niter": 3000,
+  "no_acceptance_inferred": true,
+  "wout_restart_roundtrip_checked": true,
+  "memory_unmeasured": true,
+  "rows": [
+    {
+      "ns": 33,
+      "projected": {
+        "fsqr": 0.2538762935238471,
+        "fsqz": 0.9192311570673011,
+        "fsql": 2.8782976163498822e-08,
+        "fedge": 0.0,
+        "gcr2": 0.05749813633593471,
+        "gcz2": 0.20818831746623873,
+        "gcl2": 3.1217221127627934e-11,
+        "wb": 0.0030129117226323785,
+        "wp": 0.00010571599103550942,
+        "jacobian_sign_changed": false
+      },
+      "wout_restarted": {
+        "fsqr": 9.752647278380717e-11,
+        "fsqz": 9.315332191910355e-11,
+        "fsql": 9.969745313230126e-11,
+        "fedge": 0.0,
+        "gcr2": 2.2227058250133115e-11,
+        "gcz2": 2.1230382411954678e-11,
+        "gcl2": 1.0813575688354321e-13,
+        "wb": 0.0030129114656096538,
+        "wp": 0.00010571588911862798,
+        "jacobian_sign_changed": false
+      },
+      "restarted_state_sha256": "0d01c4eada36ad0034aec022836f4819d304d748ebf5cafa0e6b56e910734221",
+      "wout_restart_minus_solver_residual": {
+        "fsqr": 6.165290848113967e-16,
+        "fsqz": -6.402886427268019e-15,
+        "fsql": 1.2570966827265286e-17
+      },
+      "state_component_l2_shifts": {
+        "R_cos": 0.002558890548891381,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 0.003117622366009675,
+        "L_cos": 0.0,
+        "L_sin": 0.04608821216959845
+      }
+    },
+    {
+      "ns": 65,
+      "projected": {
+        "fsqr": 0.5092360065425584,
+        "fsqz": 1.843784528121867,
+        "fsql": 3.502229102658671e-09,
+        "fedge": 0.0,
+        "gcr2": 0.23065792112791095,
+        "gcz2": 0.8351402901610294,
+        "gcl2": 7.596837120836687e-12,
+        "wb": 0.0030129072432737852,
+        "wp": 0.00010571599136276669,
+        "jacobian_sign_changed": false
+      },
+      "wout_restarted": {
+        "fsqr": 9.725522723151985e-11,
+        "fsqz": 8.118188731653388e-11,
+        "fsql": 8.477841758481768e-11,
+        "fedge": 0.0,
+        "gcr2": 4.433122596913099e-11,
+        "gcz2": 3.7004618606900055e-11,
+        "gcl2": 1.839065119471247e-13,
+        "wb": 0.0030129072337664563,
+        "wp": 0.00010571599137673422,
+        "jacobian_sign_changed": false
+      },
+      "restarted_state_sha256": "f3a631e65bc651ab6baa1bbe4c91e384f0446f11ffa976e1a50dd7e659d1ef44",
+      "wout_restart_minus_solver_residual": {
+        "fsqr": 2.64645750795104e-16,
+        "fsqz": -2.2741315306815177e-15,
+        "fsql": 9.721531216445021e-18
+      },
+      "state_component_l2_shifts": {
+        "R_cos": 0.0037622632914425034,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 0.004418627619781227,
+        "L_cos": 0.0,
+        "L_sin": 0.06761537746539296
+      }
+    },
+    {
+      "ns": 129,
+      "projected": {
+        "fsqr": 1.4735952860167685,
+        "fsqz": 5.335401494299932,
+        "fsql": 4.342282010539302e-10,
+        "fedge": 0.0,
+        "gcr2": 1.33491743250678,
+        "gcz2": 4.8332948210060005,
+        "gcl2": 1.883806190989023e-12,
+        "wb": 0.0030129061316697217,
+        "wp": 0.00010571599157635805,
+        "jacobian_sign_changed": false
+      },
+      "wout_restarted": {
+        "fsqr": 9.051723375918695e-11,
+        "fsqz": 9.767420326999936e-11,
+        "fsql": 9.960853543909802e-11,
+        "fedge": 0.0,
+        "gcr2": 8.252558557519074e-11,
+        "gcz2": 8.905067560826564e-11,
+        "gcl2": 4.3215162889940096e-13,
+        "wb": 0.0030129061514747777,
+        "wp": 0.00010571602502541336,
+        "jacobian_sign_changed": false
+      },
+      "restarted_state_sha256": "06a336c95ddf9bd295ad346689f8f7e6c628411014c7af6a0111831a2ec32d0b",
+      "wout_restart_minus_solver_residual": {
+        "fsqr": 2.0859241926213507e-16,
+        "fsqz": -3.2001779781183185e-15,
+        "fsql": 1.163713930467596e-17
+      },
+      "state_component_l2_shifts": {
+        "R_cos": 0.005359615223580102,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 0.006241095834621188,
+        "L_cos": 0.0,
+        "L_sin": 0.09781087742314407
+      }
+    }
+  ]
+}

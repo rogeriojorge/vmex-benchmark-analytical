@@ -4577,14 +4577,14 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/residuals.py",
       "sha256": "53f8a1184a14bf0215785ae4f926ddb05811cb6ea6b713b3555f62cadf97dfb3",
-      "review_scope": "m1_physical_to_constrained:278-303; remaining residual kernels not reviewed",
+      "review_scope": "m1_physical_to_constrained:278-303; force_residuals:431-480 inspected for invariant FSQ definition; other residual kernels not reviewed",
       "model": "m=1 constrained spectral geometry",
       "units": "internal mode coefficients",
       "derivative_semantics": "value-only inverse transform used; residual derivatives not tested",
       "tests_read": [],
       "oracle": "integer 3-D state projection and WOUT field check",
-      "benchmark_cell": "P2/G04",
-      "finding": "Projected R/Z coefficients converted into VMEX m=1 constrained basis before evaluation",
+      "benchmark_cell": "P2/G04; P3/S02d",
+      "finding": "Projected R/Z coefficients converted into VMEX m=1 constrained basis before evaluation; invariant FSQ uses normalized sums of post-rotation, pre-radial-preconditioner force blocks",
       "status": "partial"
     },
     {
@@ -4592,7 +4592,7 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/restart.py",
       "sha256": "52cf59397dd92c05063b48ebd89a9b773a0c6de394614c2d7e6a9f7e264b8b50",
-      "review_scope": "state_from_wout WOUT compatibility, mode remap and normalization:83-158; remaining restart policies not reviewed",
+      "review_scope": "state_from_wout WOUT compatibility, mode remap and normalization:83-158; remaining restart policies not reviewed; same-deck inverse through m=1:159-196 inspected",
       "model": "spectral-state restart from WOUT",
       "units": "full-mesh R/Z metres and internal lambda/flux normalization",
       "derivative_semantics": "value-only restart",
@@ -4600,8 +4600,8 @@
         "tests/test_restart.py:78-125, 296-318; three selected tests executed"
       ],
       "oracle": "asymmetric Solovev five-surface WOUT-state-WOUT field comparison at NS=33,65,129",
-      "benchmark_cell": "G03a",
-      "finding": "same-deck LASYM geometry and surface B reconstructed to roundoff; this does not exercise a live continuous Cartesian field",
+      "benchmark_cell": "G03a; P3/S02d",
+      "finding": "same-deck LASYM geometry and surface B reconstructed to roundoff; this does not exercise a live continuous Cartesian field; integer 3-D WOUT-restarted FSQ matches saved solver components within 6.41e-15",
       "status": "partial"
     },
     {
@@ -4656,14 +4656,14 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/solver.py",
       "sha256": "f6f0467783093ccb78b5b7a83b9023f0e10acaed291545da0411efa5abf44441",
-      "review_scope": "SpectralState:215-234; resolution:570-580; initial and physical state mapping:579-625; remaining solve paths not reviewed",
+      "review_scope": "SpectralState:215-234; resolution:570-580; initial and physical state mapping:579-625; evaluate_forces:1436-1466 and force pipeline:1335-1368 inspected; other solve paths not reviewed",
       "model": "fixed-boundary spectral state and cold/warm initialization",
       "units": "internal R/Z/lambda coefficients; normalized force components",
       "derivative_semantics": "solver tangent/adjoint not reviewed",
       "tests_read": [],
       "oracle": "integer 3-D projected seed and bounded warm runs",
-      "benchmark_cell": "P3/S02b",
-      "finding": "Warm seed avoided cold Jacobian sign failure; strict NS33 run still failed at 3000 iterations",
+      "benchmark_cell": "P3/S02b; P3/S02d",
+      "finding": "Warm seed avoided cold Jacobian sign failure; strict NS33 run still failed at 3000 iterations; same-grid projected-state invariant R/Z FSQ grows from NS33 to NS129 and is not a physical-field error metric",
       "status": "partial"
     },
     {

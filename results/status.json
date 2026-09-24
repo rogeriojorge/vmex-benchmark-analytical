@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-09-23",
+  "updated": "2026-09-24",
   "phases": {
     "P0": "partial",
     "P1": "partial",
@@ -27,7 +27,8 @@
     "sampled implicit physical-angle root directional derivative",
     "sampled sheared graph guard rejects measured near-domain folds",
     "asymmetric Solovev WOUT-state-WOUT surface round trip through NS=129",
-    "integer 3-D exact-state projection native B/J/force at NS=129"
+    "integer 3-D exact-state projection native B/J/force at NS=129",
+    "integer 3-D same-grid invariant-force comparison and WOUT restart residual agreement"
   ],
   "limited": [
     "source semantic review incomplete",
@@ -38,7 +39,8 @@
     "live Cartesian interior field API rejects LASYM",
     "continuous fitted LASYM lift failed current/force quality and became rank limited at NS=129",
     "cold integer 3-D prescribed-iota NS=33 solve failed at 3000 and 30000 iterations",
-    "projected warm integer 3-D strict NS=33 solve failed; loose roots at NS=33,65,129 have physical errors above targets"
+    "projected warm integer 3-D strict NS=33 solve failed; loose roots at NS=33,65,129 have physical errors above targets",
+    "large projected integer 3-D discrete R/Z force remains unexplained despite small native Cartesian physical errors"
   ],
   "unavailable_evidence": [
     "other required VMEX recoveries",
