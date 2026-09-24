@@ -611,10 +611,10 @@ Keep a compact current table above the append-only entries:
 
 | Phase | State at this review | First unresolved action |
 |---|---|---|
-| R0 | Passed locally: immutable rendering, metadata amendments, unique-run contract and regression tests | Recheck the outgoing diff and commit under owner identity |
+| R0 | Passed and published to public `main`: immutable rendering, metadata amendments, unique-run contract and regression tests | No remaining R0 work; keep the immutable evidence baseline while continuing R1 |
 | R1 | R0 passed locally; historical NS33 global radial ladder through 64 points remains unresolved. The first parent-linked knot-aligned GPU attempt was intentionally interrupted at the user's pause request during the first 4-point-per-cell grid. Three stdout-only 2-point rows and the unchanged initial report plus interruption receipt are preserved; no measurement decision is possible | Start a complete composite comparison under a fresh unique run ID; verify identities and parent ancestry, save all rows/samples, inspect 2/4-point-per-cell rule spreads, regenerate/inspect the saved-data figure, then decide R1 resolution before scoring projection and axisymmetric controls |
 | R2 | Nine historical ladder states; one NS129 cell missing | Finish projected zero-strength cell, then stateless residual tests |
-| R3 | Axisymmetric integer-family full-input finite-difference ladder and independent Ampere-to-AC check recorded; VMEX tangents/adjoints and sheared full-input derivatives remain open | Implement a fixed-linear-map JVP/finite-difference certificate for the frozen fit basis, then transfer exact-family tangent tests to the VMEX residual and begin sheared-A recovery after the active GPU score run |
+| R3 | Axisymmetric integer-family full-input finite-difference ladder and independent Ampere-to-AC check recorded; VMEX tangents/adjoints and sheared full-input derivatives remain open | Implement a fixed-linear-map JVP/finite-difference certificate for the frozen fit basis, then transfer exact-family tangent tests to the VMEX residual; the GPU is released for sheared-A input/parser checks and recovery after the JVP work |
 | R4 | Partial recovery and initial DESC comparison | Sheared A and true LASYM volume path, matched controls |
 | R5 | Broad integrations planned | Small exact-geometry consumers without waiting for all solves |
 | R6 | Planned | Harmonic/vacuum identities, then a strict anchored coupled case |
@@ -760,3 +760,11 @@ The account returned by `gh api user` is `rogeriojorge` (account ID `6816712`); 
 Inspection of `tools/publish.sh` found that its all-history identity check would reject the inherited GitHub-created merge commit (`Rogerio Jorge` author / `GitHub` committer) even though this task's new commit is configured for the owner. The helper now checks the commit it is publishing for the exact authenticated owner name/email and rejects a co-author trailer on that new commit, while preserving all ancestors. `sh -n tools/publish.sh` passes. This is a publication-gate correction, not a history rewrite.
 
 **Publication state at this entry:** Files are staged and reviewed, but the new commit and push have not yet occurred. After publishing, record the resulting commit hash and verify the remote main tip in a follow-up entry.
+
+### Publication completion, 2026-09-24
+
+Commit `9df03c235aad3c82033a83bd3bc882cec81fc493` (`Record VMEX measurement certification and handoff`) was created and pushed directly to the existing public repository's `main` branch. GitHub's API reports the author and committer as `rogeriojorge <6816712+rogeriojorge@users.noreply.github.com>`. `git ls-remote` confirms the remote main tip is that commit; the published revision-2 handoff file was also verified through GitHub's contents API. All 84 staged repository files, including figures, measurement arrays/reports, the interrupted-run receipt, tests, source pins, README, plan and sanitized handoff documents, are in the commit. No pull request was created because the inspected publish helper pushes directly to `main`.
+
+GitHub accepted the push and emitted its large-file recommendation for `results/audit/measurement_gpu/ns33-projected-default-gpu-radial64-v1/finest_samples.npz` (55.16 MB, above the recommended 50 MB); the artifact is below the hard per-file limit and is included with its report/hash evidence. No LFS migration was performed. The machine-specific runtime note remains local and was not in the publish allowlist. The interruption receipt and copied input/state files are public with the rest of the handoff.
+
+**Exact next action:** Resume R1 from this public state by running a complete knot-aligned NS33 comparison under a fresh unique run ID. The interrupted `ns33-projected-default-gpu-composite-v1` ID remains reserved; its stdout rows are provisional. Follow the current phase table and retain the R1 measurement gate before starting the missing NS129 projected `TCON0=0` run.
