@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "source_inventory": "inventory.json",
-  "scope": "Inventory is primarily the tracked VMEX tree, plus eight targeted partial DESC source/test entries at its recorded pin.",
+  "scope": "Inventory is primarily the tracked VMEX tree, plus targeted partial VMEX runtime and test-path reviews and eight targeted partial DESC source/test entries at their recorded pins.",
   "entries": [
     {
       "repository": "uwplasma/vmex",
@@ -2708,15 +2708,21 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "tests/test_multigrid_ladder.py",
       "sha256": "f4e3bd24557c19681c91ee17797e1c28c3e2707c1e2d1debe80d79fad53a443d",
-      "review_scope": "not inspected semantically",
-      "model": null,
-      "units": null,
-      "derivative_semantics": null,
-      "tests_read": [],
-      "oracle": null,
-      "benchmark_cell": null,
-      "finding": null,
-      "status": "unreviewed"
+      "review_scope": "partial read, lines 1-260: structural reuse test and ladder convergence/golden parity tests; remaining test file not reviewed",
+      "model": "fixed-boundary multigrid solve ladder and warm-start behavior",
+      "units": "radial grids, normalized force tolerances, scalar Wb output",
+      "derivative_semantics": "not tested in reviewed scope",
+      "tests_read": [
+        "test_structural_reuse_no_recompilation_and_fast_second_solve",
+        "test_ladder_converges_and_matches_vmec2000_ladder",
+        "test_cth_ladder_wb_matches_direct_1e10",
+        "test_qh_ladder_wb_vs_direct_within_inherent_scatter",
+        "test_ladder_stops_at_first_decreasing_stage"
+      ],
+      "oracle": "VMEC2000 ladder scalar goldens and same-code direct solve parity",
+      "benchmark_cell": "P3/S02b; P3/S03b",
+      "finding": "Tests verify configured ladder convergence and scalar parity; they do not vary TCON0 against an independent physical-field oracle.",
+      "status": "partial"
     },
     {
       "repository": "uwplasma/vmex",
@@ -4290,14 +4296,16 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/multigrid.py",
       "sha256": "2b1484739c3f97599183008318ddb961179151205a867cdbf4b97d19e29c9f90",
-      "review_scope": "initial_state interface and first-rung control:259-310,395-445; remaining multigrid paths not reviewed",
+      "review_scope": "fixed-boundary solve_multigrid signature and rung selection:259-310; per-stage runtime construction, explicit tcon0 dispatch and terminal-state policy:395-445; remaining multigrid paths not reviewed",
       "model": "fixed-boundary multigrid warm start",
       "units": "state on full radial mesh; tolerance and iteration arrays",
       "derivative_semantics": "value-only warm solve; implicit derivatives not tested",
-      "tests_read": [],
+      "tests_read": [
+        "tests/test_multigrid_ladder.py:1-260 (partial)"
+      ],
       "oracle": "integer 3-D bounded warm runs at NS33/65/129",
-      "benchmark_cell": "P3/S02b",
-      "finding": "Loose 1e-10 roots returned but physical errors exceeded initial targets; strict NS33 did not converge",
+      "benchmark_cell": "P3/S02b; P3/S02d; P3/S02e; P3/S02f; P3/S03b",
+      "finding": "Loose 1e-10 roots returned but physical errors exceeded initial targets; strict NS33 did not converge Explicit ns/ftol/niter arrays are direct API controls; tcon0 reaches prepare_runtime at every stage. A bounded NS33 cold/projected TCON0={1,0.1,0} ladder converged discretely in all six cases but none met physical B/J/force gates.",
       "status": "partial"
     },
     {
