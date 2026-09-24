@@ -371,6 +371,26 @@
       "status": "failed",
       "artifact": "results/vmex/solovev_asymmetric_iota_ns129/span32_forward.json",
       "scope": "Fixed span caps caused large or nonconvergent fitted-state B/J/force errors; rank prevented an unconstrained NS129 lift"
+    },
+    {
+      "id": "R04",
+      "phase": "P1",
+      "capability": "Sheared physical-angle chart and inversion sampling",
+      "cases": "all six sheared reference variants",
+      "evidence": "analytic_reference_sampled",
+      "status": "passed",
+      "artifact": "results/reference/sheared_chart.json",
+      "scope": "513 toroidal nodes x 64 poloidal nodes x five radii and 1024 random inverse samples per case; no derivative of bisection claimed"
+    },
+    {
+      "id": "R05",
+      "phase": "P1",
+      "capability": "Implicit physical-angle root directional derivative",
+      "cases": "sheared A, B and C at two interior points each",
+      "evidence": "analytic_reference_sampled",
+      "status": "passed",
+      "artifact": "results/reference/sheared_derivative.json",
+      "scope": "Custom JVP checked against independent bisection geometry at four central-difference steps; local branches only"
     }
   ]
 }

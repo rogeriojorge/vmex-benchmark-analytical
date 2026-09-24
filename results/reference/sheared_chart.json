@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "evidence": "analytic_reference_sampled",
+  "status": "passed",
+  "t_samples": 513,
+  "theta_samples": 64,
+  "random_inverse_samples": 1024,
+  "radial_fractions": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "angle_gate": 1e-10,
+  "label_gate": 1e-10,
+  "rows": [
+    {
+      "case": "sheared_axisymmetric",
+      "status": "passed",
+      "min_dphi_dt": 0.9999999999998881,
+      "angle_span_max_abs": 0.0,
+      "physical_angle_max_abs": 1.5314274795707798e-15,
+      "label_max_over_edge": 2.605625465957e-15,
+      "min_radius": 1.4915101418995602,
+      "S_minus_asin_kb": 2.224602503389247
+    },
+    {
+      "case": "sheared_A",
+      "status": "passed",
+      "min_dphi_dt": 0.7863219484588684,
+      "angle_span_max_abs": 0.0,
+      "physical_angle_max_abs": 1.5314274795707798e-15,
+      "label_max_over_edge": 4.304946422015913e-15,
+      "min_radius": 1.3225748726081228,
+      "S_minus_asin_kb": 2.224602503389247
+    },
+    {
+      "case": "sheared_A_full_basis",
+      "status": "passed",
+      "min_dphi_dt": 0.7863219484588684,
+      "angle_span_max_abs": 0.0,
+      "physical_angle_max_abs": 1.5314274795707798e-15,
+      "label_max_over_edge": 4.304946422015913e-15,
+      "min_radius": 1.3225748726081228,
+      "S_minus_asin_kb": 2.224602503389247
+    },
+    {
+      "case": "sheared_A_reframed",
+      "status": "passed",
+      "min_dphi_dt": 0.7863219484588684,
+      "angle_span_max_abs": 0.0,
+      "physical_angle_max_abs": 1.3739009929736312e-15,
+      "label_max_over_edge": 7.930164461608261e-15,
+      "min_radius": 1.3225748726081228,
+      "S_minus_asin_kb": 2.224602503389247
+    },
+    {
+      "case": "sheared_B",
+      "status": "passed",
+      "min_dphi_dt": 0.5042566080818861,
+      "angle_span_max_abs": 8.881784197001252e-16,
+      "physical_angle_max_abs": 1.5314274795707798e-15,
+      "label_max_over_edge": 1.427429603089487e-14,
+      "min_radius": 1.174674749273693,
+      "S_minus_asin_kb": 2.724602503389247
+    },
+    {
+      "case": "sheared_C",
+      "status": "passed",
+      "min_dphi_dt": 0.43552044412276714,
+      "angle_span_max_abs": 8.881784197001252e-16,
+      "physical_angle_max_abs": 1.5314274795707798e-15,
+      "label_max_over_edge": 2.3418766925686896e-14,
+      "min_radius": 1.164948119676969,
+      "S_minus_asin_kb": 3.0727047819983877
+    }
+  ]
+}
