@@ -110,7 +110,25 @@ The axisymmetric integer control gives a separate check. DESC `M=N=6, L=8` proje
 
 ![Axisymmetric integer control for VMEX and DESC](figures/coordinate_axisymmetric_control.png)
 
-DESC used the pinned source revision in [sources.json](sources.json), version `0.17.3+27.g4f48720be`, JAX `0.6.2`, float64 and one CUDA device. Its environment record is [results/desc/environment.json](results/desc/environment.json). It prescribed the DESC rotational-transform profile `+2`; the transform was not independently measured in these runs. Projection/solved scorer records, compressed held-out arrays, equilibrium files and figure input hashes are under [results/desc/coordinate](results/desc/coordinate). The report records timings and peak resident memory. These measurements are a first native comparison, not the full P3 exit: current-closure checks, more remaps, explicit transform measurement, independent source/test review, VMEC2000/VMEC++ and GVEC comparisons, and derivative stability remain open.
+### VMEX coordinate-constraint ladder
+
+At pinned VMEX `b5f5267`, six `NS=33` integer-3D solves used `FTOL=1e-10`, with `TCON0=1` (deck default), `0.1`, or `0`, from both a cold start and the independently certified projected state. Every solve met VMEX's discrete stopping test. None met the physical recovery targets `E_B <= 1e-5`, `E_J <= 1e-3`, and pressure-normalized force RMS `<= 1e-3`; solver convergence is not analytical recovery.
+
+![VMEX coordinate-constraint ladder physical errors and flux-label drift](figures/vmex_tcon_ladder_ns33.png)
+
+The projected zero-constraint run was the best of these six: `E_B=4.48e-5`, `E_J=1.73e-2`, force ratio `0.182`, and maximum normalized-flux-label drift `9.20e-5`. At default strength its errors were `8.71e-4`, `0.439`, and `4.93`, with label drift `4.24e-3`. From a cold start, `TCON0=0` improved B/J/force over default but increased label drift to `1.30e-2`; `TCON0=0.1` had lower physical errors than default and drift `5.38e-3`. Thus the term changes the recovered finite-resolution state, and its effect depends on initialization. The results support neither treating the constraint as harmless nor removing it globally. A multi-resolution, gauge-stability and derivative study is still required before changing the default or redesigning VMEX's coordinates.
+
+The [machine-readable summary](results/vmex/tcon_ladder_ns33/summary.json) links each score and 96-point native sample array to its run record and hash. The six solve times were `13.9–17.1 s`, native sampling took `89.4–94.2 s` after increasing the scorer batch size, and process peak RSS was `3358–3513 MiB`. Comparing scorer batch sizes 8 and 32 on the same projected state changed B by at most `3.22e-15 T`, J by `4.10e-7 A/m^2`, and grad p by `4.01e-8 Pa/m`, with identical points, weights, and reference labels; the physical score differences were at roundoff. The strict-tolerance launch that omitted the explicit `BENCH_FTOL` environment setting is documented separately and excluded from the six-run matrix.
+
+These runs prescribe iota. The cold zero-strength run's larger label drift shows that the finite-dimensional coordinate response is initialization-sensitive. The projected radial comparison extends through NS129 for default `TCON0`, but the zero-strength NS129 case remains unrun. Complete that case, then measure Jacobian regularity, high-mode content and gauge/derivative stability before drawing a design conclusion. Full records and reproducible plotting inputs are under [results/vmex/tcon_ladder_ns33](results/vmex/tcon_ladder_ns33).
+
+The projected-start radial check supports that caution. At `NS=65`, zero strength reaches `E_B=8.26e-6` but still has `E_J=1.51e-3` and force ratio `1.67e-2`; default strength scores `7.06e-4 / 1.49e-1 / 1.70`. At `NS=129`, the default result improves to `1.30e-4 / 2.92e-3 / 1.74e-2`, but misses all three targets. The projected `TCON0=0` run at NS129 is **not run**; do not infer its result from the lower-resolution trend.
+
+![VMEX projected-start constraint comparison across radial resolution](figures/vmex_tcon_resolution_ladder.png)
+
+The [partial resolution summary](results/vmex/tcon_resolution_ladder/summary.json) contains five scored projected starts at NS33/65/129, their commands, raw discrete residuals, timings, RSS, native samples and hashes. The sixth cell, NS129 with zero strength, remains explicitly unrun. This is not a resolution-converged recovery result.
+
+DESC used the pinned source revision in [sources.json](sources.json), version `0.17.3+27.g4f48720be`, JAX `0.6.2`, float64 and one CUDA device. Its environment record is [results/desc/environment.json](results/desc/environment.json). It prescribed the DESC rotational-transform profile `+2`; the transform was not independently measured in these runs. Projection/solved scorer records, compressed held-out arrays, equilibrium files and figure input hashes are under [results/desc/coordinate](results/desc/coordinate). The report records timings and peak resident memory. These measurements are a first native comparison, not the full P3 exit: current-closure checks, more remaps, explicit transform measurement, independent source/test review, higher-resolution VMEX TCON0 comparisons, VMEC2000/VMEC++ and GVEC comparisons, and derivative stability remain open.
 
 ## Candidate VMEX inputs
 

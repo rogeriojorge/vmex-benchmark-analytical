@@ -113,8 +113,10 @@
       "cases": "VMEX constraint-strength ladder, VMEC2000, VMEC++, DESC; GVEC when pinned and runnable",
       "evidence": "independent_numerical_reference",
       "status": "diagnostic_only",
-      "artifact": "figures/coordinate_solver_comparison.png",
-      "scope": "DESC base/remapped fixed-iota solves and terminal failures scored against the same analytic samples as VMEX projection/loose-root records. VMEX TCON0 solution ladder, VMEC2000, VMEC++ and GVEC are not run; derivative/gauge stability is unmeasured."
+      "artifact": "results/vmex/tcon_resolution_ladder/summary.json",
+      "figure": "figures/vmex_tcon_resolution_ladder.png",
+      "additional_artifacts": ["results/vmex/tcon_ladder_ns33/summary.json", "figures/vmex_tcon_ladder_ns33.png"],
+      "scope": "Six pinned VMEX NS33 integer-3D solves at TCON0=1, 0.1, and 0, from cold and certified projected starts, plus projected NS65 default/zero and NS129 default runs; all reached discrete FTOL=1e-10 and none met all physical B/J/force targets. Sampled coordinate drift varied with TCON0, resolution, and initialization. NS129 zero, VMEC2000, VMEC++, GVEC, and derivative/gauge stability remain open."
     },
     {
       "id": "S03c",
