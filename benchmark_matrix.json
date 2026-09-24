@@ -491,6 +491,16 @@
       "status": "diagnostic_only",
       "artifact": "results/vmex/integer_3d_constraint_switch.json",
       "scope": "Zeroing tcon0 removes most projected R/Z invariant force without changing the state; this isolates a coordinate-constraint contribution but does not certify physical recovery"
+    },
+    {
+      "id": "S02h",
+      "phase": "P3",
+      "capability": "Bounded poloidal gauge projection trial with compensating Clebsch lambda",
+      "cases": "integer_3d prescribed iota at NS=33",
+      "evidence": "projected_gauge_scan",
+      "status": "failed",
+      "artifact": "results/projection/integer_3d_gauge_scan_ns33.json",
+      "scope": "16 one-mode coordinate/lambda shifts scanned; best reduces FSQR+FSQZ only modestly and finite projection worsens native B/J/force versus unshifted seed; no accepted recovery"
     }
   ]
 }

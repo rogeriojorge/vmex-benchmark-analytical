@@ -31,7 +31,8 @@
     "integer 3-D same-grid invariant-force comparison and WOUT restart residual agreement",
     "integer 3-D bounded NS33 warm trajectory and independently scored native state",
     "integer 3-D NS33 VMEX force radial and Fourier localization with invariant-residual cross-check",
-    "integer 3-D spectral-condensation constraint switch on saved projected and loose-root states"
+    "integer 3-D spectral-condensation constraint switch on saved projected and loose-root states",
+    "integer 3-D bounded single-mode coordinate/lambda scan with selected native physical score"
   ],
   "limited": [
     "source semantic review incomplete",
@@ -43,10 +44,11 @@
     "continuous fitted LASYM lift failed current/force quality and became rank limited at NS=129",
     "cold integer 3-D prescribed-iota NS=33 solve failed at 3000 and 30000 iterations",
     "projected warm integer 3-D strict NS=33 solve failed; loose roots at NS=33,65,129 have physical errors above targets",
-    "large projected integer 3-D discrete R/Z force arises mainly from the coordinate constraint; a physical-field-preserving remap remains untested",
+    "large projected integer 3-D discrete R/Z force arises mainly from the coordinate constraint; a successful physical-field-preserving remap has not been found",
     "integer 3-D native B/J/force errors worsen by iteration 65 despite smaller discrete force",
     "integer 3-D projected R/Z force localized; default coordinate constraint dominates its invariant residual",
-    "integer 3-D physical-field-preserving VMEX gauge remap and accepted recovery untested"
+    "integer 3-D bounded single-mode gauge scan failed to reduce force to acceptance and worsened native physical errors",
+    "finite projected coordinate/lambda transformation preservation remains uncertified; accepted integer 3-D recovery remains unachieved"
   ],
   "unavailable_evidence": [
     "other required VMEX recoveries",
