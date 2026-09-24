@@ -732,9 +732,9 @@ A negative scientific result can close an experiment if its mathematical assumpt
 
 | Phase | Status on delivery | Evidence / next action |
 |---|---|---|
-| P0 | Partial | Public repo and required source pins exist; 504 code/config ledger entries, 3 partial reviews. Complete semantic source/test review and reproducible environment metadata. |
+| P0 | Partial | Public repo and required source pins exist; 504 code/config ledger entries, 9 partial reviews. Complete semantic source/test review and reproducible environment metadata. |
 | P1 | Partial | 29 tests and 14 references reproduced; all 28 decks passed parser/setup checks. B/C fits clear the smoke gate; sampled sheared charts and local implicit-root derivatives pass. A sampled guard now rejects measured near-domain folds. Final output error budget remains. |
-| P2 | Partial | Native symmetric field sampling and symmetric Solov'ev projection run; LASYM live Cartesian API unavailable, fitted lift limited. 3-D, derivatives and file round trips remain. |
+| P2 | Partial | Native symmetric field sampling, symmetric Solov'ev projection and LASYM WOUT-state-WOUT surface round trip run; LASYM live Cartesian API unavailable, fitted lift limited. 3-D, derivatives and other file routes remain. |
 | P3 | Partial | Axisymmetric integer both closures meet first NS=129 targets; asymmetric Solov'ev WOUT surface B converges, but volume J/force remains unscored. Other cells remain. |
 | P4 | Reference derivatives run; solver work planned | Smoke runner exists; complete family input-map differentiation is not implemented. |
 | P5 | Planned | Review/execute Boozer, bounce and diagnostics tests with independent references. |
@@ -839,6 +839,14 @@ A negative scientific result can close an experiment if its mathematical assumpt
 **Measured finding and failed attempt:** the first near-domain check expected all analytically admissible margins to remain physical-angle graphs and failed. The C-family margins `S-asin(sqrt(2 edge)) = 0.001, 0.01, 0.1` instead had sampled minimum normalized angular slopes `-3.224, -2.222, -0.209`. Their selected target angles each had three chart crossings, although the chart radius stayed positive and the existing smooth-domain validator accepted the parameters. Margins `0.2, 0.5, 1.0, 3.073` had sampled minimum slopes `0.0137, 0.0685, 0.1565, 0.4355`. The added guard rejects the three folded samples before producing VMEX input decks; five invalid-parameter cases were independently rejected by the analytical validator. Fifteen samples at toroidal quadrant boundaries and offsets agreed with the independent bisection surface to roundoff at one safe margin. The guard is a finite-grid check, not a global proof or a certified threshold. Runtime of the final probe was 2.0 s; memory unmeasured.
 
 **Branch/PR state, blockers and next exact action:** benchmark changes are uncommitted on `main`; no upstream branch or PR exists. Review staged diff and publish this block as owner. Then compare direct live LASYM state surface geometry/field against its WOUT result and complete the reachable VMEX source/test ledger before a volume current/force implementation. Do not treat the failed fitted-state lift as a nonlinear recovery failure.
+
+### Entry 2026-09-23: LASYM restart surface consistency
+
+**Phase / run ID:** P0/P2, G03a. Benchmark base commit `dca6df4`; source pins unchanged. Added `benchmarks/check_lasym_roundtrip.py`, read the WOUT/restart/surface and interior-field source paths stated in `results/audit/review_ledger.json`, and updated only the inspected ranges in that ledger. Ran the checker on the asymmetric Solov'ev prescribed-iota WOUTs at NS=33,65,129 with the pinned VMEX Python environment. Each run took 3.0-3.2 s; memory unmeasured. Three selected pinned upstream restart tests passed in 2.88 s. Artifacts: `results/vmex/solovev_asymmetric_iota_ns{33,65,129}/lasym_roundtrip.json`.
+
+**Results and limits:** WOUT to native restart state to WOUT preserved sampled surface geometry to at most `1.39e-17` m and surface B to at most `3.42e-14` relative L2, across five surfaces at each NS. At NS=129 the original WOUT surface field errors against the independent analytical B ranged from `5.20e-7` to `7.93e-6` in an unweighted surface L2 measure. This is a value-only serialization/field consistency result; it does not exercise a live field from an in-memory solve or supply continuous-volume J, pressure gradient or force. Source inspection found that the current live spectra constructor rejects LASYM and the interior geometry/native field evaluator uses only the symmetric R/Z/lambda harmonics. Merely removing the guard would be invalid. The source ledger has 9 partial code/config/test entries and no complete semantic module review.
+
+**Failed attempts, branch/PR state, blockers and next exact action:** no failed candidate was retained in this block. Benchmark changes are uncommitted on `main`; no upstream branch or PR exists. Review staged diff and publish as owner, then build a minimal direct live LASYM surface parity check against WOUT before implementing an asymmetric continuous Cartesian field. Keep the fitted-state volume failure separate from the successful WOUT surface result.
 
 ```text
 Date/time and benchmark commit:

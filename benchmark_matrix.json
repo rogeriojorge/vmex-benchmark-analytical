@@ -401,6 +401,16 @@
       "status": "passed",
       "artifact": "results/reference/sheared_domain_edges.json",
       "scope": "Three smooth-domain admissible margins folded with three chart crossings; input generation now rejects sampled folds; no global graph proof"
+    },
+    {
+      "id": "G03a",
+      "phase": "P2",
+      "capability": "LASYM WOUT to native restart state and WOUT surface field round trip",
+      "cases": "asymmetric Solovev iota at NS=33,65,129",
+      "evidence": "integration_consistency",
+      "status": "passed",
+      "artifact": "results/vmex/solovev_asymmetric_iota_ns129/lasym_roundtrip.json",
+      "scope": "Five surfaces per NS; geometry and B match original WOUT to roundoff; no live volume field, J or force"
     }
   ]
 }

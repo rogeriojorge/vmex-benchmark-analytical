@@ -3263,15 +3263,17 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "tests/test_restart.py",
       "sha256": "ef7d836cfdeab6fde3a23a2bc1854cb9fb1753979bf831b99c0523bb58250aef",
-      "review_scope": "not inspected semantically",
-      "model": null,
-      "units": null,
-      "derivative_semantics": null,
-      "tests_read": [],
-      "oracle": null,
-      "benchmark_cell": null,
-      "finding": null,
-      "status": "unreviewed"
+      "review_scope": "lambda inverse, same-deck restart and LASYM/NFP guard tests:78-125, 296-318; remaining tests not read",
+      "model": "restart compatibility",
+      "units": "SI WOUT and internal state",
+      "derivative_semantics": "value-only",
+      "tests_read": [
+        "three selected tests executed, all passed"
+      ],
+      "oracle": "LASYM benchmark WOUT-state-WOUT round trip",
+      "benchmark_cell": "G03a",
+      "finding": "selected tests pass; full restart suite unrun",
+      "status": "partial"
     },
     {
       "repository": "uwplasma/vmex",
@@ -4088,7 +4090,7 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/extender.py",
       "sha256": "dc98d1920bbe7b5c4066952cf7a41ea52405d3bfab2e6bb386816d5531ad20e4",
-      "review_scope": "VmecInteriorField constructor and B/gradB/flux-coordinate methods:951-1185; remaining native/fallback and exterior paths not reviewed",
+      "review_scope": "native symmetric geometry/field reconstruction:649-775 and VmecInteriorField:951-1185; LASYM geometry and exterior paths unimplemented or unreviewed",
       "model": "live interior Clebsch field",
       "units": "Cartesian B T; gradB dB_i/dx_j; s normalized flux",
       "derivative_semantics": "flux-coordinate inversion differentiated implicitly; first spatial derivative executed locally",
@@ -4098,7 +4100,7 @@
       ],
       "oracle": "exact VMEX oracle and sampled analytical axisymmetric equilibrium",
       "benchmark_cell": "G02",
-      "finding": "Native high-derivative test marked full and skipped by default; fitted fallback emitted accuracy warnings in one executed test",
+      "finding": "native _geometry and _contravariant_native use only symmetric R/Z/lambda series; LASYM live Cartesian field requires explicit parity support, not just removal of its guard",
       "status": "partial"
     },
     {
@@ -4590,15 +4592,17 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/restart.py",
       "sha256": "52cf59397dd92c05063b48ebd89a9b773a0c6de394614c2d7e6a9f7e264b8b50",
-      "review_scope": "not inspected semantically",
-      "model": null,
-      "units": null,
-      "derivative_semantics": null,
-      "tests_read": [],
-      "oracle": null,
-      "benchmark_cell": null,
-      "finding": null,
-      "status": "unreviewed"
+      "review_scope": "state_from_wout WOUT compatibility, mode remap and normalization:83-158; remaining restart policies not reviewed",
+      "model": "spectral-state restart from WOUT",
+      "units": "full-mesh R/Z metres and internal lambda/flux normalization",
+      "derivative_semantics": "value-only restart",
+      "tests_read": [
+        "tests/test_restart.py:78-125, 296-318; three selected tests executed"
+      ],
+      "oracle": "asymmetric Solovev five-surface WOUT-state-WOUT field comparison at NS=33,65,129",
+      "benchmark_cell": "G03a",
+      "finding": "same-deck LASYM geometry and surface B reconstructed to roundoff; this does not exercise a live continuous Cartesian field",
+      "status": "partial"
     },
     {
       "repository": "uwplasma/vmex",
@@ -4789,14 +4793,16 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/virtual_casing.py",
       "sha256": "b0e78d5952c4fd6c4ac525c66365162ac55e64fc1f7222b1985dca2a7477c7f8",
-      "review_scope": "WOUT surface extraction:190-390 and live-state LASYM guard:420-440; other source and quadrature paths not reviewed",
+      "review_scope": "surface synthesis and parity:150-390; live-state extraction and LASYM guard:395-560; exterior virtual-casing kernels not reviewed",
       "model": "surface field assembly from WOUT/full and half meshes",
       "units": "B T; geometry m; physical phi over one field period",
       "derivative_semantics": "WOUT path value-only; live-state derivative path unavailable for LASYM",
-      "tests_read": [],
+      "tests_read": [
+        "tests/test_restart.py:78-125, 296-318"
+      ],
       "oracle": "independent asymmetric Solovev Cartesian B on five surfaces",
       "benchmark_cell": "S01d",
-      "finding": "WOUT path supports LASYM and converges; live-state _state_field_spectra rejects LASYM",
+      "finding": "WOUT surface path accepts LASYM; live _state_field_spectra rejects LASYM before parity construction; round-trip surface B agrees to roundoff",
       "status": "partial"
     },
     {
@@ -4804,14 +4810,16 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/wout.py",
       "sha256": "8788df1be8dba39ad09c6800f774a42df297c6136954feca0fb151652840dcdf",
-      "review_scope": "public read_wout interface used; serializer implementation and tests not reviewed",
+      "review_scope": "wout_from_state interface:705-735 and read_wout used; serializer body and other tests not reviewed",
       "model": "VMEC WOUT serialization",
       "units": "SI field and geometry with VMEC flux conventions",
       "derivative_semantics": "file path value-only",
-      "tests_read": [],
+      "tests_read": [
+        "tests/test_restart.py:78-125, 296-318"
+      ],
       "oracle": "surface B comparison",
       "benchmark_cell": "S01d",
-      "finding": "WOUT surface data can be read for LASYM but full serializer audit remains",
+      "finding": "LASYM same-deck WOUT-state-WOUT surface geometry and B round-trip to roundoff at NS=33,65,129; full serializer audit remains",
       "status": "partial"
     },
     {
