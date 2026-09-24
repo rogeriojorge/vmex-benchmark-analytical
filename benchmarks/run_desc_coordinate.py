@@ -9,7 +9,6 @@ import argparse
 import hashlib
 import json
 import resource
-import subprocess
 import time
 from pathlib import Path
 
@@ -20,14 +19,14 @@ import scipy
 from scipy.constants import mu_0
 
 import desc
-desc.set_device("gpu", gpuid=0)
 from desc.equilibrium import Equilibrium
 from desc.geometry import FourierRZToroidalSurface
 from desc.grid import Grid, LinearGrid
 from desc.profiles import PowerSeriesProfile
 
 from analytic import cases, integer_field, surface
-from score_samples import score
+from evidence import desc_native_flux_label, source_metadata
+from score_samples import join_samples, point_cloud, score
 
 
 def cylindrical(xyz):
@@ -176,9 +175,12 @@ def sample_score(eq, reference, args):
     B = vector_to_xyz(d["B"], phi)
     J = vector_to_xyz(d["J"], phi)
     gradp = vector_to_xyz(d["grad(p)"], phi)
-    result_data = dict(reference)
-    result_data["B"], result_data["J"], result_data["gradp"] = B, J, gradp
-    result_data["xyz"] = reference["xyz"]
+    cloud = point_cloud(reference)
+    observations = dict(
+        B=B, J=J, gradp=gradp,
+        s_native=desc_native_flux_label(nodes[:, 0]),
+    )
+    result_data = join_samples(cloud, observations)
     result = score(result_data)
     result["max_coordinate_inversion_m"] = float(np.max(coord_err))
     result["min_sampled_jacobian"] = float(np.min(d["sqrt(g)"]))
@@ -212,9 +214,15 @@ def main():
     parser.add_argument("--amplitude", type=float, default=0.1)
     parser.add_argument("--m", type=int, default=2)
     parser.add_argument("--n", type=int, default=0)
+    parser.add_argument("--device", choices=("cpu", "gpu"), default="gpu")
+    parser.add_argument("--gpu-id", type=int, default=0)
     args = parser.parse_args()
+    if args.device == "gpu":
+        desc.set_device("gpu", gpuid=args.gpu_id)
+    else:
+        desc.set_device("cpu")
     case = cases()[args.case]
-    args.output_dir.mkdir(parents=True, exist_ok=True)
+    args.output_dir.mkdir(parents=True, exist_ok=False)
     with np.load(args.samples, allow_pickle=False) as data:
         reference = {key: data[key] for key in data.files}
     t0 = time.perf_counter()
@@ -226,7 +234,7 @@ def main():
     projected_path = args.output_dir/f"desc_integer_{args.chart}_L{args.resolution}_projection.npz"
     np.savez_compressed(projected_path, **projected_data)
     report = dict(
-        schema=1, evidence="desc_coordinate_comparison", status="projected_only",
+        schema=2, evidence="desc_coordinate_comparison", status="projected_only",
         chart=args.chart, parameters=dict(case=args.case, amplitude=args.amplitude,
                                            m=args.m, n=args.n, resolution=args.resolution,
                                            nfp=case.nfp, prescribed_iota=2.0,
@@ -234,7 +242,8 @@ def main():
         desc_version=desc.__version__, scipy_version=scipy.__version__,
         numpy_version=np.__version__, jax_version=jax.__version__,
         jax_devices=[str(d) for d in jax.devices()],
-        source_commit=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+        device_request={"backend": args.device, "gpu_id": args.gpu_id if args.device == "gpu" else None},
+        source=source_metadata(desc.__file__, "PlasmaControl/DESC", desc.__version__),
         sample_sha256=sha256(args.samples), projected=projected,
         projected_artifact=str(projected_path.name),
         spectral_width_projected=spectral_width(eq, case.nfp),

@@ -6,7 +6,7 @@ The primary references are [Landreman's analytical equilibria](https://arxiv.org
 
 ## Results currently included
 
-These are **analytical reference results, not VMEX solver results**. The reference suite passed 29 tests, and sampled force identities passed on 14 configurations. The largest sampled force RMS divided by pressure-gradient RMS was 1.66e-15. Tests also cover an independent Grad-Shafranov identity, volume and toroidal-flux integrals, coordinate covariance, current integration, flux inversion, field Jacobians and sensitivity cancellations.
+These are **analytical reference results, not VMEX solver results**. The original reference suite passed 29 tests, and sampled force identities passed on 14 configurations. The latest full local suite passes 47 tests (including evidence-contract, independent-measurement and complete-input-map regressions); that run does not measure solver accuracy. The largest sampled force RMS divided by pressure-gradient RMS was 1.66e-15. Tests also cover an independent Grad-Shafranov identity, volume and toroidal-flux integrals, coordinate covariance, current integration, flux inversion, field Jacobians and sensitivity cancellations.
 
 | Reference | Volume-averaged beta | Axis iota, counterclockwise R-Z convention |
 |---|---:|---:|
@@ -39,6 +39,10 @@ python benchmarks/plot_results.py
 The scripts use float64. Recorded package versions and machine information are in [results/reference/identities.json](results/reference/identities.json); test and command evidence is in [results/reference/execution.json](results/reference/execution.json). Exact local versions, rather than an assumed latest release, must accompany later solver results. Python 3.12 or newer is a practical starting point for the separate current-VMEX environment; resolve its actual dependency constraints during phase P0.
 
 ![Reference Taylor test](figures/reference_derivatives.png)
+
+### Axisymmetric exact-family input sensitivity
+
+Central differences of the complete axisymmetric integer-family input map use the existing boundary Fourier fit, pressure/iota/current polynomial fits, held-out profile values, `PHIEDGE`, `CURTOR`, and the converted current-shape coefficients. The fit degrees stayed fixed at 8 across perturbations from `1e-2` to `1e-5`. Successive complete-vector derivative estimates changed by `5.66e-8` for the vertical-scale parameter `c` and `1.20e-9` for the outer-label parameter `delta`. The independently known beta derivatives agree within `5.0e-14` and `1.9e-10` absolute at the finest step. An independent 512/1024-point Ampere loop integral agrees to `3.34e-16` in normalized enclosed current; its finite-difference `dI/ds` agrees with the input `AC(s)` profile within `4.2e-12` relative, and the physical `CURTOR` scaling agrees exactly at recorded precision. At one fixed interior Cartesian point, `dB/dc` is nonzero and its central difference approaches the JAX derivative to `3.21e-11` relative; `dB/ddelta` is exactly zero. This is analytical input-map evidence, not a VMEX solver-response derivative. The full step ladder and coefficient/profile derivatives are in the immutable [axisymmetric derivative report](results/reference/derivative_runs/axisym-input-map-20260924T201351.596655Z/derivatives.json).
 
 ## First measured VMEX recovery
 
@@ -88,6 +92,12 @@ For that selected shift, an [independent continuum chart check](results/projecti
 
 ![Integer 3-D gauge surface convergence](figures/vmex_integer_gauge_surface.png)
 
+### Independent NS33 fixed-state measurement: unresolved
+
+On the historical VMEX pin, an independent full-torus scorer reproduced the saved legacy B/J/grad-p samples to relative RMS `2.20e-15 / 1.12e-13 / 2.85e-14`. The legacy weights sum to half the exact NFP=2 torus volume (`0.13356` versus `0.26711 m³`), although that common factor cancels in normalized ratios. On 16×64×64 Gauss nodes, `E_B/E_J/E_gradp/E_F,p` are `1.737e-3 / 0.1628 / 8.069e-3 / 1.744`; at 32×64×64 they are `1.246e-3 / 0.1804 / 8.050e-3 / 1.944`. The 32-point midpoint result is `9.083e-4 / 0.2099 / 8.039e-3 / 2.276`. At 64×64×64, Gauss gives `1.425e-3 / 0.1830 / 8.058e-3 / 1.972`, while radial midpoint gives `1.380e-3 / 0.1941 / 8.056e-3 / 2.101`. Angular-shifted Gauss still agrees closely, but 32-to-64 radial changes and 64-point midpoint spread exceed the measurement allowance. Routes A/B agree at tested points; the B/J/force recovery thresholds fail. This state is **not accepted**. The global radial ladder is unresolved. A knot-aligned composite comparison was interrupted at the user's pause request while evaluating its first 4-point-per-cell grid. Three 2-point-per-cell stdout-only rows are preserved in an [interruption receipt](results/audit/measurement_gpu/ns33-projected-default-gpu-composite-v1/interruption.json): unshifted Gauss and angular-shifted Gauss agree closely at `E_B/E_J/E_gradp/E_F,p = 1.483413e-3 / 0.1871616 / 8.060897e-3 / 2.023258`, while cell midpoint gives `1.380250e-3 / 0.1940794 / 8.056157e-3 / 2.100582`; all three reported exact-volume relative error 0. The original measurement report remains unchanged with status `running`, and has no saved measurement rows. These incomplete stdout observations are retained for context only; they do not certify radial convergence or physical recovery. A full rerun needs a fresh run ID. The [64-point report](results/audit/measurement_gpu/ns33-projected-default-gpu-radial64-v1/measurement.json) remains the latest completed, hash-linked score record.
+
+![Independent NS33 full-torus score refinement; measurement unresolved](figures/vmex_r1_ns33-projected-default-gpu-radial64-v1.png)
+
 ![Measured asymmetric Solov'ev surface B refinement](figures/vmex_lasym_surface_B.png)
 
 ![Measured axisymmetric VMEX recovery](figures/vmex_axisymmetric_recovery.png)
@@ -112,21 +122,21 @@ The axisymmetric integer control gives a separate check. DESC `M=N=6, L=8` proje
 
 ### VMEX coordinate-constraint ladder
 
-At pinned VMEX `b5f5267`, six `NS=33` integer-3D solves used `FTOL=1e-10`, with `TCON0=1` (deck default), `0.1`, or `0`, from both a cold start and the independently certified projected state. Every solve met VMEX's discrete stopping test. None met the physical recovery targets `E_B <= 1e-5`, `E_J <= 1e-3`, and pressure-normalized force RMS `<= 1e-3`; solver convergence is not analytical recovery.
+The historical TCON experiment used VMEX `b5f5267` and saved nine unique integer-3D solver records at NS33, NS65 and NS129. The raw reports, score files and 96 point sample arrays are preserved. Review showed that the old plotting script overwrote iteration counts, software/runtime labels, command strings, and post-hoc acceptance flags in those reports. Their original values cannot be recovered from the reviewed Git history, so the new summaries omit them and retain the saved field/current/force scores only as **legacy96 diagnostics**. Independent score convergence has not yet been established.
 
-![VMEX coordinate-constraint ladder physical errors and flux-label drift](figures/vmex_tcon_ladder_ns33.png)
+![Historical VMEX TCON0 physical scores from saved legacy96 measurements](figures/vmex_tcon_ladder_ns33_reinterpreted.png)
 
-The projected zero-constraint run was the best of these six: `E_B=4.48e-5`, `E_J=1.73e-2`, force ratio `0.182`, and maximum normalized-flux-label drift `9.20e-5`. At default strength its errors were `8.71e-4`, `0.439`, and `4.93`, with label drift `4.24e-3`. From a cold start, `TCON0=0` improved B/J/force over default but increased label drift to `1.30e-2`; `TCON0=0.1` had lower physical errors than default and drift `5.38e-3`. Thus the term changes the recovered finite-resolution state, and its effect depends on initialization. The results support neither treating the constraint as harmless nor removing it globally. A multi-resolution, gauge-stability and derivative study is still required before changing the default or redesigning VMEX's coordinates.
+Within those saved scores, the projected zero-constraint NS33 state had `E_B=4.48e-5`, `E_J=1.73e-2`, and force ratio `0.182`, versus `8.71e-4`, `0.439`, and `4.93` at deck-default strength. Both states miss at least one physical target. The cold-start comparison changes the label-drift trend, and the sampled scores are not yet certified against shifted/refined quadrature. These observations do not support a global default change or a solver redesign.
 
-The [machine-readable summary](results/vmex/tcon_ladder_ns33/summary.json) links each score and 96-point native sample array to its run record and hash. The six solve times were `13.9–17.1 s`, native sampling took `89.4–94.2 s` after increasing the scorer batch size, and process peak RSS was `3358–3513 MiB`. Comparing scorer batch sizes 8 and 32 on the same projected state changed B by at most `3.22e-15 T`, J by `4.10e-7 A/m^2`, and grad p by `4.01e-8 Pa/m`, with identical points, weights, and reference labels; the physical score differences were at roundoff. The strict-tolerance launch that omitted the explicit `BENCH_FTOL` environment setting is documented separately and excluded from the six-run matrix.
+The [read-only summary](results/audit/tcon_reinterpretation/ns33_summary.json), [resolution summary](results/audit/tcon_reinterpretation/resolution_summary.json), and [historical amendment table](results/audit/tcon_reinterpretation/historical_amendments.json) link each included metric to immutable source files and hashes. These new figures exclude iteration counts, commands, and acceptance annotations injected by the old renderer. The prior figures and summaries remain available as historical artifacts but are superseded for interpretation.
 
-These runs prescribe iota. The cold zero-strength run's larger label drift shows that the finite-dimensional coordinate response is initialization-sensitive. The projected radial comparison extends through NS129 for default `TCON0`, but the zero-strength NS129 case remains unrun. Complete that case, then measure Jacobian regularity, high-mode content and gauge/derivative stability before drawing a design conclusion. Full records and reproducible plotting inputs are under [results/vmex/tcon_ladder_ns33](results/vmex/tcon_ladder_ns33).
+These runs prescribe iota. The cold zero-strength run's larger label drift shows that the finite-dimensional coordinate response is initialization-sensitive in this sample. The projected radial comparison extends through NS129 for default `TCON0`, but the zero-strength NS129 case remains unrun. Complete that case after the independent scorer certifies the measurement contract. Then measure Jacobian regularity, high-mode content and gauge/derivative stability before drawing a design conclusion.
 
 The projected-start radial check supports that caution. At `NS=65`, zero strength reaches `E_B=8.26e-6` but still has `E_J=1.51e-3` and force ratio `1.67e-2`; default strength scores `7.06e-4 / 1.49e-1 / 1.70`. At `NS=129`, the default result improves to `1.30e-4 / 2.92e-3 / 1.74e-2`, but misses all three targets. The projected `TCON0=0` run at NS129 is **not run**; do not infer its result from the lower-resolution trend.
 
-![VMEX projected-start constraint comparison across radial resolution](figures/vmex_tcon_resolution_ladder.png)
+![Historical VMEX projected-start physical scores across radial resolution](figures/vmex_tcon_resolution_ladder_reinterpreted.png)
 
-The [partial resolution summary](results/vmex/tcon_resolution_ladder/summary.json) contains five scored projected starts at NS33/65/129, their commands, raw discrete residuals, timings, RSS, native samples and hashes. The sixth cell, NS129 with zero strength, remains explicitly unrun. This is not a resolution-converged recovery result.
+At NS65, the saved zero-strength score is `8.26e-6 / 1.51e-3 / 1.67e-2`; deck-default strength scores `7.06e-4 / 1.49e-1 / 1.70`. At NS129, the saved deck-default score is `1.30e-4 / 2.92e-3 / 1.74e-2`, missing all three targets. The projected NS129, zero-strength experiment remains **not run**. These sparse legacy96 points do not form a resolution-converged recovery result.
 
 DESC used the pinned source revision in [sources.json](sources.json), version `0.17.3+27.g4f48720be`, JAX `0.6.2`, float64 and one CUDA device. Its environment record is [results/desc/environment.json](results/desc/environment.json). It prescribed the DESC rotational-transform profile `+2`; the transform was not independently measured in these runs. Projection/solved scorer records, compressed held-out arrays, equilibrium files and figure input hashes are under [results/desc/coordinate](results/desc/coordinate). The report records timings and peak resident memory. These measurements are a first native comparison, not the full P3 exit: current-closure checks, more remaps, explicit transform measurement, independent source/test review, higher-resolution VMEX TCON0 comparisons, VMEC2000/VMEC++ and GVEC comparisons, and derivative stability remain open.
 
@@ -158,7 +168,7 @@ The shared scorer accepts an NPZ file of **native physical samples**, with its c
 python benchmarks/score_samples.py samples.npz scores.json
 ```
 
-It compares Cartesian B, J and grad p against the reference at the same points. Its `accepted` field remains unset until the experiment's resolution and error gates have been applied.
+It compares Cartesian B, J and grad p against the reference at the same points. Sampled scores are diagnostic until the experiment's resolution and error gates have been applied; a report marked `accepted: false` has not passed those gates.
 
 ## Study coverage
 

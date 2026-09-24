@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "run_id": "ns33-projected-default-gpu-composite-v1",
+  "profile": "composite",
+  "parent_run_id": "ns33-projected-default-gpu-radial64-v1",
+  "parent_report_sha256": "ac448fd9be924b64119c98238b9317310d9a0c98c1e6d184197dfddba850a000",
+  "interruption": {
+    "reason": "The user requested a pause; the active GPU scorer was interrupted with SIGINT.",
+    "observed_process_elapsed": "27:52",
+    "host_rss_kib_at_last_check": 5891632,
+    "gpu1_memory_used_mib_at_last_check": 3679,
+    "device_memory_peak": null,
+    "exit_observation": "Python/JAX raised KeyboardInterrupt during cell4_gauss flux-coordinate sampling; SSH session exited 255.",
+    "report_policy": "The initial measurement.json was preserved unchanged with status running; this separate receipt records the interruption."
+  },
+  "identity": {
+    "vmex_commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "input_sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab",
+    "spectral_state_sha256": "3fefa156a0a7835a36503aa3ffeb6f72905c0743f446a8784403d4550687c48a",
+    "source_wout_sha256": "78932d912fb41c4034cceaae75c411946c7120a30635e16e924b5102167dce93",
+    "measurement_report_sha256": "9b151f9b39b11826889dd69b998ed2dd1d6dc13a2e7b1dd20004cf7e1f7ce925",
+    "scorer_sha256": "b24c478a228ed830a6f43b06c15b9638dd69d4ea2906cbc24675b4937ef39649",
+    "quadrature_module_sha256": "66cccf0032fa65c912185d5b33c69043ea84fb16f9a0acf4a2cf5d19f223051a"
+  },
+  "stdout_only_rows": [
+    {
+      "grid_id": "cell2_gauss",
+      "status": "provisional_stdout_only",
+      "E_B": 0.0014834130777348921,
+      "E_J": 0.18716163699714883,
+      "E_gradp": 0.008060896721261555,
+      "E_F,p": 2.02325757989362,
+      "volume_relative_error": 0.0
+    },
+    {
+      "grid_id": "cell2_shifted",
+      "status": "provisional_stdout_only",
+      "E_B": 0.0014834130777354286,
+      "E_J": 0.18716163699642022,
+      "E_gradp": 0.008060896721261502,
+      "E_F,p": 2.0232575798783285,
+      "volume_relative_error": 0.0
+    },
+    {
+      "grid_id": "cell2_midpoint",
+      "status": "provisional_stdout_only",
+      "E_B": 0.001380249844442854,
+      "E_J": 0.19407938728985125,
+      "E_gradp": 0.008056156683301048,
+      "E_F,p": 2.1005818147415036,
+      "volume_relative_error": 0.0,
+      "additional_route_a_observations": {
+        "force_fixed_magnetic_scale": 0.9360972811431595,
+        "field_max_abs_T": 0.016113174391921864,
+        "current_max_abs_A_per_m2": 13615522.26006807,
+        "force_max_abs_Pa_per_m": 14063132.255594023,
+        "divergence_max_abs_per_m": 2.023520240257426e-13
+      }
+    }
+  ],
+  "not_completed": [
+    "cell4_gauss",
+    "cell4_shifted",
+    "cell4_midpoint",
+    "target_near_axis",
+    "target_near_edge",
+    "target_native_knots_and_cell_interiors"
+  ],
+  "interpretation": "Stdout rows are preserved for context but are not an immutable saved-data measurement certificate. No resolution or recovery claim is made. The reserved run ID must not be reused; a complete rerun requires a fresh unique ID."
+}

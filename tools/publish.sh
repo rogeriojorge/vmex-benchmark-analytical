@@ -31,13 +31,15 @@ fi
 if ! git diff --cached --quiet; then
     git commit -m "${COMMIT_MESSAGE:-Add analytical references and staged VMEX benchmark plan}"
 fi
-# Reject unexpected new-project authorship rather than rewriting it.
-if git log --format='%an|%cn' | grep -v '^rogeriojorge|rogeriojorge$'; then
-    echo "Unexpected project author/committer; inspect history, do not rewrite third-party history." >&2
+# Validate the commit this invocation is publishing. Existing ancestors may
+# include GitHub-created merge commits with their own committer identity.
+COMMIT_IDENTITY=$(git show -s --format='%an|%cn|%ae|%ce' HEAD)
+if [ "$COMMIT_IDENTITY" != "rogeriojorge|rogeriojorge|$EMAIL|$EMAIL" ]; then
+    echo "Unexpected new commit author/committer; inspect it before publication." >&2
     exit 1
 fi
-if git log --format='%B' | grep -i 'Co-authored-by:'; then
-    echo "Unexpected co-author trailer; inspect locally before publication." >&2
+if git show -s --format='%B' HEAD | grep -i 'Co-authored-by:'; then
+    echo "Unexpected co-author trailer on the new commit; inspect locally before publication." >&2
     exit 1
 fi
 if gh repo view "$TARGET" --json name >/dev/null 2>&1; then

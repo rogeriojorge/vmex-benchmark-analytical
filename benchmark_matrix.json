@@ -3,6 +3,54 @@
   "note": "Execution states on delivery. Generating a candidate input is distinct from verifying its interpretation in VMEX. Strong B/C boundaries remain unresolved.",
   "experiments": [
     {
+      "id": "R0",
+      "phase": "R0",
+      "capability": "Immutable benchmark evidence and read-only TCON rendering",
+      "cases": "Historical TCON reports; run/evidence contract regression paths",
+      "evidence": "audit_and_read_only_rendering",
+      "status": "passed",
+      "artifact": "results/audit/tcon_reinterpretation/figure_manifest.json",
+      "additional_artifacts": [
+        "results/audit/tcon_reinterpretation/historical_amendments.json",
+        "tests/test_evidence_contract.py"
+      ],
+      "scope": "43 tests pass; 122 JSON files strict-parse; renderer leaves all 64 historical forward, score and sample files byte-identical. Historical overwritten metadata are excluded. This does not certify legacy96 physical scores."
+    },
+    {
+      "id": "R1",
+      "phase": "R1",
+      "capability": "Independent physical-score and coordinate-route certification",
+      "cases": "Saved symmetric integer 3-D projection and solved controls",
+      "evidence": "analytic_recovery",
+      "status": "diagnostic",
+      "artifact": "results/audit/measurement_gpu/ns33-projected-default-gpu-radial64-v1/measurement.json",
+      "scope": "Historical VMEX NS33 projected-default fixed state only. Legacy samples and full-torus normalization verified; Route A/B agrees at tested points. Global radial 16/32/64 estimates remain unresolved: the 64-point shifted-Gauss/midpoint spread is 4.51e-5 / 1.11e-2 / 2.24e-6 / 0.129 and the 32-to-64 Gauss change is 1.80e-4 / 2.51e-3 / 7.93e-6 / 0.0275 for B/J/grad-p/force, exceeding the measurement allowance. Physical B/J/force thresholds fail. The knot-aligned composite child `ns33-projected-default-gpu-composite-v1` was interrupted at the user's pause request during its first 4-point-per-cell grid; its initial report remains unchanged at status running and an interruption receipt preserves three stdout-only 2-point rows. Unshifted/shifted Gauss scores are 1.483413e-3 / 0.1871616 / 8.060897e-3 / 2.023258; midpoint is 1.380250e-3 / 0.1940794 / 8.056157e-3 / 2.100582; exact-volume relative error is zero for each. These are provisional context only. The interrupted run ID is reserved; a complete rerun must use a fresh unique ID.",
+      "additional_artifacts": [
+        "results/audit/measurement_gpu/ns33-projected-default-gpu-radial64-v1/finest_samples.npz",
+        "results/audit/measurement_gpu/ns33-projected-default-gpu-radial64-v1/targeted_samples.npz",
+        "results/audit/measurement_gpu/ns33-projected-default-gpu-radial32-v1/measurement.json",
+        "figures/vmex_r1_ns33-projected-default-gpu-radial64-v1.png",
+        "results/audit/measurement_gpu/ns33-projected-default-gpu-composite-v1/measurement.json",
+        "results/audit/measurement_gpu/ns33-projected-default-gpu-composite-v1/interruption.json",
+        "results/audit/measurement_gpu/ns33-projected-default-gpu-composite-v1/input.indata",
+        "results/audit/measurement_gpu/ns33-projected-default-gpu-composite-v1/spectral_state.npz"
+      ]
+    },
+    {
+      "id": "A01",
+      "phase": "R3",
+      "capability": "Axisymmetric exact-family complete-input finite differences",
+      "cases": "integer_axisymmetric, prescribed-iota and prescribed-current input maps",
+      "evidence": "analytic_derivative_reference",
+      "status": "diagnostic",
+      "artifact": "results/reference/derivative_runs/axisym-input-map-20260924T201351.596655Z/derivatives.json",
+      "additional_artifacts": [
+        "benchmarks/full_input_derivatives.py",
+        "tests/test_full_input_derivatives.py"
+      ],
+      "scope": "Fit degree 8 stayed fixed across centered steps 1e-2 through 1e-5; complete boundary/profile/PHIEDGE/CURTOR/AC vector changes by 5.66e-8 and 1.20e-9 over the last two c/delta refinements. Independent Ampere loop dI/ds matches AC to <=4.13e-12 relative and physical CURTOR scaling to recorded precision. Exact-reference evidence only; no VMEX root tangent/JVP certificate."
+    },
+    {
       "id": "R01",
       "phase": "P1",
       "capability": "Reference equations",
@@ -115,8 +163,16 @@
       "status": "diagnostic_only",
       "artifact": "results/vmex/tcon_resolution_ladder/summary.json",
       "figure": "figures/vmex_tcon_resolution_ladder.png",
-      "additional_artifacts": ["results/vmex/tcon_ladder_ns33/summary.json", "figures/vmex_tcon_ladder_ns33.png"],
-      "scope": "Six pinned VMEX NS33 integer-3D solves at TCON0=1, 0.1, and 0, from cold and certified projected starts, plus projected NS65 default/zero and NS129 default runs; all reached discrete FTOL=1e-10 and none met all physical B/J/force targets. Sampled coordinate drift varied with TCON0, resolution, and initialization. NS129 zero, VMEC2000, VMEC++, GVEC, and derivative/gauge stability remain open."
+      "additional_artifacts": [
+        "results/vmex/tcon_ladder_ns33/summary.json",
+        "figures/vmex_tcon_ladder_ns33.png",
+        "results/audit/tcon_reinterpretation/ns33_summary.json",
+        "results/audit/tcon_reinterpretation/resolution_summary.json",
+        "results/audit/tcon_reinterpretation/historical_amendments.json",
+        "figures/vmex_tcon_ladder_ns33_reinterpreted.png",
+        "figures/vmex_tcon_resolution_ladder_reinterpreted.png"
+      ],
+      "scope": "Nine unique historical integer-3D solver records at NS33/65/129 remain diagnostic. The saved physical scores have legacy96 sampling and are not independently certified; iterations, software/runtime metadata, commands and post-hoc acceptance fields were overwritten by the old plotting script and are excluded from new summaries. NS129 zero, independent score convergence, VMEC2000, VMEC++, GVEC and derivative/gauge stability remain open."
     },
     {
       "id": "S03c",

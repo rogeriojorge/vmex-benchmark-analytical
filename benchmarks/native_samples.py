@@ -17,6 +17,26 @@ from analytic import label_at_s, surface
 from build_inputs import LENGTH_M, FIELD_T, MU0
 
 
+def split_samples(samples):
+    """Split a legacy in-memory bundle into neutral geometry and solver data."""
+    reference = dict(
+        schema=np.asarray(2),
+        case_name=samples["case_name"],
+        xyz=samples["xyz"],
+        weights=samples["weights"],
+        s_reference=samples.get("s_reference", samples.get("s")),
+        length_m=samples["length_m"],
+        field_t=samples["field_t"],
+        mu0=samples["mu0"],
+    )
+    observations = dict(
+        schema=np.asarray(2),
+        B=samples["B"], J=samples["J"], gradp=samples["gradp"],
+        s_native=samples.get("s_native", samples.get("vmex_s")),
+    )
+    return reference, observations
+
+
 def reference_points(case, *, nradial=3, ntheta=8, nphi=4):
     nodes, radial_weights = np.polynomial.legendre.leggauss(nradial)
     radial = (nodes+1)/2
@@ -75,7 +95,9 @@ def sample_native(inp, state, case, *, runtime=None, chunk_size=8):
     if not all(np.isfinite(x).all() for x in (B, J, gp, s_native)):
         raise ValueError("VMEX native field or coordinate inversion returned nonfinite values")
     return dict(case_name=case.name, xyz=xyz, B=B, J=J, gradp=gp,
-                weights=weights, s=s_ref, vmex_s=s_native,
+                weights=weights, s_reference=s_ref, s_native=s_native,
+                # Read-only aliases keep earlier exploratory scripts working.
+                s=s_ref, vmex_s=s_native,
                 length_m=LENGTH_M, field_t=FIELD_T, mu0=MU0)
 
 
@@ -107,5 +129,6 @@ def sample_lifted_lasym(inp, state, case):
     if not all(np.isfinite(x).all() for x in (xyz, B, J, gp, weights)) or np.any(weights <= 0):
         raise ValueError("Fitted LASYM field or Jacobian is invalid")
     return dict(case_name=case.name, xyz=xyz, B=B, J=J, gradp=gp,
-                weights=weights, s=s.ravel(), vmex_s=s.ravel(),
+                weights=weights, s_reference=s.ravel(), s_native=s.ravel(),
+                s=s.ravel(), vmex_s=s.ravel(),
                 length_m=LENGTH_M, field_t=FIELD_T, mu0=MU0)

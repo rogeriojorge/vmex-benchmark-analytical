@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "evidence": "standalone_mathematical_checks",
+  "vmex_executed": false,
+  "repository_tests_executed": false,
+  "numpy_version": "2.3.5",
+  "checks_passed": 3,
+  "sampling_alias": {
+    "function": "sin(4*theta)",
+    "eight_node_rms": 5.123065117347476e-16,
+    "shifted_257_node_rms": 0.7071067811865476,
+    "exact_rms": 0.7071067811865475,
+    "interpretation": "A zero coarse-grid error does not certify a volume norm."
+  },
+  "period_normalization": {
+    "nfp": 3,
+    "one_period_volume": 3.158273408348595,
+    "full_torus_volume": 9.474820225045784,
+    "exact_full_torus_volume": 9.474820225045786,
+    "interpretation": "Constant period factors cancel in relative norms, not volumes."
+  },
+  "gauge_axis_regularity": {
+    "gauge_poloidal_mode": 3,
+    "old_envelope": "rho**2*(1-rho**2)",
+    "regular_envelope": "rho**3*(1-rho**2)**2",
+    "induced_position_mode": 4,
+    "old_coefficient_radial_order": 2.9999914942307497,
+    "regular_coefficient_radial_order": 3.999982988461494,
+    "required_analytic_leading_order_at_least": 4,
+    "interpretation": "The old m=3 gauge is not an analytic polar chart at the axis."
+  }
+}
