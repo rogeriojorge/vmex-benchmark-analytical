@@ -1,0 +1,303 @@
+{
+  "schema": 1,
+  "note": "Execution states on delivery. Generating a candidate input is distinct from verifying its interpretation in VMEX. Strong B/C boundaries remain unresolved.",
+  "experiments": [
+    {
+      "id": "R01",
+      "phase": "P1",
+      "capability": "Reference equations",
+      "cases": "all exact cases",
+      "evidence": "analytic_reference_sampled",
+      "status": "passed",
+      "artifact": "results/reference/identities.json"
+    },
+    {
+      "id": "R02",
+      "phase": "P1",
+      "capability": "Candidate INDATA generation with measured fit errors",
+      "cases": "14 cases x NCURR 0/1",
+      "evidence": "analytic_reference_sampled",
+      "status": "passed",
+      "artifact": "inputs/manifest.json"
+    },
+    {
+      "id": "I01",
+      "phase": "P1",
+      "capability": "VMEX parser, units and signed closure recovery",
+      "cases": "14 generated cases x NCURR 0/1",
+      "evidence": "discrete_consistency",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "R03",
+      "phase": "P1",
+      "capability": "Strong-boundary resolution",
+      "cases": "sheared B/C",
+      "evidence": "analytic_reference_sampled",
+      "status": "blocked",
+      "artifact": null
+    },
+    {
+      "id": "G01",
+      "phase": "P2",
+      "capability": "Projection and radial regularity",
+      "cases": "axisymmetric, 3D, both LASYM bases",
+      "evidence": "analytic_projection",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "G02",
+      "phase": "P2",
+      "capability": "Interior B and spatial derivatives 0-3",
+      "cases": "mild exact cases; axis and knots separate",
+      "evidence": "analytic_projection",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "G03",
+      "phase": "P2",
+      "capability": "INDATA/JSON/WOUT round trips",
+      "cases": "all supported physical flags",
+      "evidence": "discrete_consistency",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "S01",
+      "phase": "P3",
+      "capability": "Fixed-boundary recovery",
+      "cases": "mandatory mild cases x both closures",
+      "evidence": "analytic_recovery",
+      "status": "implemented_not_run",
+      "artifact": null
+    },
+    {
+      "id": "S02",
+      "phase": "P3",
+      "capability": "Cold, hot, multigrid and lane parity",
+      "cases": "axisymmetric asymmetric Solovev and 3D A",
+      "evidence": "discrete_consistency",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "S03",
+      "phase": "P3",
+      "capability": "Native independent solver comparison",
+      "cases": "VMEX, DESC, VMEC2000, VMEC++",
+      "evidence": "independent_numerical_reference",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "D01",
+      "phase": "P4",
+      "capability": "Complete-family nonzero sensitivities",
+      "cases": "beta and physical field response",
+      "evidence": "analytic_recovery",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "D02",
+      "phase": "P4",
+      "capability": "Eulerian outer-label null",
+      "cases": "integer 3D; complete input map",
+      "evidence": "analytic_recovery",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "D03",
+      "phase": "P4",
+      "capability": "Current-prescribed lambda iota null",
+      "cases": "sheared A",
+      "evidence": "analytic_recovery",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "D04",
+      "phase": "P4",
+      "capability": "Tangent, transpose and solver factors",
+      "cases": "SOLVAX small independent matrices",
+      "evidence": "discrete_consistency",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "D05",
+      "phase": "P4",
+      "capability": "Scalar FD smoke",
+      "cases": "relative PHIEDGE only",
+      "evidence": "discrete_consistency",
+      "status": "implemented_not_run",
+      "artifact": null
+    },
+    {
+      "id": "B01",
+      "phase": "P5",
+      "capability": "Boozer reconstruction and responses",
+      "cases": "axisymmetric and 3D; rational gauge controls",
+      "evidence": "integration",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "B02",
+      "phase": "P5",
+      "capability": "Field lines and bounce action",
+      "cases": "exact closed and sheared lines",
+      "evidence": "independent_numerical_reference",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "B03",
+      "phase": "P5",
+      "capability": "Geometry and stability diagnostics",
+      "cases": "model-compatible mild cases",
+      "evidence": "integration",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "V01",
+      "phase": "P6",
+      "capability": "Vacuum and NESTOR operators",
+      "cases": "analytic harmonic fixtures",
+      "evidence": "analytic_reference_sampled",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "V02",
+      "phase": "P6",
+      "capability": "MGRID and coil kernels",
+      "cases": "direct field versus sampled field",
+      "evidence": "independent_numerical_reference",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "V03",
+      "phase": "P6",
+      "capability": "Virtual casing and exterior derivatives",
+      "cases": "source and target refinement",
+      "evidence": "independent_numerical_reference",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "F01",
+      "phase": "P6",
+      "capability": "Coupled free boundary",
+      "cases": "axisymmetric, 3D, F/T symmetry controls",
+      "evidence": "independent_numerical_reference",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "F02",
+      "phase": "P6",
+      "capability": "Strict free-boundary reverse response",
+      "cases": "anchored current/coil perturbations",
+      "evidence": "discrete_consistency",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "F03",
+      "phase": "P6",
+      "capability": "Analytical interior with fitted exterior",
+      "cases": "bounded source representation",
+      "evidence": "independent_numerical_reference",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "P01",
+      "phase": "P7",
+      "capability": "Polish and stationary response",
+      "cases": "Solovev then bounded 3D attempts",
+      "evidence": "analytic_recovery",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "O01",
+      "phase": "P8",
+      "capability": "Exact-family optimization",
+      "cases": "stretched integer and sheared parameters",
+      "evidence": "exploratory",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "O02",
+      "phase": "P8",
+      "capability": "Tangent/transverse continuation",
+      "cases": "rational and sheared reference seeds",
+      "evidence": "exploratory",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "O03",
+      "phase": "P8",
+      "capability": "Boundary and source optimization",
+      "cases": "verified geometry and source constraints",
+      "evidence": "exploratory",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "X01",
+      "phase": "P9",
+      "capability": "NEO/ESSOS downstream tests",
+      "cases": "suitable surfaces, explicit models",
+      "evidence": "integration",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "X02",
+      "phase": "P9",
+      "capability": "GKX/DKX optional geometry and response",
+      "cases": "one small prescribed physical problem each",
+      "evidence": "integration",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "X03",
+      "phase": "P9",
+      "capability": "Near-axis compatible geometry",
+      "cases": "pinned draft and order/radius ladders",
+      "evidence": "integration",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "X04",
+      "phase": "P9",
+      "capability": "Open mirror operators and response",
+      "cases": "separate exact vacuum/paraxial fixtures",
+      "evidence": "integration",
+      "status": "planned",
+      "artifact": null
+    },
+    {
+      "id": "T01",
+      "phase": "P10",
+      "capability": "Performance to physical accuracy",
+      "cases": "cold/warm/new parameters, memory",
+      "evidence": "integration",
+      "status": "planned",
+      "artifact": null
+    }
+  ]
+}

@@ -1,0 +1,822 @@
+# Analytical benchmarks for VMEX
+
+**Owner:** `rogeriojorge`  
+**Target repository:** `https://github.com/rogeriojorge/vmex-benchmark-analytical` (public)  
+**Plan revision:** 1, 2026-09-23  
+**Primary solver snapshot:** `uwplasma/vmex@b5f5267efc0795c4a49a224e321e9b370975c14c`  
+**Analytical supplement:** `landreman/analytic_3d_equilibria@4c0b690ddebdc71811c88223eb9f44a98ab64222`
+
+This file is the implementation contract and the continuing logbook. Keep the scientific specification stable; append dated evidence and decisions to the logbook. A replacement agent must be able to resume from this file, the Git history, and the recorded artifacts without the original conversation.
+
+## 1. Mandate and present state
+
+Build a small, reproducible benchmark repository that answers four questions:
+
+1. Does VMEX recover independently specified exact equilibria, rather than merely agree with VMEC's discrete residual or another implementation?
+2. Do its physical fields, spatial derivatives, equilibrium sensitivities, diagnostics, and file interfaces converge to the correct quantities?
+3. Which fixed-boundary, free-boundary, symmetry, and downstream capabilities have direct analytical evidence, and which have only numerical or consistency evidence?
+4. Can a verified differentiable solver explore exact solution families and nearby equilibria without optimizing discretization error?
+
+The starting references are Landreman's integer-transform and sheared-transform toroidal equilibria [R1, R2]. Add axisymmetric limits, an additional diagonal stretch, a genuinely up-down-asymmetric Solov'ev equilibrium, rigid-motion covariance tests, vacuum operator fixtures, and separate open-mirror fixtures. Carry the same fields through as much of VMEX as each model legitimately permits.
+
+**What this handoff actually contains:** executable analytical field, geometry, flux and current calculations; 14 reference configurations; 28 generated fixed-boundary input candidates; independent identity, quadrature, sign, symmetry and derivative tests; a physical-sample scorer; reference figures; and two VMEX smoke runners whose APIs were reviewed but whose execution remains local work. No VMEX, DESC, free-boundary, GPU, or downstream solver run was performed in the handoff environment. The installed reference environment had NumPy, SciPy, JAX, SymPy and pytest, but not VMEX or its dependencies. Direct network access from that runtime was unavailable. GitHub source review used the connected repository reader.
+
+**Do not call this a completed all-module source audit.** The preparation reviewed selected VMEX source paths, current changes and adjacent interfaces. `docs/SOURCE_REVIEW.md` states the scope. Phase P0 must inventory the local trees and complete the source-to-test review ledger. Reading a README, parsing an AST, seeing a green CI badge, and semantically reviewing the corresponding implementation are different actions.
+
+The existing measured evidence is in `results/reference/`. Sampled agreement with a differential identity is not a proof over the continuum; the derivations below explain why the identities should hold. Likewise, an analytical geometry is not an analytical solution of every kinetic or stability model consuming it.
+
+### State vocabulary
+
+Every result must use one of these evidence classes:
+
+| Class | Meaning |
+|---|---|
+| `analytic_reference_sampled` | Explicit reference equations checked on stated points/quadrature; no numerical equilibrium solve. |
+| `analytic_projection` | Exact state projected into a numerical representation, without nonlinear recovery. |
+| `analytic_recovery` | A solved equilibrium compared with an independent exact field. |
+| `discrete_consistency` | Two evaluations of the same discrete problem, including adjoint versus discrete finite differences. |
+| `independent_numerical_reference` | Native independently refined solver or integral implementation, not a closed-form answer. |
+| `integration` | An interface or downstream calculation checked with explicitly limited physical scope. |
+| `exploratory` | An optimization or continuation result requiring subsequent validation. |
+
+Use statuses `planned`, `implemented_not_run`, `passed`, `failed`, `blocked`, `not_applicable`, and `unavailable`. A missing optional dependency is `unavailable`, not `passed`. A solver stopping successfully is not automatically `analytic_recovery`. Record unsuccessful attempts and their cost.
+
+## 2. Operating rules
+
+### Repository and identity
+
+Create the public repository under the owner's account. `tools/publish.sh` stages an explicit allowlist and requires `PUBLISH=1` before it commits or pushes. Read its staged diff first. Confirm `gh api user --jq .login` is exactly `rogeriojorge`; derive the account's noreply email from its actual numeric ID, or use a verified owner-approved email. Configure both author and committer locally as `rogeriojorge`. All new project commits, pushes, comments, issues and pull requests must use that authenticated account. Do not add automated-assistant author names or co-author trailers.
+
+This does not authorize rewriting upstream history or erasing someone else's copyright or scientific attribution. Keep third-party licenses and references. Do not import upstream Git histories into this new repository. Do not configure the user's global Git identity. Do not publish credentials, local paths revealing private information, personal files, caches, virtual environments or unreviewed terminal dumps. CI runs tests with read-only repository permissions and must not commit or comment automatically.
+
+For VMEX or adjacent-library fixes, use separate worktrees and narrowly scoped branches. Open separate upstream PRs with reproducer, tests, measurements and pinned dependencies. Never merge those PRs or push directly to an upstream default branch as part of this task. Benchmark both the recorded baseline and the proposed fix before describing an improvement. An unrelated open PR is not an invitation to merge it.
+
+### Implementation style
+
+Use plain functions, a small amount of shared analytical code, JSON metadata, NumPy/SciPy/JAX, pytest, and Matplotlib. Reuse VMEX's public interfaces and existing operators. Do not build a plugin system, workflow framework, dashboard server, universal configuration language, or a second equilibrium solver.
+
+Keep driver settings near the top of readable scripts. One script should correspond to one scientific experiment or a genuinely shared operation. Prefer one shared scorer over copies of force norms. Add a class only where it represents a real state or contract. Do not pursue a line-count target by compressing expressions, removing validation, or hiding physics in opaque helpers. A useful target is a small handful of analytical/adapter modules and approximately one driver per phase, not one file per test or every matrix cell.
+
+Do not add all optional dependencies to the core environment. Pin the actual solver and reference versions in the result manifest. Keep DESC/reference-binary environments separate when their JAX or Python requirements conflict with VMEX. Transfer numerical data through documented file contracts rather than forcing incompatible environments together.
+
+## 3. Source baseline and audit priorities
+
+Before changing code, compare local VMEX with the pinned baseline. Keep the baseline immutable in a worktree. Obtain current heads, open and recently merged PRs, change logs, capability declarations, test manifests and benchmark records; record actual SHAs. Freeze a second comparison snapshot if main has advanced. Never silently replace the baseline midway through a convergence plot.
+
+The source review identified the following concrete priorities [R3-R10].
+
+* The current `freeboundary_implicit.py` implements a coupled Newton anchor, finite restart budgets and an anchor-failure status. An older paragraph in `docs/explanation/validation.md` still says the free-boundary state is unanchored. Test the implementation; do not reproduce the outdated limitation as a current fact. Conversely, the existence of an anchor routine does not prove that every return path enforces its residual certificate.
+* VMEC's `FTOL` is a test on squared, normalized discrete force quantities. It is not a bound on Cartesian force error, state error, or derivative error. Its three convergence components are individually tested; a sum can be as large as roughly three times the per-component tolerance. Do not invent a conflicting sum-only convergence condition.
+* The fixed-boundary implicit map contains constrained/frozen coordinate combinations. Frozen-path finite differences test that discrete map; independently reconverged physical observables test a different and necessary part of the argument. Both are required.
+* Current field interpolation uses the native Clebsch representation where its required spectra are present. Older/fallback field reconstructions have different derivative accuracy. Record which path is actually evaluated. Earlier live-state versus WOUT errors motivate testing all interior surfaces, not just the last surface.
+* `strong_force.py` uses a continuous spline/Fourier representation, distinct from the legacy half-mesh residual. Its coordinates use a field-period angle: physical cylindrical angle is that angle divided by NFP. Its lambda is the external straight-field-line displacement, not the internally rescaled solver unknown.
+* Public polishing is an overdetermined physical least-squares problem. Small force, small least-squares stationarity residual, and accurate derivatives are separate gates. A Gauss-Newton matrix is not automatically the exact derivative of a nonzero-residual least-squares solution.
+* The free-boundary reverse API is not evidence of a public forward-mode API. Probe transformations individually. `custom_vjp` entry points cannot simply be assumed to accept `jax.jvp`, `jacfwd`, or arbitrary higher derivatives.
+* Current near-surface exterior evaluation uses graded quadrature; a removed continuation API still appears in some adjacent documentation. Freeze discrete quadrature plans when differentiating, and independently check whether the frozen plan remains adequate after geometry changes.
+* `pyQSC_JAX`'s substantial implementation is in draft PR 2 at the pin in `sources.json`, not in its minimal main README. Treat it as an optional branch experiment, not a released prerequisite.
+
+`tools/audit_sources.py /path/to/checkouts` creates a full tracked-source inventory without marking files reviewed. Resolve the null pins in `sources.json` first. For each VMEX module, and each imported adjacent-library implementation relevant to a scored capability, record: exact file hash; model and units; input/output contract; derivative semantics; existing tests and their oracle; uncovered branch; benchmark fixture; reviewer notes; and completion status. Review associated tests, not only their names. Include error/status code paths and serializers. Nonreachable adjacent modules may be explicitly out of scope with a reason; do not claim to benchmark the entire uwplasma organization.
+
+## 4. Case matrix: geometry, symmetry, closure and boundary conditions
+
+### Fixed-boundary matrix
+
+| Case group | Physical class | LASYM | Independent target | Purpose |
+|---|---|---|---|---|
+| Integer family, a=b=c=1 | Axisymmetric | F and T | Exact field, iota, current, pressure, volume, energies | Basic recovery and same-physics basis control. |
+| Sheared family, epsilon=0 | Axisymmetric with shear | F, then T | Exact field plus flux quadrature | Profile inversion and current-prescribed transform. |
+| Solov'ev, chi=0 | Axisymmetric, up-down symmetric | F and T | Separate Grad-Shafranov formula | Independent analytical construction. |
+| Solov'ev, chi=0.3 | Axisymmetric, up-down asymmetric | T | Exact asymmetric pressure/field | Genuine LASYM physics, not just moving a symmetry plane. |
+| Integer family, a!=b | Three dimensional | F and T | Exact Cartesian field and nested tori | 3-D nonlinear recovery and rational-transform response. |
+| Sheared A | Three dimensional, sheared iota | F and T | Exact field, independent flux/current quadratures | Primary 3-D sensitivity and diagnostics case. |
+| Sheared B and C | Stronger shaping | F; selected T repeats | Same references | Angular conditioning and representation stress. |
+| Stretched integer family, c!=1 | Three dimensional | F and T | Derived exact family | Extra shape and pressure responses. |
+| Rigidly rephased/shifted exact cases | Same physical equilibrium, hidden symmetry | T | Euclidean covariance | Nonzero sine/cosine partners and coordinate-origin invariance. |
+| Generic transverse perturbations | Genuinely symmetry-broken 3-D equilibria | T | Independently converged numerical solutions | Extension beyond exact families; never label these exact. |
+
+For each mandatory mild case, solve with both `NCURR=0` and `NCURR=1` after converting the same physical profiles correctly. Running a symmetric geometry with LASYM=T must recover the same physical state; this is distinct from testing genuinely asymmetric geometry. Do not count the duplicated basis control as an additional physical configuration.
+
+The initial JSON includes 14 reference cases. Expand the complete study through shared configuration records, not duplicated scripts. Initial M=12, N=12 boundary candidates for sheared B and C are unresolved; the forward smoke runner refuses their current manifests. Refine angular resolution and quadrature before launching them. The initial mild inputs are smoke inputs, not final accuracy specifications.
+
+### What can and cannot be called exact for free boundary
+
+Both axisymmetric and 3-D free-boundary calculations, with LASYM=F and T, belong in the program. However, the paper gives an interior MHD equilibrium, not a complete coil-vacuum-plasma free-boundary solution. Setting edge pressure to zero or feeding its boundary into NESTOR does not supply that missing solution.
+
+Use three distinct free-boundary tiers:
+
+1. **Exact operator fixtures:** analytic vacuum fields and harmonic potentials for NESTOR, MGRID interpolation, coil kernels, source separation and their derivatives on prescribed surfaces.
+2. **Independent numerical coupled equilibria:** established axisymmetric and 3-D coil/MGRID cases, with full-basis controls and truly asymmetric geometry/coils where supported; compare independently reconverged roots and native fields.
+3. **Analytical-interior target with fitted exterior:** fit an admissible external source to an exact interior target, solve free boundary, and separately converge exterior representation and plasma response. This is an approximate coupled benchmark unless the entire matching problem has an independently established exact solution.
+
+Never populate an imaginary exact-reference entry for every Cartesian product of flags. A pure toroidal vacuum field is useful for field reconstruction, but does not select a unique nested plasma boundary. Its boundary degeneracy makes it a poor test of an invertible free-boundary adjoint.
+
+## 5. Equations and independent references
+
+### 5.1 Units, signs and spatial comparison
+
+Analytical code uses dimensionless coordinates and mu0=1. For dimensional length L and field B0,
+
+$$
+\mathbf r=L\bar{\mathbf r},\quad \mathbf B=B_0\bar{\mathbf B},\quad
+p=\frac{B_0^2}{\mu_0}\bar p,\quad
+\mathbf J=\frac{B_0}{\mu_0L}\bar\nabla\times\bar{\mathbf B},\quad
+\Phi_t=B_0L^2\bar\Phi_t.
+$$
+
+Record the numerical value of mu0 rather than mixing constants packages. The provided input generator uses `4*pi*1e-7`. Pressure is in Pa, current in A, flux in Wb, and positions in m in VMEX inputs. The dimensionless current obtained from an Ampere integral scales as B0 L / mu0.
+
+The provided surface parameter increases counterclockwise in an R-Z section. The exact fields in these test conventions have negative signed transform. The paper/supplement uses a clockwise convention giving positive transform. The existing DESC-to-VMEX interface also reverses poloidal orientation [R2, R3]. Validate signs by field components and oriented flux integrals, not by comparing absolute iota alone.
+
+On an R-Z loop increasing counterclockwise, the oriented normal is -e_phi. Thus the positive toroidal current is minus the loop integral of B dot dl divided by mu0. Toroidal flux is the positive-e_phi flux through that section. These conventions are explicitly tested in the reference code.
+
+Always evaluate reference and numerical vectors at identical Cartesian points. Do not compare mode coefficients until radial labels, angle gauges, NFP factors and normalization have been matched. Record whether a tensor stores component or derivative direction first. VMEX `gradB` has entries dB_i/dx_j, whereas its SIMSOPT-compatible `dB_by_dX` transposes those axes [R7].
+
+### 5.2 Integer-transform family and diagonal-stretch extension
+
+Let a,b,c>0 and define
+
+$$
+q=(x/a)^2+(y/b)^2,\qquad f=\sqrt{2q-q^2-4(z/c)^2},
+$$
+
+$$
+\mathbf B=\left(
+\frac{2zx/c-(a/b)fy}{q},
+\frac{2zy/c+(b/a)fx}{q},
+c(1-q)\right).
+$$
+
+Define
+
+$$
+u_a=-\frac{a^2-b^2}{4c^2},\qquad
+H_a=\frac{a^2+b^2}{2}-\frac{(a^2-b^2)^2}{8c^2},
+$$
+
+$$
+H=\frac{x^2+y^2+4z^2+B^2}{2},\qquad
+\psi=\frac{H-H_a}{2c^2},\qquad p=2c^2(\delta-\psi).
+$$
+
+Here `u_a` is the field-line-label center, not a radial variable. Require
+
+$$ |u_a|+\sqrt{\delta}<\frac12. $$
+
+The paper's displayed family has a=sqrt(1+epsilon), b=sqrt(1-epsilon), c=1. The pressure-boundary extension releases c. It is not obtained by stretching an old pressure boundary while holding its label center fixed.
+
+A global chart uses field-line labels u,v and parameter t:
+
+$$
+\ell=\sqrt{\frac{1+\sqrt{1-4(u^2+v^2)}}2},
+$$
+$$
+\mathbf r(u,v,t)=\left(
+ a\left[\ell\cos t+\frac{u\cos t+v\sin t}{\ell}\right],
+ b\left[\ell\sin t+\frac{v\cos t-u\sin t}{\ell}\right],
+ c[v\cos2t-u\sin2t]\right).
+$$
+
+Its Jacobian is -abc, B=partial_t r, and psi=(u-u_a)^2+v^2. Use the chart to cross-check the Cartesian label, vector field, closed-line winding, surface regularity and volume. The physical cylindrical angle is not generally t. `surface()` performs the exact integer-family conversion to physical phi.
+
+The extension follows from the axisymmetric seed's tension identity
+
+$$ (\mathbf B_0\cdot\nabla)\mathbf B_0=-D\mathbf r,\quad D=\mathrm{diag}(1,1,4). $$
+
+For constant A=diag(a,b,c), set B_A(r)=A B_0(A^{-1}r). Divergence is preserved and ADA^{-1}=D. The vector identity
+
+$$ (\nabla\times\mathbf B)\times\mathbf B=(\mathbf B\cdot\nabla)\mathbf B-\nabla(B^2/2) $$
+
+gives the pressure above. More generally, a constant linear deformation supplies a scalar tension potential only if ADA^{-1} is symmetric, equivalently [A^T A,D]=0. Arbitrary shear is not a legitimate MHD-solution generator. Orthogonal transformations preserve equilibrium but do not necessarily produce new intrinsic symmetry classes.
+
+Exact scalar targets are
+
+$$
+V=2\pi^2abc\delta,\quad \Phi_t=\pi abc\delta,\quad
+\langle B^2\rangle_V=H_a+c^2\delta,\quad
+\langle p\rangle_V=c^2\delta,\quad
+\beta_V=\frac{2c^2\delta}{H_a+c^2\delta}.
+$$
+
+Since s=Phi_t(psi)/Phi_t(delta)=psi/delta, the VMEX pressure is linear in normalized toroidal flux. The physical field is independent of the chosen outer label delta at fixed Cartesian position. This gives a nontrivial null test of the complete boundary/profile/flux sensitivity chain.
+
+For the original family write D0=1-epsilon^2/2+delta. Then
+
+$$
+\partial_\epsilon\beta_V=\frac{2\delta\epsilon}{D_0^2},\qquad
+\partial_\delta\beta_V=\frac{2(1-\epsilon^2/2)}{D_0^2}.
+$$
+
+At epsilon=0.5, delta=1/64, beta=2/57. Treat the additional stretch as a derivation to verify and compare with the literature, not an asserted priority claim.
+
+### 5.3 Sheared-transform family
+
+Use epsilon>=0, lambda>0, 0<k_b<1, delta=k_b^2/2, and S>asin(k_b). Set w=x+i y and
+
+$$
+K=\bar w\sqrt{1+\epsilon/\bar w^2},\quad
+\Xi=wK+\frac\pi2-S,
+$$
+$$
+B_x+iB_y=\frac{i e^{-i\lambda z}\sin\Xi}{2K},\qquad
+B_z=\frac{\mathrm{Re}(e^{-i\lambda z}\cos\Xi)}{\lambda},
+$$
+$$
+\psi=\frac{\sin^2(\lambda z)+(\lambda B_z)^2}{2},\qquad
+p=\frac{\delta-\psi}{\lambda^2}.
+$$
+
+Keep the prescribed square-root branch. Replacing K with a superficially equivalent principal square root of a different complex expression can change the field. Real/imaginary extraction makes ordinary complex-step differentiation inappropriate here. The supplied tests compare real central differences with JAX real-coordinate derivatives.
+
+The explicit surface chart in `analytic.py` follows [R1, R2]. Its auxiliary t is not cylindrical phi. Bisection in the supplied NumPy surface sampler is suitable for generating inputs, but is **not** the differentiable input map for P4. If g(t,a)=phi(t,a)-phi_target=0, differentiate using
+
+$$ \partial_a t=-\frac{\partial_a g}{\partial_t g}, $$
+
+with a certified nonzero denominator and unique branch. Implement a small custom derivative or use an existing implicit scalar-root primitive. Do not differentiate Boolean bisection decisions and call the resulting near-zero derivative correct. Test the reconstructed position and its derivative against independent physical-phi samples. Reject geometries that lose a single-valued cylindrical chart or monotone angle map.
+
+Let Q(k) be enclosed toroidal flux, A(k) the consistently oriented poloidal flux. Reference quadratures give iota=A'(k)/Q'(k) in the paper's orientation. `shear_flux_rates` provides Q'(k)/k and A'(k)/k, regular at k=0. Compute
+
+$$ s=Q(k)/Q(k_b),\qquad \psi(s)=k(s)^2/2. $$
+
+Never replace this with s=k^2/k_b^2. Fit pressure and current in s after inversion. For differentiable inversion use u=k^2 and mathcal Q(u,a)=Q(sqrt(u),a), so
+
+$$
+\left.\frac{\partial u}{\partial a}\right|_s=
+\frac{s\,dQ(k_b,a)/da-\partial_a\mathcal Q(u,a)}{\partial_u\mathcal Q(u,a)}.
+$$
+
+The total derivative of edge flux includes motion of k_b. This formulation avoids a spurious axis 0/0 from Q'(0)=0. A profile fit also has parameter dependence; use fixed nodes and degree within a derivative experiment, and differentiate the fit or its converged linear coefficients. Changing the degree is a discrete outer decision.
+
+Primary 3-D case A: epsilon=1.08, S=3, lambda=3.5, k_b=0.70. B and C are angular-resolution stress cases, not the first performance targets.
+
+At fixed epsilon,S,delta, the quadratures imply Q proportional to lambda^{-1}, so normalized toroidal flux and iota(s) are independent of lambda. At the same time V scales as lambda^{-1}, and p(s) as lambda^{-2}. Test
+
+$$
+\partial_\lambda\iota(s)=0,\quad
+\partial_\lambda V=-V/\lambda,\quad
+\partial_\lambda\Phi_t=-\Phi_t/\lambda,\quad
+\partial_\lambda p(s)=-2p(s)/\lambda.
+$$
+
+The iota test is scientifically meaningful in a **current-prescribed** solve with the analytically changing enclosed-current profile. Prescribing iota and recovering it is largely an input check.
+
+### 5.4 Exact up-down-asymmetric Solov'ev family
+
+Let U=R^2-R0^2, b,g>0 and |chi|<1. Define
+
+$$
+\psi=bU^2+gZ^2+2\chi\sqrt{bg}\,UZ,
+$$
+$$
+F^2(\psi)=F_0^2-4g\psi,\quad
+p=8b(\psi_a-\psi),\quad
+(B_R,B_\phi,B_Z)=\frac1R(\psi_Z,F,-\psi_R).
+$$
+
+All quantities here use mu0=1. The axisymmetric Grad-Shafranov operator satisfies
+
+$$
+\Delta^*\psi=\psi_{RR}-\psi_R/R+\psi_{ZZ}=8bR^2+2g
+=-R^2p'(\psi)-FF'(\psi).
+$$
+
+The UZ term is homogeneous under this operator. This is an elementary member of the Solov'ev solution space, not a claim of a new general Grad-Shafranov method [R11]. A symbolic test verifies the identity in the bundle. Nonzero chi produces genuine up-down asymmetry about the magnetic axis at Z=0; a vertical translation cannot eliminate the cross term.
+
+Explicit surfaces are
+
+$$
+U=\sqrt{\frac\psi b}\frac{\cos\theta}{\sqrt{1-\chi^2}},\qquad
+Z=\sqrt{\frac\psi g}\left(\sin\theta-
+\frac{\chi\cos\theta}{\sqrt{1-\chi^2}}\right),\quad
+R=\sqrt{R_0^2+U}.
+$$
+
+Require R0^2>sqrt(psi_a/[b(1-chi^2)]) and F0^2>4g psi_a. These ensure positive R and a regular nonzero toroidal field on the chosen domain.
+
+The independent scalar targets include
+
+$$
+V=\frac{\pi^2\psi_a}{\sqrt{bg}\sqrt{1-\chi^2}},
+$$
+$$
+\frac{d\Phi_t}{d\psi}=
+\frac{\pi\sqrt{F_0^2-4g\psi}}
+ {2\sqrt{bg}\sqrt{1-\chi^2}\sqrt{R_0^4-\psi/[b(1-\chi^2)]}},\qquad
+|\iota|=\frac{2\pi}{d\Phi_t/d\psi}.
+$$
+
+Again, generally s is not psi/psi_a. The bundle checks flux using a separate cross-section integral and volume using a boundary integral. For R0=1,b=1/4,g=1,F0=1,chi=0, the field agrees pointwise with the integer family's axisymmetric member. The chi=0.3 counterpart exercises nonzero LASYM coefficients without relying on that same field formula.
+
+### 5.5 Rigid-motion and scaling invariance
+
+For proper orthogonal Q and displacement d,
+
+$$ B'(r)=Q B(Q^T(r-d)),\qquad p'(r)=p(Q^T(r-d)). $$
+
+A toroidal rephasing and vertical translation preserve the simple cylindrical chart and are provided. Later add a small generic tilt/translation only after validating the toroidal graph, moving to NFP=1 as needed. These configurations retain hidden physical symmetries; label them accordingly. Do not claim generic intrinsically symmetry-broken 3-D exact equilibria merely because LASYM coefficients become nonzero.
+
+Field scaling B->a B, p->a^2 p, J->a J leaves geometry, beta and iota invariant if flux and current scale consistently. Length scaling changes volume, flux and current according to section 5.1. These supply additional value and sensitivity checks and detect normalization errors.
+
+### 5.6 Vacuum and mirror fixtures
+
+Use vacuum fixtures only in current-free regions that exclude their singular sources. Examples include G/R e_phi away from R=0, a displaced point dipole away from its source, analytic circular-coil on-axis fields, and gradients of harmonic scalar potentials. Derive all fields and derivative tensors independently of the implementation being tested.
+
+For an open axisymmetric mirror, an exact polynomial vacuum field is
+
+$$
+\Phi_m=B_0 z+\alpha\left(z^3/3-z(x^2+y^2)/2\right),\qquad B=\nabla\Phi_m,
+$$
+$$
+B_x=-\alpha xz,\quad B_y=-\alpha yz,\quad
+B_z=B_0+\alpha[z^2-(x^2+y^2)/2].
+$$
+
+Both curl and divergence vanish. The flux label is
+
+$$ \psi_m=\frac12(B_0+\alpha z^2)r^2-\frac\alpha8 r^4. $$
+
+Restrict the domain so B_z remains positive and the selected flux surfaces are regular. Add harmonic quadrupole terms only as additional exact **field** fixtures unless a matching nested open-surface construction is independently established. Finite-beta long-thin mirror formulas test an asymptotic model; separate truncation error in a/L from discretization error. Do not map toroidal Landreman solutions into the mirror lane by changing a geometry flag.
+
+## 6. Input construction, representation and error budget
+
+### Profile and boundary adapters
+
+The input adapter must supply the complete physical problem: boundary, pressure profile, total toroidal flux, and either iota(s) or enclosed toroidal current. The current `PCURR_TYPE='power_series'` interpretation uses `AC` as the shape of I'(s), with `CURTOR` setting total current [R3]. The generated inputs differentiate an independently fitted enclosed-current polynomial. Never copy an enclosed-current polynomial directly into derivative-profile coefficients.
+
+Test power-series and cubic-spline representations of the same resolved physical profiles. Confirm axis and edge values, integrated current, zero edge pressure, and profile derivative accuracy. Keep GAMMA=0 for prescribed-pressure benchmarks. Explicitly inspect SPRES_PED, BLOAT, pressure scale, flux orientation and profile normalization rather than inheriting unrelated settings from a demonstration deck. For nonuniform APHI tests, map every physical profile through the changed radial coordinate; merely reusing old coefficient arrays changes the problem.
+
+The input deck's Fourier mode truncation, angle-conversion error and pressure/current fit error must be converged independently of the equilibrium solve. A small geometry error alone does not bound magnetic-field error. Refine the input representation until its effect on every scored output is below one tenth of the selected output tolerance, then vary solver resolution.
+
+Use the exact boundary at physical phi. Preserve the appropriate LASYM partners and NFP. Check the orientation/Jacobian and fit on held-out angular nodes. Serialize and re-read inputs before solving, then verify that VMEX interpreted the intended physical profiles. The bundle's candidate inputs are not proof of the internal parser's sign conventions.
+
+### Projection before recovery
+
+Construct exact states in two ways where practical: (a) an independent geometry/field projection, and (b) flux-coordinate geometry plus the required lambda/flux functions. Check the resulting physical B, not only R and Z. Landreman's integer-family gauge can simplify lambda in an appropriate straight-field-line angle, but a generic interpolated geometric theta cannot be assigned lambda=0 without proof. The sheared family needs a nontrivial straight-field-line map or an equivalent field-consistent reconstruction.
+
+First score the exact projected state without iterating. This measures representation and diagnostic error. Then perturb its admissible state or start from a conventional initializer and solve the nonlinear problem. Report projection, warm/perturbed recovery and cold recovery separately. A fitted exact state that is never evolved is not a solver benchmark.
+
+Near the axis, represent regular Fourier amplitudes with their required powers of rho. Do not obtain rho^m behavior by dividing tiny noisy coefficients by rho^m at the axis. Test lambda's internal/external scaling, constrained m=1 combinations, full versus half radial meshes, and limiting axis values. Evaluate derivative convergence away from interpolation knots and at knots separately; a C2 interpolant does not provide an everywhere classically smooth third derivative.
+
+### Scoring
+
+For volume quadrature weights w_i>0, define RMS_v(q)=sqrt(sum w_i |q_i|^2 / sum w_i). Score at the same physical positions:
+
+$$
+E_B=\frac{\|B_h-B_e\|_{L^2}}{\|B_e\|_{L^2}},\quad
+E_J=\frac{\|J_h-J_e\|_{L^2}}{\|J_e\|_{L^2}},\quad
+F_h=J_h\times B_h-\nabla p_h.
+$$
+
+Report dimensional RMS_v(F_h), RMS_v(F_h)/(B0^2/(mu0 L)), and, for finite-pressure cases, RMS_v(F_h)/RMS_v(grad p_e). Also report maximum sampled error, pressure-gradient error, analytic pressure-surface-label error, axis displacement, energy, volume, iota and total current. Maxima over samples are sampled maxima, not rigorous sup-norm bounds.
+
+Use radial bins near-axis, bulk and edge, with the exact bin definitions in metadata. Do not hide a bad axis by silently excluding it. Use separate axis-limit checks when ordinary flux coordinates are singular. Samples used to validate a fit or polish must not be its training grid.
+
+The bounded pointwise diagnostic 2|F|/(|JxB|+|grad p|+floor) saturates near vacuum and cannot rank such cases. Do not quote it alone. In exact zero-current or zero-derivative tests, report absolute error against a declared global scale, not relative error divided by zero.
+
+### Initial acceptance targets, not claimed outcomes
+
+The first mild-case recovery targets are E_B<=1e-5, E_J<=1e-3, pressure-normalized force RMS<=1e-3, and resolved nonzero scalar quantities within 1e-5 where their conditioning permits. These are starting goals for the local study, not a guarantee that the current solver achieves them. Require at least three useful resolution levels and a demonstrated separation of boundary/profile/diagnostic error from solve error. Strongly shaped cases may initially fail these targets; record the failure instead of silently loosening the metric or removing the case.
+
+For reference identities on well-separated admissible points, use the existing 1e-11-scale dimensionless gates, independent real finite differences, symbolic identities and quadrature refinement. Roundoff-level sampled identity residuals do not imply roundoff-level solver accuracy.
+
+For nonzero equilibrium gradients, aim first for 1e-4 relative agreement on mild cases, with a finite-difference step-size interval and derivative convergence under spatial refinement. For null responses use absolute nondimensional error and its refinement trend. The final gradient target should be justified by a posteriori linear/nonlinear residual and conditioning estimates; a universal tolerance unrelated to the smallest response singular value is not meaningful.
+
+## 7. Phases and executable deliverables
+
+Follow dependencies. Do not begin a large optimization campaign before the relevant recovery and gradient gates pass.
+
+### P0. Environment, repository, source audit and inventory
+
+**Inputs:** this bundle; local terminal; owner GitHub authentication; available hardware and solver checkouts.
+
+1. Inspect the bundle, initialize the repository, verify identity and publish the plan with the explicit script. Record the repository URL and initial commit in the logbook. Do not confuse publishing the scaffold with finishing the study.
+2. Clone or locate baseline VMEX, Landreman supplement, SOLVAX and booz_xform_jax outside the benchmark repository. Resolve all used pins. Record clean/dirty status and any patch hashes. Install a separate benchmark environment and write exact dependency, Python, compiler, BLAS, OS, CPU/GPU, thread and device metadata.
+3. Run the supplied reference tests, scripts and figures. Compare measured output with the handoff records. Variations at roundoff are acceptable; do not use literal platform-string or timing equality as a physics test.
+4. Execute the inventory tool. Complete the semantic source/test ledger across all VMEX modules and the relevant adjacent import paths. Review current main changes and PRs only to identify separately pinned comparisons. Do not accept source comments as evidence without the corresponding test/result.
+5. Probe actual public APIs and their transformation support. Fix the smoke drivers only as necessary, with a small tested compatibility change, not speculative wrappers for every old version.
+6. Add `results/status.json` from the phase state table and enumerate real supported, limited and unavailable capabilities. Keep unsupported physics such as anisotropic/ANIMEC outside the scalar-pressure claim.
+
+**Exit:** reproducible reference suite; pinned baseline; authenticated public repo; complete scope-qualified review ledger; no dependency ambiguity. If the runtime cannot run a particular external solver or device, record that limitation and continue the independent phases.
+
+### P1. Analytical oracles, domains and input adapters
+
+**Already provided:** `analytic.py`, `verify_reference.py`, `reference_derivatives.py`, `build_inputs.py`, and the reference tests.
+
+Complete the following before interpreting VMEX results:
+
+1. Independently verify both original fields and the stretch and Solov'ev additions. Include pressure-surface tangency, divergence, force, Jacobian, nonzero-field/domain margins, oriented flux and current, volume and averages. Use independent algebra/integrals rather than making the tested implementation its own reference.
+2. Verify the sheared physical-phi inversion globally on the sampled domain: residual, branch uniqueness, positive angular derivative and graph validity. Explicitly inspect strong shaping near branch/domain boundaries. Add bad-domain tests.
+3. Test the complete signed mapping into VMEX's boundary/profile representation. Compare parser-evaluated profiles with independent arrays. Validate both NCURR closures. The input generator's real-coordinate sign choice is only accepted after this test.
+4. Resolve sheared B/C Fourier truncation; record the smallest useful mode ladders and input-fit floors. Do not run a high-radial-resolution equilibrium with an unresolved low-angular-resolution boundary and call the result a radial accuracy limit.
+5. Add dense independent reference arrays only when needed for cross-process interfaces. Keep their generators and hashes. The analytical evaluator, not an imported DESC HDF5 file, remains the principal truth.
+
+**Exit:** oracles and complete input problem certified to tighter accuracy than the first solver targets. Scalar means and flux inversion agree with independent quadratures. Correct sign is established using physical vectors, not inferred from a plot.
+
+### P2. Representation, fields and diagnostic operators without nonlinear solving
+
+**Implement:** `benchmarks/projection.py` and the smallest shared VMEX adapter needed by subsequent drivers.
+
+1. Project the exact state into VMEX's spectral and high-order spline representations. Score native field, Cartesian current and force without nonlinear recovery. Use `HighOrderEquilibriumState`, its field evaluator and force certification where appropriate, while maintaining a separate reference implementation.
+2. Exercise all six R/Z/lambda sine/cosine families through LASYM controls, exact reframing and the asymmetric Solov'ev state. Test NFP=1 versus a physically equivalent NFP representation where legal. Include mode-table, phase and axis normalization checks.
+3. Test `VmecInteriorField`: B, |B|, gradB, Hessian B and third spatial derivative on representative interior points. Compare native and WOUT-created objects, seeded and unseeded coordinate inversion, legitimate out-of-domain behavior, axis limits and radial-knot behavior. Record tensor orientation and dimensions. Do not suppress warning/fallback paths.
+4. Verify force/current calculations from independent Cartesian derivatives and from native curvilinear operators. Check divB, J dot grad psi, B dot grad psi, and pressure gradients. Scalar energy/volume integrals must use consistent physical Jacobians.
+5. Test radial/angle reconstruction, Fourier cutoffs, spline degree and radial knot count independently. Never use an underdetermined high-order fit to invent smooth curvature. Establish the oracle's own error floor before using it to judge a solver.
+6. Round-trip INDATA/JSON, native state, WOUT and Boozer files. Verify metadata, dimensions, asymmetry flags, NFP, full/half meshes, profile units and field reconstruction throughout the volume. A boundary-only round trip misses interior scaling errors.
+
+**Exit:** quantified projection and field-derivative error curves; no ambiguity about which interpolation path was scored. Higher spatial derivatives may have a narrower certified region/resolution than B itself.
+
+### P3. Nonlinear fixed-boundary recovery
+
+**Starting driver:** `benchmarks/run_vmex.py`; **implement:** a modest recovery/convergence driver around the shared adapter and `score_samples.py`.
+
+1. Begin with the symmetric axisymmetric case, then asymmetric Solov'ev, integer 3-D, and sheared A. Use both prescribed current and prescribed transform after P1.
+2. Run cold initialization, exact-projection initialization and small admissible perturbations of the projected state. Distinguish failure to recover an equilibrium from a field/coordinate error. An exact equilibrium need not attract the chosen energy-relaxation algorithm; track instability or branch problems rather than declaring the analytic field invalid.
+3. Run radial ladders such as NS=17,33,65,129,257 while holding boundary/Fourier/diagnostic errors small; then angular ladders at converged radius. Select counts from measured costs and accuracy, not a universal requirement to run every large 3-D combination.
+4. Test single-grid versus multigrid, hot restart at equal and changed resolution, repeated deterministic runs, and perturbations of pressure/current/flux. Ensure interpolated states remain admissible. A restart trajectory may differ while the converged physical state agrees.
+5. Compare CLI and Python routes, cold/warm executable reuse, and native versus WOUT analysis. Existing VMEC2000 and VMEC++ runs are implementation baselines, not the exact reference.
+6. Use the provided DESC scripts only in a separate environment and with independently resolved native DESC states. Compare fields at common physical points, matched inputs, identical norms and error regions. Do not rank native solvers from a table of differently interpolated WOUT files [R12].
+7. Add B/C stress cases, smaller nonzero pressure gradients, more extreme admissible stretch, and a reduced safe domain-margin case. Do not approach analytic singularities inadvertently.
+
+**Exit:** every mandatory mild fixed-boundary matrix cell has a resolved recovery record or a specific reproducible failure. At least one axisymmetric LASYM=T and one 3-D LASYM=T recovery are genuine tests, not only zero extra coefficients. The README shows physical errors and resolution, not just FSQ and iteration counts.
+
+### P4. Equilibrium derivatives and optimization infrastructure
+
+**Starting driver:** `run_gradient_smoke.py` checks one discrete scalar response. It is not the final analytical-family derivative test. **Implement:** `benchmarks/equilibrium_derivatives.py` with shared input-map functions.
+
+Let a parameterize the analytical family and P(a) include boundary, pressure/current profiles and total flux. For the actual constrained discrete residual,
+
+$$ F_h(x_h,P(a))=0,\qquad F_x x_a=-F_P P_a. $$
+
+For a scalar objective Q,
+
+$$ F_x^T\lambda=Q_x^T,\qquad dQ/da=Q_a-\lambda^TF_P P_a. $$
+
+Audit the exact DOF mask, gauge, anchored root and preconditioning. At a root F=M f with nonsingular M gives the same response as f=0; off root, the extra (dM)f term is controlled by the actual raw residual, not by casually identifying FTOL with its norm.
+
+Required experiments:
+
+1. **Complete family tangent.** Differentiate boundary, flux, pressure/current, surface-label inversion, physical-angle inversion and profile-fit coefficients together. Hold static basis, quadrature plans, masks and branch conventions fixed during a local derivative check. Compare integrated beta/energy/volume and pointwise physical fields with independent analytical derivatives.
+2. **Eulerian null.** For the integer family, partial_delta B at fixed physical position is zero. In a moving computational chart subtract the convective term `(grad B) r_delta` from the material derivative. Do not compare the two derivatives without this correction.
+3. **Current-prescribed shear null.** Verify partial_lambda iota(s)=0 for sheared A with NCURR=1 and the changing analytic current profile, boundary, pressure and flux. Also check the nonzero pressure, volume and flux scalings.
+4. **Nonzero responses.** Include epsilon/stretch derivatives of beta, a pressure/current response, one actual physical-field component, and an asymmetric boundary degree of freedom. Volume determined solely by a fixed input boundary is useful but not sufficient to validate the equilibrium response.
+5. **Discrete tangent and transpose.** Compare small assembled residual Jacobians with JVP/VJP products; test `<u,F_x v>=<F_x^T u,v>`. Solve the tangent equation separately where a public JVP of the nonlinear wrapper does not exist. Compare direct small dense/SciPy solves with SOLVAX block and Krylov paths, including multiple right-hand sides and factor reuse. Certify the unpreconditioned operator residual and actual conditioning.
+6. **Three-way gradient comparison.** Compare implicit response, frozen-path finite differences, and independently anchored/reconverged physical perturbations. Use multiple h and multiple spatial resolutions. A plateau in h can be solver noise, and a gap between cold and frozen paths can reveal gauge dependence. Do not substitute a frozen consistency test for the continuum target.
+7. **Taylor tests.** Plot |Q(a+h v)-Q(a)-h g dot v| versus h. Seek a second-order interval before numerical floors. For centered finite differences seek the corresponding accuracy interval. Near-zero derivatives require absolute scaled errors. Keep the same physical objective and sampling convention for all three evaluations.
+8. **Higher derivatives.** Probe HVP/Hessian support rather than assuming it. Compare analytic-family Hessians and finite differences of certified first derivatives where feasible. Distinguish a Hessian of an explicit reference, a derivative of a discrete solve, and a Gauss-Newton approximation. Unsupported transformations are reported, not emulated silently by a different algorithm.
+9. **Failure paths and caches.** Test anchor rejection, insufficient nonlinear convergence, insufficient adjoint convergence, singular/near-singular charts, finite/nonfinite penalties, updated parameters with reused executable/factors, and cold/warm result invariance. Benchmark certification uses strict error policies, not best-effort adjoints.
+
+**Exit:** at least one nontrivial continuum sensitivity and one nontrivial null response pass in each mandatory geometry class, with the full chain and correct physical location. Report source, nonlinear and adjoint residuals, conditioning evidence and derivative-order limitations alongside errors.
+
+### P5. Boozer, bounce, geometry and equilibrium diagnostics
+
+**Implement:** `benchmarks/diagnostics.py`, reusing the reference evaluator and common samples. Avoid treating a downstream computation as analytically solved just because B is exact.
+
+* **Boozer transform:** reconstruct B and geometry in physical space; compare fluxes, I/G conventions, Jacobian, field-line straightness, surface averages and spectra at matched gauges. The axisymmetric aligned case has no genuine n!=0 |B| modes. Generic Landreman cases are not assumed quasisymmetric or quasi-isodynamic. Compare booz_xform_jax with the independently installed reference transform. Test file and live-state routes, LASYM coefficients, resolution changes and parameter derivatives. For rational iota, handle gauge/nullspace choices explicitly; do not infer nonexistence of Boozer coordinates merely from rational transform.
+* **Field lines:** integrate the explicit B and the numerical B with independent ODE control. Compare pressure-label conservation and winding. Integer-family lines close; closure on one line is not proof that the field is correct. In the sheared family compare iota from flux derivatives, line tracing and current-prescribed output. Keep toroidal winding unwrapped and distinguish t from physical phi.
+* **Bounce action:** VMEX's kernel uses `J=2 integral sqrt(1-pitch B) dl`, not the dimensional mechanical action without its mass/speed factor [R8]. Compare with independently located bounce points and adaptive quadrature on the exact field. Test multiple wells, finite traces, well masks, overflow, turning-point approach and gradients only inside a fixed smooth well topology. Distinguish exact `kernel_floor=None` results from a smoothed optimization surrogate, and refine the floor separately. A constant transform does not make a field omnigenous.
+* **Geometry and stability:** compare metric factors, curvature, grad-B drift, magnetic shear, magnetic-well measures, j dot B, surface averages, and pressure/current profile derivatives against exact geometry. For Mercier, resistive interchange and ballooning quantities, use an independent implementation and a matched model. Near zero shear or a vanishing denominator, test limits/status explicitly. Force balance alone proves neither local nor global stability. A coefficient-space residual Jacobian's smallest singular value is not an MHD stability eigenvalue.
+* **Bootstrap and transport-facing data:** validate the geometry and normalization, then compare a separately prescribed kinetic problem with an independent solver where appropriate. The MHD total-current profile is not generally equal to bootstrap current. Specify density, temperature, species, collisions and electric field separately. Do not impose unsupported QS/large-aspect-ratio bootstrap formulas on a generic exact 3-D field and label the mismatch an equilibrium error.
+* **NEO_JAX:** compare epsilon_eff with the reference implementation at declared nonrational/sheared surfaces and refine angular, pitch, line-length and well resolution. Record whether outputs are epsilon_eff or epsilon_eff^(3/2). A globally rational integer-transform family is a stress test of closure/sampling assumptions, not an automatic production transport benchmark based on surface ergodicity.
+
+**Exit:** each advertised diagnostic has either an independent target, a clearly scoped consistency/integration test, a reproducible limitation, or an explicit not-applicable status. No all-green summary obtained from skipped optional packages.
+
+### P6. Free boundary, exterior fields and coil sensitivities
+
+**Implement:** `benchmarks/free_boundary.py` and `benchmarks/exterior.py` only after their common fixtures and scorer exist. Keep three evidence tiers separate as defined in section 4.
+
+The vacuum region must satisfy
+
+$$ \nabla\times B_v=0,\qquad \nabla\cdot B_v=0. $$
+
+At a stationary flux boundary, require B dot n=0 on each side and total-pressure balance,
+
+$$ p_p+\frac{B_p^2}{2\mu_0}=p_v+\frac{B_v^2}{2\mu_0}. $$
+
+A tangential-field jump corresponds to a sheet current
+
+$$ K_s=\frac{n\times(B_v-B_p)}{\mu_0}. $$
+
+Specify whether sheet currents are allowed, represented and measured. Matching normal field alone does not enforce pressure balance or remove a tangential jump. The exact interior formula generally has nonzero curl outside its chosen boundary and is not a valid vacuum extension. Virtual casing separates fields by **source-current location**, not simply by whether a target point is inside or outside the surface [R9].
+
+**P6a: operator and source tests.**
+
+1. Test NESTOR's vacuum boundary integral with analytic harmonic/dipole fields on aligned and asymmetric surfaces. Include nontrivial toroidal circulation and all normalization factors. Gauge and harmonic-flux constraints must be imposed explicitly; a Neumann problem is not fixed by a scalar potential constant alone in a multiply connected domain.
+2. Test coil Biot-Savart values and derivatives against a circular-loop on-axis formula and an independent off-axis quadrature. Include current linearity and shape perturbations, not only reused samples from the same field class.
+3. Compare analytic field callbacks, direct-coil callbacks and MGRID interpolation. Independently refine the MGRID R/phi/Z sampling, include periodic wrapping and boundaries, and verify named current-group scaling. Do not double-multiply currents when importing an already scaled table.
+4. Test virtual-casing normal fields and exterior B, gradB, Hessian and third derivative against independent volume/surface integrals or an independently converged reference implementation. Refine source quadrature and target distance separately. Sample distances as fractions of minor radius and source-panel size. Compare direct and graded quadrature; no near-surface accuracy claim without a target-distance study.
+5. Verify interior/exterior limits, jump relations and signs. Freeze the numerical precision/patch plan for a derivative, then check that recomputing an adequate plan gives the same converged physical result. A changing adaptive plan is not a differentiable physical degree of freedom.
+
+**P6b: coupled root recovery.**
+
+1. Reproduce one axisymmetric finite-beta case and one 3-D finite-beta case from VMEX's verified input/coil assets. Preserve hashes and exact current groups; do not redistribute large or unlicensed assets unnecessarily.
+2. Run symmetric cases with LASYM=F and T. Add a genuinely asymmetric axisymmetric boundary/source case where applicable, and a truly asymmetric 3-D coil/current perturbation with NFP reduced as needed. Use independent numerical reference roots for those coupled cases.
+3. Test both MGRID and direct coils, multigrid and hot restart, and pressure/current/flux changes. Report B.n, stress balance, field/current error, displaced boundary and nonlinear coupled residual, not only plasma FSQ.
+4. Compare the ordinary forward state with the Newton-anchored coupled state. Verify that the objective and derivative read the same state. Exercise anchor status 3, finite restart budgets and deterministic cold retries. Use `adjoint_fail='error'` and finite `refine_tol` for accepted gradients. Best-effort and skipped-anchor runs may be recorded only as diagnostics.
+5. Compare `coupled_gcrot`, `boundary_schur` and `edge_response` using actual available APIs. Test transpose duality, exact coupled residual certificates and gradients against independently reconverged current/coil-shape perturbations over a step-size interval. A fixed-boundary virtual-casing objective derivative is not this coupled derivative.
+6. Measure peak memory and compile time before attempting larger matrices or GPU placement. Public forward-mode derivatives remain a capability probe; a separate tangent linear solve is acceptable when correctly identified.
+
+**P6c: exact-interior target and exterior design.**
+
+1. Supply the exact surface and boundary field to an independent source-separation calculation. Fit an external coil/current-potential representation to the required exterior contribution, with explicit circulation/current constraints.
+2. At fixed target surface, report full boundary field/stress errors as well as B.n. Use constraints on source distance, current magnitude and surface regularity so a nearly singular source is not mistaken for an improvement.
+3. Independently increase coil/current-potential resolution, vacuum quadrature and plasma resolution. Re-solve free boundary, allowing the surface and axis to move. Compare the recovered interior with the exact target at common physical points only in their common admissible domain; report any boundary mismatch separately.
+4. Separate exterior fit error, NESTOR/MGRID error, nonlinear error and plasma discretization error. Without an exact matching exterior this is not an exact complete free-boundary equilibrium benchmark.
+5. Extend sensitivities through source fitting only after its own optimality conditions are certified. Holding a fitted coil set fixed and differentiating a geometry-dependent coil fit are different questions and must have separate experiment labels.
+
+**Exit:** exact vacuum/operator tests, independently validated coupled axisymmetric and 3-D cases, strict reverse derivative evidence, and a documented outcome for the exact-interior matching experiment. Failure to realize a chosen exact interior with the chosen coil class is a physical/design result, not grounds to fabricate a passing exact free-boundary cell.
+
+### P7. High-order polishing and stationary-response checks
+
+**Implement:** `benchmarks/polishing.py`; reuse the native projection and scorer.
+
+1. Compare unpolished and polished states in the same continuous representation, on the same held-out quadrature and with the same boundary/profiles/flux. Separately measure WOUT export/reconstruction effects at a fixed export mesh.
+2. Begin with symmetric and asymmetric Solov'ev cases. Then attempt the mild integer 3-D and sheared A cases within measured time/memory budgets. Respect the driver's automatic decline policy; do not turn on an hours-long solve accidentally or call a declined case a success.
+3. Record physical force, exact field/current error, norm of the residual, stationarity norm, Newton/Krylov certificates, rank/conditioning and geometry/domain margins. Better force does not automatically mean better field or more accurate sensitivity.
+4. If the polish minimizes 1/2 ||r(x,a)||^2, its defining stationarity equation is G=J^T r=0. Its exact x derivative is
+
+$$ G_x=J^TJ+\sum_i r_i\nabla_x^2 r_i. $$
+
+Derivatives of the least-squares stationary state must use this operator, or explicitly bound the error made by neglecting the second term. Gauss-Newton is a useful optimization approximation, not an exact stationary derivative at a nonzero residual by definition.
+
+5. Repeat the P4 gradient tests for accepted polished states. Treat gauge choices, overdetermined residuals and branch selection explicitly. Compare the earlier square-root/homotopy route only as a separately labelled diagnostic.
+
+**Exit:** at least an accurate axisymmetric improvement or a documented counterexample; evidence for any 3-D improvement must include full field and derivative checks. Do not promote a universal 3-D polish claim from one favorable plot.
+
+### P8. Optimization and extension of the analytical work
+
+**Implement:** `benchmarks/optimize_family.py`, followed by `benchmarks/continue_transverse.py`. Add a coil optimization driver only after P6. These are studies with testable questions, not promises of a better reactor configuration.
+
+#### Study A: exact-family parameter optimization
+
+Optimize explicit fields/geometry/quadratures directly. Re-solving MHD at every step is unnecessary within an exact family. Compare direct gradients with the verified VMEX chain at selected points, and use VMEX for diagnostics or departures from the family.
+
+Use the integer/stretch parameters or epsilon,S,lambda,delta of the sheared family. Remove pure field and length rescalings from the search by fixing volume and a field scale, or enforce equivalent normalization constraints. Set edge pressure to zero. Fix or bound aspect ratio, elongation, current and distance to the analytical singular domain. Impose a nonaxisymmetry floor for a genuinely 3-D search so an optimizer cannot win by returning to the axisymmetric limit. Parameterize domain constraints smoothly inside one branch; an absolute-value cusp at the axisymmetric point is not a useful gradient test.
+
+Start with a transparent smooth objective such as a declared combination of field-strength variation, normalized current concentration, and target beta/shape constraints. For example,
+
+$$
+Q=w_B\frac{\langle(B-\langle B\rangle)^2\rangle}{\langle B\rangle^2}
+ +w_J\frac{L^2\langle J^2\rangle}{\langle B^2\rangle}
+ +\sum_k w_k c_k(a)^2,
+$$
+
+in mu0=1 units, with every average, weight and constraint stated. This objective is not asserted to equal confinement quality. Add validated magnetic-well, bounce-action, ripple or stability measures one at a time. Report the tradeoff curve rather than hiding opposing trends in a single weighted sum.
+
+Use the sheared family's lambda direction to ask how stability/confinement diagnostics change while the transform profile is unchanged. Include both moderate and high-beta members only where representation and model assumptions remain valid. A higher beta reached by changing the additive pressure constant is not a meaningful optimization result; it is excluded by the zero-edge-pressure condition.
+
+Run a modest set of physically distinct initial parameters, certify any inner solves, compare AD with finite differences at representative iterates, and validate the final parameters on denser independent quadratures. Report all starts and constrained failures. Never claim global optimality from a local gradient run.
+
+#### Study B: exact-family tangent versus transverse response
+
+Write P(a,eta)=P_exact(a)+Delta P(eta), where eta releases a small set of boundary/profile degrees of freedom not generated by the exact family. Identify tangent directions in a consistent, scaled, gauge-controlled representation. Orthogonalize the chosen transverse directions against that span for diagnostic clarity; this is not a coordinate-invariant mathematical definition of the full solution manifold.
+
+Current continuity, with
+
+$$ J=\sigma B+\frac{B\times\nabla p}{B^2}, $$
+
+implies
+
+$$ B\cdot\nabla\sigma=-\nabla\cdot\left(\frac{B\times\nabla p}{B^2}\right)=S. $$
+
+On a closed field line, a necessary compatibility condition is
+
+$$ \oint \frac{S}{|B|}\,dl=0. $$
+
+For a near-rational Fourier mode, resonant denominators involve m*iota-n*NFP in a straight-field-line convention. Exact-family tangent changes preserve the exact compatibility identities. Generic perturbations need not preserve the same cancellations.
+
+Measure current concentration, continuous force error, resolution dependence, gauge-constrained residual singular values, tangent norm and resonant source integrals as small eta is continued in both directions. Compare continuation at decreasing eta and increasing spatial resolution. Do not interpret an isolated small singular value as a physical MHD instability, nor a smooth finite-resolution nested-surface solution as proof of a smooth continuum equilibrium. The closed-line compatibility condition is necessary, not sufficient.
+
+The desired result is an evidence-based description of which directions are well conditioned and which are sensitive. A regular nearby family or a reproducible loss of regularity can both be informative outcomes. Do not prescribe the conclusion before computing it.
+
+#### Study C: physical boundary optimization outside the exact family
+
+Starting from a verified sheared reference, release a small, documented set of boundary coefficients with fixed pressure/current/flux choices. Compare an implicit-gradient optimizer with a central-difference baseline at the same tolerances, objective, parameter scaling and evaluation budget. Keep geometric admissibility, normalization and nontrivial physical constraints. Use actual held-out force/field checks as acceptance criteria, not only a decreasing optimizer loss.
+
+Distinguish training-resolution progress from final-resolution improvement. Re-solve at higher resolution, restart from more than one admissible state and compare independent physical diagnostics. Reject improvements that disappear under refinement. Intrinsically asymmetric 3-D numerical configurations belong here and in Study B, not in the exact-reference table.
+
+#### Study D: exterior/source optimization
+
+After P6, optimize currents or a modest coil shape set with source-distance and current constraints. Certify any inner field fit and its differentiability. First test the fixed-boundary source objective, then the coupled free-boundary objective. The two are not interchangeable. Track boundary displacement, normal field, stress balance and interior accuracy after re-solving.
+
+**Exit for P8:** reproducible objective/constraint definitions, gradients checked at multiple iterates, complete histories, independent final verification, and a documented scientific outcome. A flat tradeoff or failed coil realization is acceptable evidence if the failure is resolved and explained; an unsupported success claim is not.
+
+### P9. Adjacent-code and open-mirror coverage
+
+Use these optional integrations to measure how equilibrium error propagates, not to turn the benchmark into a second kinetic-code development project.
+
+| Integration | Required useful check | What it does not establish |
+|---|---|---|
+| SOLVAX | Residual/JVP/VJP factor tests; dense independent solves; factor reuse; true residual and response accuracy | Every solver or truncation mode in SOLVAX is validated by VMEX. |
+| booz_xform_jax | Physical reconstruction, independent transform, LASYM, NFP, differentiable spectra | Generic exact field is QS/QI or all rational gauges are unique. |
+| virtual_casing_jax | Independent source decomposition, target-distance convergence, fixed-plan derivatives | A free-boundary coil solution exists for every exact interior. |
+| ESSOS | Coil kernels, field handoff, tracing, orbit invariants and integration refinement | Guiding-center magnetic moment is an exact invariant of full particle orbits. |
+| NEO_JAX | Geometry and ripple quadrature on suitable surfaces; independent reference and derivative checks | Exact equilibrium gives an exact transport coefficient without solving transport. |
+| GKX | Metric, curvature and drift data from exact geometry; optional certified isolated linear eigenvalue response | Exact MHD implies an analytically known gyrokinetic growth rate or heat flux. |
+| DKX | Geometry/normalization handoff, a prescribed kinetic case, conservation and matched SFINCS comparison | MHD total current equals bootstrap current or fixes an ambipolar electric field. |
+| pyQSC_JAX PR 2 | Geometric axis/field-jet checks and appropriate asymptotic limits on compatible cases | A QS near-axis ansatz can represent arbitrary non-QS Landreman equilibria exactly. |
+| VMEX mirror lane | Exact vacuum polynomial field, open-surface flux tests, separate paraxial finite-beta checks, mirror adjoint | Toroidal exact equilibria verify the open topology or high-beta mirror closure. |
+
+For trajectories, conserve energy in a static magnetic field and use the correct invariant for the chosen full-orbit or guiding-center model. In an axisymmetric field, compare canonical toroidal momentum with a consistent vector potential/gauge. Separate orbit-step error, guiding-center ordering error and equilibrium interpolation error. Near loss boundaries or bounce topology changes, an indicator-valued loss fraction is not a smooth objective; use a stated surrogate and check convergence back to the physical diagnostic.
+
+For GKX eigenvalue derivatives, require an isolated converged eigenpair, an original-operator residual, correctly normalized left/right eigenvectors and branch tracking. At a crossing, do not claim a unique ordinary derivative. For DKX ambipolar roots, a near-zero derivative of the ambipolarity function can make the root response ill conditioned; distinguish branch continuation from picking a different root at each trial.
+
+Near-axis comparisons must separate expansion truncation from numerical error by a radius ladder at fixed expansion order. Do not expand a force-balanced finite-radius field into a restricted symmetry ansatz without verifying compatibility. The draft branch is optional and must not block the primary toroidal benchmark.
+
+**Exit:** one small, well-defined test per available relevant integration, with imported package versions and actual executed counts. Record missing hardware/packages as unavailable. Unrelated PIC, materials, relativistic or transport-evolution repositories are outside this equilibrium benchmark unless a concrete shared operator supplies a justified test.
+
+### P10. Performance, figures, README and final handoff
+
+Measure performance only after accuracy is established. Include input preparation, nonlinear solve, root anchor, field reconstruction, Boozer transform, scalar gradient/Jacobian, export and final verification as separate stages. Also report complete end-to-end time. GPU timings must synchronize results; warm timing must not omit later phases. Cold compilation uses an isolated benchmark cache, never deletion of the user's global cache.
+
+For representative workloads, record cold process time, warm same-input time, warm new-parameter time, peak host resident memory and device memory if measurable. Use repetitions and show medians plus spread. The first measurement may include compilation; record this rather than averaging it invisibly with warm runs. Measure crossover with resolution and parameter/output count; never promise a GPU win or order-of-magnitude speedup in advance.
+
+For matched solver comparisons, compare time to a stated physical error or gradient error, not just equal NS/MPOL/NTOR or nominal FTOL. Include failed or out-of-budget runs. Source generation, external quadrature and analytical-reference cost may be reported separately, but not silently removed from a claimed end-to-end workflow.
+
+Produce figures from stored numerical arrays and a manifest tying each image to inputs, commit, metric and generator. Re-run from a clean environment and inspect each rendered image. Labels must state dimensions, normalization, physical region and whether the data are analytical, projected, solved, or numerical-reference values. Use equal physical scales for geometric plots. Avoid interpolated curves that disguise sparse data or unmeasured resolutions.
+
+Finish the README with the main verified outcomes and exact run commands. Keep complete derivations and the full test matrix here or in a short model note. Link failed/limited cases rather than suppressing them. Do not write adjectives such as "fully validated" unless the completed, scope-specific matrix supports them. Do not present a projected exact field as a solved VMEX result.
+
+## 8. Figure plan and provenance contract
+
+Each row is a scientific figure, not a compulsory multi-panel dashboard. Separate plots are preferable when scales or evidence classes differ.
+
+| ID | Figure | Required data | Principal question |
+|---|---|---|---|
+| F01 | Exact surfaces and cross sections, including asymmetric Solov'ev and reframed 3-D case | Reference parameters and Cartesian geometry | Which physical cases and symmetry classes are actually tested? |
+| F02 | Boundary/profile representation error under independent refinement | Held-out boundary samples; pressure/current/flux errors | Is input conversion limiting the benchmark? |
+| F03 | B recovery versus radial and angular resolution | Native common-point field errors | Does the nonlinear solution approach the exact field? |
+| F04 | Current and force errors, including radial bins | J, grad p, volume weights, dimensional force | Does small discrete force correspond to physical force accuracy? |
+| F05 | Spatial derivative order 0-3 and inversion error | Tensor errors, interpolation path, knot/axis masks | How much accuracy survives differentiation and field lookup? |
+| F06 | Current-prescribed iota and profile recovery | Signed iota(s), enclosed I(s), exact flux mapping | Does VMEX predict, rather than merely impose, the transform? |
+| F07 | Gradient/Taylor and finite-difference step studies | Objective, complete parameter direction, root/adjoint certificates | Is there a resolved derivative interval and continuum convergence? |
+| F08 | Null-response convergence | Eulerian delta field response; current-prescribed lambda iota response | Are required cancellations recovered? |
+| F09 | Boozer and bounce reconstruction errors | Physical reconstruction, spectra/gauge, independent well quadratures | Do postprocessing and derivatives preserve the exact physics? |
+| F10 | Vacuum/MGRID/virtual-casing error versus grid and target distance | Source plans, target distance, derivatives and independent integrals | Are exterior numerical and near-surface errors controlled? |
+| F11 | Coupled free-boundary boundary/stress and gradient errors | Anchored root, displaced surface, full field/stress, FD intervals | Are free-boundary values and derivatives of the same physical problem? |
+| F12 | Polishing before/after on identical representation and quadrature | Force, field/current, stationarity and derivatives | Does polishing improve what matters, and where? |
+| F13 | Exact-family optimization tradeoffs and histories | All starts, constraints, direct and VMEX checks | What changes are available within an exact solution space? |
+| F14 | Tangent versus transverse response and resonant forcing | Resolution/amplitude ladders, source integrals, scaled Jacobian diagnostics | Which directions remain regular and well conditioned? |
+| F15 | Boundary/coil optimization validation | Training and held-out metrics, costs and physical constraints | Does optimization improve the resolved problem? |
+| F16 | Time and memory to physical accuracy | Per-stage cold/warm measurements and errors | What is the computational cost at comparable fidelity? |
+| F17 | Capability/evidence matrix | Completed statuses, oracles and unavailable cases | What has and has not been tested? |
+
+The existing figures are reference-only illustrations and input-fit measurements. They are not placeholders labelled as completed F03-F16. Generate those only after the corresponding experiments exist.
+
+## 9. Result schema, budgets and acceptance
+
+For each run store a small JSON record with:
+
+* unique run and case IDs; parent run for continuation/restart; evidence class; status; exact command and inputs;
+* Git SHAs and dirty/patch hashes for benchmark and all imported source packages; package versions and interpreter/hardware metadata;
+* units, mu0, L and B0; coordinate/orientation conventions; boundary/profiles/current/flux hash; symmetry/NFP and actual degrees of freedom;
+* solver, vacuum, boundary-fit, profile-fit and scoring resolutions separately; tolerances, quadrature plans and derivative method;
+* nonlinear status and residuals; anchor status/residual; linear status and unpreconditioned residual; gauges/constraints and branch evidence;
+* physical errors, scalar outputs, error regions and normalization; timings and memory; all failure/skip reasons;
+* paths and SHA256 hashes of numerical arrays needed to regenerate reported figures.
+
+Large WOUTs, dense arrays, traces and movies can be checksummed release assets rather than Git history. Keep small summary JSON/CSV and the scripts in Git. A GitHub release asset upload must also use the owner's account, not a bot. Preserve enough representative state data to reproduce source-error decompositions without rerunning every expensive solve.
+
+Before a large run, measure one small rung and estimate peak memory from actual arrays and compilation behavior. Set and record a local time/memory budget. Stop safely on budget exhaustion, save available diagnostics, and mark the case blocked or failed. Do not let a solver silently continue indefinitely. An agent restart must not repeat already completed expensive measurements without a reason recorded in the logbook.
+
+Use strict failures for invalid domains, nonfinite samples, wrong signs, unsupported flags, unresolved reference calculations and uncertified derivatives. Do not use `nan_to_num`, clip invalid analytic radicands, or substitute a prior successful state to make an accuracy test pass. The small nonnegative roundoff guard in the endpoint quadrature has a specific removable-endpoint purpose; it is not permission to hide a field-domain error.
+
+## 10. Repository layout and development order
+
+The bundle intentionally contains only the reference implementation and small first runners. Future filenames below are planned deliverables, not a claim that missing scripts already work.
+
+```text
+README.md                      measured overview and run commands
+plan.md                        contract, decisions and logbook
+AGENT_PROMPT.md                 resumable task prompt
+cases.json                     exact reference configurations
+sources.json                   source pins and dependency roles
+docs/SOURCE_REVIEW.md           inspected source scope and follow-up audit
+benchmarks/analytic.py          shared exact fields, surfaces and quadratures
+benchmarks/verify_reference.py  reference identities and checks
+benchmarks/reference_derivatives.py
+benchmarks/build_inputs.py      boundary/profile input generation
+benchmarks/score_samples.py     common physical scorer
+benchmarks/run_vmex.py          initial fixed-boundary forward smoke
+benchmarks/run_gradient_smoke.py
+benchmarks/plot_results.py      existing reference figures
+benchmarks/<phase driver>.py    add only when a phase needs it
+tests/test_reference.py         small independent reference suite
+tools/audit_sources.py          local source inventory, not semantic review
+tools/publish.sh                explicit owner-authenticated publication
+inputs/                        generated candidate decks and fit manifest
+results/reference/             actual handoff measurements
+results/<experiment>/          later measured records, not invented results
+figures/                       generated plots with evidence descriptions
+```
+
+Add a small `vmex_adapter.py` only when it prevents actual duplication between P2-P7. It should expose physical samples and verified parameter maps, not mirror every upstream API. Keep changes in VMEX itself separate and minimal. If a production capability cannot be tested without a broad solver rewrite, first publish the minimal failing reproducer and evidence, then discuss the required scope in the logbook.
+
+The mandatory core is P0-P6 plus a bounded polishing attempt and the first exact-family optimization. P8 transverse/free-boundary optimization and P9 integrations deepen the study. They remain required tracked work items, but unsupported packages or unresolved physical assumptions must be reported honestly rather than blocking all core evidence or manufacturing a passing status.
+
+## 11. Final completion conditions
+
+The final repository must contain the actual executed capability matrix, not only this plan. Completion requires:
+
+- resolved exact-reference recovery for the stated mild axisymmetric and 3-D fixed-boundary cases, including meaningful LASYM coverage and both closure choices;
+- field/current/force and derivative convergence evidence, with projection and reconstruction separated;
+- both exact vacuum/operator tests and properly labelled coupled free-boundary tests; no claim that an interior field alone supplies an exact exterior;
+- strict root and adjoint certificates and at least the nonzero and null physical sensitivity experiments;
+- a bounded, recorded outcome for polishing, exact-family optimization and transverse continuation; independent verification of any claimed improvement;
+- meaningful tests or explicit unavailable/not-applicable statuses for the relevant downstream and mirror capabilities;
+- a complete source-scope ledger, reproducible environment, figure/data provenance, concise README, and a logbook that records failures and next actions.
+
+A negative scientific result can close an experiment if its mathematical assumptions, numerical convergence and failure mechanism have been examined. It cannot turn an unsupported capability into a pass. If a blocker remains, preserve the state and leave the exact next experiment; do not announce that an unrun phase is completed.
+
+## 12. Logbook and replacement-agent handoff
+
+### Current phase table
+
+| Phase | Status on delivery | Evidence / next action |
+|---|---|---|
+| P0 | Partial | Owner authentication and local Git identity verified; reference suite rerun. Public repo publication, source pins and semantic ledger remain. |
+| P1 | Partial | 29 tests and 14 reference cases reproduced locally; VMEX sign/parser checks and B/C boundary refinement remain. |
+| P2 | Planned | Build the common native-state adapter and exact projections. |
+| P3 | Implemented smoke, not run | VMEX unavailable in the handoff runtime; start mild fixed-boundary recovery locally. |
+| P4 | Reference derivatives run; solver work planned | Smoke runner exists; complete family input-map differentiation is not implemented. |
+| P5 | Planned | Review/execute Boozer, bounce and diagnostics tests with independent references. |
+| P6 | Planned | Vacuum operators first, then anchored coupled roots, then exterior fitting. |
+| P7 | Planned | Same-representation polishing and stationary response. |
+| P8 | Planned | Direct exact-family optimization, then transverse and source studies. |
+| P9 | Planned | Small scoped adjacent/mirror integrations, with unavailable statuses where needed. |
+| P10 | Reference figures only | Solver performance and final result figures await measured data. |
+
+### Entry 2026-09-23: handoff preparation
+
+**Changed:** added explicit integer/stretch, sheared and asymmetric Solov'ev references; physical-angle surface samplers; toroidal-flux inversion; independent Ampere-current quadrature; 14-case matrix; both closure input candidates; reference checks; physical scorer; first solver runners; source inventory and owner-only publish helper.
+
+**Measured:** `python -m pytest -q` passed 29 tests. `verify_reference.py` passed all 14 sampled reference cases. Sampled force RMS divided by pressure-gradient RMS was of order 1e-15. Real finite differences independently checked the field Jacobians. Symbolic asymmetric Grad-Shafranov identity, independent volume/flux integrals, frame covariance, profile inversion and null sensitivities passed. Exact values and package versions are recorded in the JSON, not inferred from prose.
+
+**Important non-result:** no VMEX or other equilibrium/kinetic solver ran. Candidate input fit error is measured, but parser/sign closure and equilibrium recovery are not established. Sheared B and C are boundary-underresolved at the supplied first Fourier truncation. The forward smoke refuses them until their manifests are regenerated with adequate fits.
+
+**Source finding:** current free-boundary source and change log include Newton anchoring, while an older validation paragraph says anchoring is absent. Resolve the documentation/code/test discrepancy locally; do not assume either universal success or an unfixed absence.
+
+**Validation packaging:** a combined multi-command validation call reached the execution wrapper limit. Completed stages were checkpointed and the remaining commands succeeded when run separately. The final execution record includes the successful test, reference, input-generation, plotting and syntax-check commands. No partial solver output was counted as evidence.
+
+**Next actions, in order:** publish the reviewed scaffold with owner identity; pin and install the baseline; inventory and review source; rerun reference checks; verify generated input conventions in VMEX; implement native physical sampling; solve `integer_axisymmetric` in both closures; then `solovev_asymmetric`, `integer_3d` and `sheared_A`.
+
+### Template for every subsequent entry
+
+### Entry 2026-09-23: local reference rerun and publication preparation
+
+**Phase / run IDs:** P0 and P1; R01 and R02 repeated. The owner authentication returned `rogeriojorge`, numeric account ID `6816712`; local author and committer are `rogeriojorge <6816712+rogeriojorge@users.noreply.github.com>`. The public repository did not exist at this check. Initial Git staging has not been committed or pushed yet.
+
+**Commands and results:** `python3 -m pytest -q` passed 29 tests in 11.57 s. `python3 benchmarks/verify_reference.py` passed all 14 sampled cases; the largest printed force ratio was 1.65e-15. `python3 benchmarks/reference_derivatives.py`, `python3 benchmarks/build_inputs.py`, and `python3 benchmarks/plot_results.py` completed. The largest regenerated candidate boundary errors remain 2.80e-3 m for sheared B and 1.33e-2 m for sheared C. These are reference and candidate-input measurements, not VMEX results. The scripts regenerated `results/reference/`, `inputs/manifest.json`, and `figures/`.
+
+**Source and environment:** existing local VMEX and adjacent checkouts were found, but their current heads differ from the pinned VMEX baseline; the analytical supplement was not yet located locally. The workstation is macOS arm64 with an Apple M3 Max, Python 3.11.14. No VMEX solve, semantic source review, GPU run or parser certification was performed in this block.
+
+**Publication review:** inspected `tools/publish.sh` before running its nonpublishing stage mode. Its local identity settings match the authenticated owner. The staged content requires a final privacy/diff review before publication.
+
+**Next exact actions:** finish staged diff/privacy inspection; invoke `PUBLISH=1 sh tools/publish.sh` only if clean; record the resulting URL and commit; create a clean pinned VMEX baseline worktree and clone the supplement; then inventory and review the parser/profile/field paths before checking input interpretation.
+
+**Working tree / branch / PR state:** new local `main` repository with staged scaffold; no public repository or PR at this entry.
+
+```text
+Date/time and benchmark commit:
+Phase / run IDs:
+Question or hypothesis:
+Source commits and patches:
+Changed files and reason:
+Commands and environment:
+Results, residuals, resolutions and artifact paths:
+Independent checks performed:
+Failures / unavailable dependencies / budget used:
+Decision (including any target change and justification):
+Next exact command or implementation step:
+Working tree / branch / PR state:
+```
+
+### End-of-session checklist
+
+Commit small coherent changes with the owner's identity. Update the phase table and append an entry. Record running processes, saved outputs, input hashes, local worktree locations and uncommitted changes without publishing private paths unnecessarily. Stop or explicitly hand over any long-running local jobs. Do not claim background work is continuing when no process exists. Leave the next command and expected observable result, not a vague instruction to "continue benchmarking".
+
+## References
+
+[R1] M. Landreman, *Analytic toroidal 3D MHD equilibria and steady Euler flows with invariant surfaces*, arXiv:2609.26742v1 (2026). https://arxiv.org/abs/2609.26742 . Sections 2-3 give the two exact fields and geometry; distinguish paper formula numbers across HTML/PDF renderings.
+
+[R2] Analytical supplement at `4c0b690ddebdc71811c88223eb9f44a98ab64222`: https://github.com/landreman/analytic_3d_equilibria/tree/4c0b690ddebdc71811c88223eb9f44a98ab64222 . In particular the integer and sheared DESC scripts give independent numerical solves, oriented flux/current mappings and quadratures. They are not VMEX results.
+
+[R3] VMEX baseline: https://github.com/uwplasma/vmex/tree/b5f5267efc0795c4a49a224e321e9b370975c14c . See `docs/all-of-vmex.md`, `docs/howto/profiles.md`, `docs/explanation/validation.md`, `CHANGELOG.md`, the input/profile/wout implementations and their tests.
+
+[R4] VMEX fixed-boundary derivative implementation: https://github.com/uwplasma/vmex/blob/b5f5267efc0795c4a49a224e321e9b370975c14c/vmex/core/implicit.py . Inspect actual masks, raw/preconditioned residuals, root refinement and frozen-path checks.
+
+[R5] Coupled free-boundary implementation: https://github.com/uwplasma/vmex/blob/b5f5267efc0795c4a49a224e321e9b370975c14c/vmex/core/freeboundary_implicit.py . Source is newer than parts of the accompanying validation narrative.
+
+[R6] Continuous force and polishing: `vmex/core/strong_force.py`, `polish.py`, `polish_driver.py` and associated tests at [R3]. The exact Solov'ev projection test is not evidence of nonlinear recovery.
+
+[R7] Interior/exterior fields: https://github.com/uwplasma/vmex/blob/b5f5267efc0795c4a49a224e321e9b370975c14c/vmex/core/extender.py . Tensor orientation, inversion, native versus fallback representations and near-surface modes matter.
+
+[R8] Bounce kernels: https://github.com/uwplasma/vmex/blob/b5f5267efc0795c4a49a224e321e9b370975c14c/vmex/core/bounce.py . Note the normalized action, topology masks and optional floor.
+
+[R9] Virtual casing: https://github.com/uwplasma/virtual_casing_jax and independent reference https://github.com/hiddenSymmetries/virtual-casing . Pin both implementations before comparison. Preserve source versus target terminology and derivative-plan semantics.
+
+[R10] Adjacent implementations: https://github.com/uwplasma/SOLVAX , https://github.com/uwplasma/booz_xform_jax , https://github.com/uwplasma/ESSOS , https://github.com/uwplasma/NEO_JAX , https://github.com/uwplasma/GKX , https://github.com/uwplasma/DKX . Optional near-axis work uses https://github.com/uwplasma/pyQSC_JAX/pull/2 at the recorded draft head. Source pins not yet specified in `sources.json` are a P0 task, not an implicit latest-version dependency.
+
+[R11] A. J. Cerfon and J. P. Freidberg, *One size fits all analytic solutions to the Grad-Shafranov equation*, Physics of Plasmas 17, 032502 (2010), doi:10.1063/1.3328818. Use as context for analytical axisymmetric solution spaces; the specific polynomial identities in this plan are derived and tested directly.
+
+[R12] D. Panici et al., *The DESC stellarator equilibrium solver. Part 1. High-order solutions through Newton-Krylov optimization*, Journal of Plasma Physics (2023), doi:10.1017/S0022377823000272, arXiv:2203.17173. Consult alongside the actual pinned DESC source and Landreman's supplied scripts; compare native representations with common physical norms.
+
+[R13] S. P. Hirshman, W. I. van Rij and P. Merkel, *Three-dimensional free boundary calculations using a spectral Green's function method*, Computer Physics Communications 43, 143-155 (1986). Inspect its vacuum/circulation and free-boundary assumptions together with the current NESTOR implementation rather than inferring the model from a function name.

@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "evidence": "analytic_derivatives_only",
+  "vmex_executed": false,
+  "parameters": [
+    1.224744871391589,
+    0.7071067811865476,
+    1.0,
+    0.015625
+  ],
+  "beta_gradient": [
+    -0.024125476075426807,
+    -0.04178655031942662,
+    0.059095106186518934,
+    2.20621729763004
+  ],
+  "direction": [
+    0.12,
+    -0.07,
+    0.15,
+    0.003
+  ],
+  "directional_beta": 0.015512919214176607,
+  "delta_eulerian_field_derivative": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "lambda_iota_derivative": [
+    -1.269823973251485e-16,
+    1.142501675227906e-16,
+    -9.98379722217045e-17
+  ],
+  "steps": [
+    {
+      "step": 0.1,
+      "taylor_remainder": 1.6187711739695798e-05,
+      "central_fd_error": 1.3584489973877956e-06
+    },
+    {
+      "step": 0.03162277660168379,
+      "taylor_remainder": 1.6282105834222738e-06,
+      "central_fd_error": 1.358693953387724e-07
+    },
+    {
+      "step": 0.01,
+      "taylor_remainder": 1.6311635822469626e-07,
+      "central_fd_error": 1.3587184294339139e-08
+    },
+    {
+      "step": 0.0031622776601683794,
+      "taylor_remainder": 1.6320941503131432e-08,
+      "central_fd_error": 1.3587204226311878e-09
+    },
+    {
+      "step": 0.001,
+      "taylor_remainder": 1.6323881023286497e-09,
+      "central_fd_error": 1.358713141996759e-10
+    },
+    {
+      "step": 0.00031622776601683794,
+      "taylor_remainder": 1.6324810760039442e-10,
+      "central_fd_error": 1.3577493296335064e-11
+    },
+    {
+      "step": 0.0001,
+      "taylor_remainder": 1.6325117216263297e-11,
+      "central_fd_error": 1.3296308498667031e-12
+    },
+    {
+      "step": 3.1622776601683795e-05,
+      "taylor_remainder": 1.6325321163585788e-12,
+      "central_fd_error": 3.7957484377848516e-14
+    },
+    {
+      "step": 1e-05,
+      "taylor_remainder": 1.632543669676221e-13,
+      "central_fd_error": 4.593721236734183e-14
+    },
+    {
+      "step": 3.162277660168379e-06,
+      "taylor_remainder": 1.6324214895410933e-14,
+      "central_fd_error": 9.494627306594339e-13
+    },
+    {
+      "step": 1e-06,
+      "taylor_remainder": 1.6295532976770918e-15,
+      "central_fd_error": 4.556216515183564e-12
+    },
+    {
+      "step": 3.162277660168379e-07,
+      "taylor_remainder": 1.606820921914979e-16,
+      "central_fd_error": 7.532275150823331e-12
+    },
+    {
+      "step": 1e-07,
+      "taylor_remainder": 1.3769110957780862e-17,
+      "central_fd_error": 1.0867695632299501e-12
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "review_date": "2026-09-23",
+  "runtime_utc": "2026-09-23T23:13:30.961398+00:00",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "vmex_executed": false,
+  "reference_checks_passed": true,
+  "thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "commands": [
+    {
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "returncode": 0,
+      "seconds": 22.12753167400001,
+      "stdout": ".............................                                            [100%]\n29 passed in 19.07s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "benchmarks/verify_reference.py"
+      ],
+      "returncode": 0,
+      "seconds": 8.46039665100011,
+      "stdout": "integer_axisymmetric               force=1.31e-15 FD=1.60e-10 pass=True\ninteger_axisymmetric_full_basis    force=1.26e-15 FD=1.58e-10 pass=True\ninteger_3d                         force=1.66e-15 FD=1.63e-09 pass=True\ninteger_3d_full_basis              force=1.41e-15 FD=2.01e-09 pass=True\ninteger_3d_reframed                force=1.54e-15 FD=1.67e-09 pass=True\ninteger_3d_stretched               force=1.02e-15 FD=6.62e-10 pass=True\nsheared_axisymmetric               force=3.68e-16 FD=7.48e-10 pass=True\nsheared_A                          force=4.25e-16 FD=7.71e-10 pass=True\nsheared_A_full_basis               force=4.10e-16 FD=7.58e-10 pass=True\nsheared_A_reframed                 force=5.30e-16 FD=7.59e-10 pass=True\nsheared_B                          force=1.06e-15 FD=8.54e-10 pass=True\nsheared_C                          force=1.08e-15 FD=9.59e-10 pass=True\nsolovev_symmetric                  force=1.13e-15 FD=1.62e-10 pass=True\nsolovev_asymmetric                 force=1.17e-15 FD=1.63e-10 pass=True\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "benchmarks/reference_derivatives.py"
+      ],
+      "returncode": 0,
+      "seconds": 3.095587443999875,
+      "stdout": "{\n  \"schema\": 1,\n  \"evidence\": \"analytic_derivatives_only\",\n  \"vmex_executed\": false,\n  \"parameters\": [\n    1.224744871391589,\n    0.7071067811865476,\n    1.0,\n    0.015625\n  ],\n  \"beta_gradient\": [\n    -0.024125476075426807,\n    -0.04178655031942662,\n    0.059095106186518934,\n    2.20621729763004\n  ],\n  \"direction\": [\n    0.12,\n    -0.07,\n    0.15,\n    0.003\n  ],\n  \"directional_beta\": 0.015512919214176607,\n  \"delta_eulerian_field_derivative\": [\n    0.0,\n    0.0,\n    0.0\n  ],\n  \"lambda_iota_derivative\": [\n    -1.269823973251485e-16,\n    1.142501675227906e-16,\n    -9.98379722217045e-17\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "benchmarks/build_inputs.py"
+      ],
+      "returncode": 0,
+      "seconds": 26.136166322000008,
+      "stdout": "integer_axisymmetric               boundary=2.48e-12 profile=7.77e-16\ninteger_axisymmetric_full_basis    boundary=2.48e-12 profile=7.77e-16\ninteger_3d                         boundary=2.06e-08 profile=1.82e-12\ninteger_3d_full_basis              boundary=2.06e-08 profile=1.82e-12\ninteger_3d_reframed                boundary=2.07e-08 profile=1.82e-12\ninteger_3d_stretched               boundary=2.65e-10 profile=3.58e-15\nsheared_axisymmetric               boundary=4.16e-07 profile=1.62e-09\nsheared_A                          boundary=5.12e-07 profile=6.38e-11\nsheared_A_full_basis               boundary=5.12e-07 profile=6.38e-11\nsheared_A_reframed                 boundary=5.09e-07 profile=6.38e-11\nsheared_B                          boundary=2.80e-03 profile=8.54e-11\nsheared_C                          boundary=1.33e-02 profile=2.63e-09\nsolovev_symmetric                  boundary=3.10e-14 profile=7.77e-16\nsolovev_asymmetric                 boundary=5.85e-14 profile=1.25e-13\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "returncode": 0,
+      "seconds": 22.104173991999915,
+      "stdout": ".............................                                            [100%]\n29 passed in 19.00s\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "benchmarks/plot_results.py"
+      ],
+      "returncode": 0,
+      "seconds": 2.4501085309998416,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "compileall",
+        "-q",
+        "benchmarks",
+        "tests",
+        "tools"
+      ],
+      "returncode": 0,
+      "seconds": 0.5214135490000444,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "validation_batch_note": "A combined multi-command validation call was interrupted at the tool execution limit. Completed stages were checkpointed; remaining stages were rerun individually. No solver execution is implied.",
+  "source_sha256": {
+    "benchmarks/analytic.py": "bcbe45a347c882d82b148c310601c60b5ce90cf3a25a725f9978cdd8121eb3ad",
+    "benchmarks/verify_reference.py": "84881f378350e7831cff9faa2ce718df125e2a5e74ea2697051cf6f998b06972",
+    "benchmarks/score_samples.py": "b37cc4c3a312dc2c78fc1cba1f920d011840029132d9fec20d37c6da526b65b9",
+    "benchmarks/reference_derivatives.py": "fef5cf485c3594848aefab8b5ebbb1121a8593547b30d05945f39366d780c055",
+    "benchmarks/run_gradient_smoke.py": "b2c44268afb8b58f9548573967f0f3bed51b5bef6d1131fc12cbbc06333ca786",
+    "benchmarks/run_vmex.py": "edd652cb4f2e1cfe8f5980e271ec47cf2d65d9a054fc1f983420c5cbe1d18da0",
+    "benchmarks/plot_results.py": "bfa64c6b6c95a02ecc382e9c90c2b36afd3568648111ac4a0eb34d73b5388cfa",
+    "benchmarks/build_inputs.py": "3bf55a3ef38caddf3b01fcf8f786313d0d8e207a493a3fca4ed7ca4eb623adf2",
+    "tests/test_reference.py": "eab76a06b65e4be503519c07e09470f7cc2f388bd86521258b8ea1bae9c11e61",
+    "tools/audit_sources.py": "68173f1e496a0fa97a2a9d1d3ca3bd89932de8483817a3a2e308ce0b20f2a1ef"
+  }
+}
