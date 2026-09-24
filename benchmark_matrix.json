@@ -92,8 +92,9 @@
       "capability": "Native independent solver comparison",
       "cases": "VMEX, DESC, VMEC2000, VMEC++; GVEC when pinned and runnable",
       "evidence": "independent_numerical_reference",
-      "status": "planned",
-      "artifact": null
+      "status": "diagnostic_only",
+      "artifact": "results/desc/coordinate/figure_manifest.json",
+      "scope": "Initial same-point VMEX/DESC measurements recorded; no independent code ranking or P3 exit claim. VMEC2000/VMEC++ and GVEC comparisons remain open."
     },
     {
       "id": "S03a",
@@ -101,9 +102,9 @@
       "capability": "Analytical chart and compensated poloidal remap",
       "cases": "axisymmetric control, integer 3-D; sheared A after its input gate",
       "evidence": "analytic_projection",
-      "status": "planned",
-      "artifact": null,
-      "scope": "Certify continuum B invariance, then separately quantify finite geometry, B, J and force errors and spectral width for each native projection; no solver recovery inferred"
+      "status": "diagnostic_only",
+      "artifact": "results/desc/coordinate",
+      "scope": "DESC axisymmetric and integer 3-D base/remapped projections scored separately from native solver states at 96 common Cartesian points; DESC angular M=N=6/8 with radial L=8/10, LCFS fit, sampled Jacobian and spectral width recorded. The 3-D remap is smooth and boundary-preserving; a separate continuum B/J derivative certificate and full volume orientation proof remain open."
     },
     {
       "id": "S03b",
@@ -111,9 +112,9 @@
       "capability": "Matched gauge sensitivity across equilibrium codes",
       "cases": "VMEX constraint-strength ladder, VMEC2000, VMEC++, DESC; GVEC when pinned and runnable",
       "evidence": "independent_numerical_reference",
-      "status": "planned",
-      "artifact": null,
-      "scope": "Same physical boundary, profiles, flux, start charts and held-out Cartesian samples; record native solver status, gauge motion, spectral width, Jacobian, B/J/force, cost and failures separately"
+      "status": "diagnostic_only",
+      "artifact": "figures/coordinate_solver_comparison.png",
+      "scope": "DESC base/remapped fixed-iota solves and terminal failures scored against the same analytic samples as VMEX projection/loose-root records. VMEX TCON0 solution ladder, VMEC2000, VMEC++ and GVEC are not run; derivative/gauge stability is unmeasured."
     },
     {
       "id": "S03c",

@@ -92,6 +92,24 @@ For that selected shift, an [independent continuum chart check](results/projecti
 
 ![Measured axisymmetric VMEX recovery](figures/vmex_axisymmetric_recovery.png)
 
+## Native VMEX and DESC coordinate comparison
+
+These comparisons score native states at the same 96 held-out Cartesian points against the independent analytical B, J and pressure-gradient fields. Projection errors and solver outputs remain separate. VMEX is shown at `NS=129`; DESC uses angular `M=N=6` and `8`, with radial `L=8` and `10`, respectively. These resolutions and bases are not equivalent, so the plots compare measured physical errors, not solver rank.
+
+![VMEX and DESC integer 3-D held-out physical errors](figures/coordinate_solver_comparison.png)
+
+For the integer 3-D case, the VMEX exact-state projection at `NS=129` scores B/J relative L2 errors `2.42e-7 / 7.14e-6`; its separate loose-tolerance solved state scores `1.30e-4 / 2.92e-3`. DESC's base-chart projection improves from `4.84e-4 / 1.10e-2` at `M=N=6` to `4.69e-5 / 9.65e-4` at `M=N=8`. Its fixed-boundary force-balance solve at `M=N=8` reaches `1.05e-5 / 1.48e-4` and force RMS divided by exact pressure-gradient RMS `1.91e-5`.
+
+The DESC remap is `theta_new = theta_old + 0.1 s(1-s) sin(2 theta_new)`, with the compensating lambda and unchanged physical boundary. At `M=N=6`, remapping raises projected J error from `1.10e-2` to `3.55e-2`, while converged base/remapped solver outputs agree to about `0.1%` in both B and J error. At `M=N=8`, the remapped projection scores `5.85e-5 / 4.10e-3`; after 120 iterations its terminal state scores `1.60e-5 / 2.25e-4`, but DESC reports that the optimizer did not converge. That point is shown as an open triangle and is not counted as a recovered equilibrium. The base/remapped results show finite-projection sensitivity and recovery compensation in DESC; they do not certify gauge-independent derivatives or show that mismatch is harmless in general.
+
+The maximum exact-LCFS fit error was `5.95e-5 m` at DESC `M=N=6, L=8` and `4.15e-6 m` at `M=N=8, L=10`; the remapped and base boundaries agree to the reported precision. DESC's minimum sampled volume Jacobian stayed positive (`3.95e-3` to `4.06e-3` in the 3-D samples). These are sampled/projection checks, not a global proof that the coordinates remain regular everywhere.
+
+The axisymmetric integer control gives a separate check. DESC `M=N=6, L=8` projection errors are `1.12e-5 / 2.15e-4`; after six optimizer iterations they are `1.99e-6 / 8.72e-6`. The VMEX `NS=129` solved control is `6.51e-7 / 8.24e-5`. Its higher radial resolution precludes a direct rank claim.
+
+![Axisymmetric integer control for VMEX and DESC](figures/coordinate_axisymmetric_control.png)
+
+DESC used the pinned source revision in [sources.json](sources.json), version `0.17.3+27.g4f48720be`, JAX `0.6.2`, float64 and one CUDA device. Its environment record is [results/desc/environment.json](results/desc/environment.json). It prescribed the DESC rotational-transform profile `+2`; the transform was not independently measured in these runs. Projection/solved scorer records, compressed held-out arrays, equilibrium files and figure input hashes are under [results/desc/coordinate](results/desc/coordinate). The report records timings and peak resident memory. These measurements are a first native comparison, not the full P3 exit: current-closure checks, more remaps, explicit transform measurement, independent source/test review, VMEC2000/VMEC++ and GVEC comparisons, and derivative stability remain open.
+
 ## Candidate VMEX inputs
 
 `inputs/` contains 28 generated INDATA candidates: 14 configurations, each with prescribed iota and prescribed current. The current profile is generated from an independent Ampere integral and converted to VMEX's derivative-profile convention. Pressure, flux and geometric scales are recorded in [inputs/manifest.json](inputs/manifest.json).
@@ -128,7 +146,7 @@ The [execution matrix](benchmark_matrix.json) records implemented, planned and b
 
 An exact interior field is not automatically an exact free-boundary solution. The free-boundary plan distinguishes exact vacuum/operator tests, independently converged numerical coupled equilibria, and approximate exterior fits to an exact interior target. Genuinely symmetry-broken 3-D extensions outside the exact families also require numerical references. These distinctions are part of the benchmark, not missing labels to be filled with assumed answers.
 
-The fixed-boundary VMEX runs described above are the only nonlinear recovery measurements so far. No DESC, free-boundary, GPU or kinetic benchmark has run yet. The [public benchmark repository](https://github.com/rogeriojorge/vmex-benchmark-analytical) was created using the verified owner's authentication. [The source review](docs/SOURCE_REVIEW.md) identifies inspected paths and the full local semantic audit still needed; an inventory and focused parser review are not a whole-source semantic review.
+The fixed-boundary VMEX recovery and first fixed-boundary DESC comparisons described above are the nonlinear solver measurements so far. No free-boundary or kinetic benchmark has run. The [public benchmark repository](https://github.com/rogeriojorge/vmex-benchmark-analytical) was created using the verified owner's authentication. [The source review](docs/SOURCE_REVIEW.md) identifies inspected paths and the full local semantic audit still needed; an inventory and focused parser review are not a whole-source semantic review.
 
 ## Local source inventory and publication
 

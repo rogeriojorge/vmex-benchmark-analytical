@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "source_inventory": "inventory.json",
-  "scope": "tracked code/config; entries with status partial are limited to stated ranges",
+  "scope": "Inventory is primarily the tracked VMEX tree, plus eight targeted partial DESC source/test entries at its recorded pin.",
   "entries": [
     {
       "repository": "uwplasma/vmex",
@@ -7581,6 +7581,142 @@
       "benchmark_cell": null,
       "finding": null,
       "status": "unreviewed"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "desc/equilibrium/equilibrium.py",
+      "sha256": "201440eeaf14f30d032a1dced8ccf1b4533801eb5048d8a5438b617ab02cbc30",
+      "review_scope": "solve, set_initial_guess, fixed-boundary constraints and compute grid override",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_equilibrium.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "ForceBalance default with fixed-boundary/profile constraints; sampled R/Z/lambda initialization; overridden grids route integral dependencies through appropriate grids.",
+      "status": "partial"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "desc/objectives/_equilibrium.py",
+      "sha256": "5fdfbda48e51583fad0be59443816830a93407250c363a859a2155371adf5c4a",
+      "review_scope": "ForceBalance construction and force residual definition",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_equilibrium.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "Default objective is a weighted radial/helical force residual on DESC collocation grid; it is not VMEX FSQ.",
+      "status": "partial"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "desc/geometry/surface.py",
+      "sha256": "89384f7b8ee09254d12f1268795758ea221c598df60a961dd2acd6e5546cf002",
+      "review_scope": "FourierRZToroidalSurface.from_values",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_surfaces.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "Accepts caller theta labels; defaults zeta to cylindrical phi and documents resolution requirements.",
+      "status": "partial"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "desc/compute/_field.py",
+      "sha256": "d0c05f5be62f459f13566c731ce44171480b434d42680347381caec38fa9f0d0",
+      "review_scope": "B registration and basis reconstruction",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_equilibrium.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "B is reconstructed from contravariant angular components and covariant basis vectors.",
+      "status": "partial"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "desc/compute/_equil.py",
+      "sha256": "46e1ad99497337f9fd45d7658c35febad95390f91f63285a2d8d38572f59f58b",
+      "review_scope": "J registration and derivative dependencies",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_equilibrium.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "J is assembled from current components and geometric basis; keep native field scoring distinct from optimizer residual.",
+      "status": "partial"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "desc/compute/_profiles.py",
+      "sha256": "4c69615844ad73a36e1f345ca687bdad2932261f000221532c9e1e81a736262e",
+      "review_scope": "grad(p) registration and profile derivatives",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_equilibrium.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "Pressure gradient uses radial/angular/toroidal profile derivatives with contravariant basis vectors.",
+      "status": "partial"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "tests/test_surfaces.py",
+      "sha256": "cec313b958791d70d04434e51b3092d8b3a8a93ed72be76d5c825fb4334a15d1",
+      "review_scope": "TestFourierRZToroidalSurface.test_surface_from_values",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_surfaces.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "The installed test confirms native sampled geometry fitting at original and changed theta labels.",
+      "status": "partial"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+      "path": "tests/test_equilibrium.py",
+      "sha256": "5275497fd8d63b9e8b73e884de8cebdeecd97f4fd5ba0b350a5850db6bc591ce",
+      "review_scope": "test_backward_compatible_load_and_resolve; module import path",
+      "model": "DESC fixed-boundary spectral equilibrium",
+      "units": "SI for fields and force; angles in DESC (rho, theta, zeta) coordinates",
+      "derivative_semantics": "DESC native spectral field and geometry derivatives; no VMEX solver derivative compared",
+      "tests_read": [
+        "tests/test_equilibrium.py"
+      ],
+      "oracle": "independent exact Cartesian B, curl B/current and grad-p scorer at common held-out points",
+      "benchmark_cell": "P3 S03a/S03b DESC integer axisymmetric and integer 3-D charts",
+      "finding": "Focused solve/load test was not collected because module import requires Qic; the installed PyPI qic package exports no Qic.",
+      "status": "partial"
     }
   ]
 }
