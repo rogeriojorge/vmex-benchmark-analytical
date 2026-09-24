@@ -421,6 +421,36 @@
       "status": "failed",
       "artifact": "results/vmex/integer_3d_iota_ns33_niter3000/attempt_history.json",
       "scope": "Solver reported initial Jacobian sign change and MORE ITERATIONS REQUIRED at 3000 and 30000; no converged state or physical score"
+    },
+    {
+      "id": "G04",
+      "phase": "P2",
+      "capability": "Field-consistent integer 3-D projection into VMEX state",
+      "cases": "integer_3d prescribed-iota input at NS=33,65,129",
+      "evidence": "analytic_projection",
+      "status": "passed",
+      "artifact": "results/projection/integer_3d_vmex_ns129/native_scores.json",
+      "scope": "No nonlinear solve; sampled lambda gradient is at finite-difference floor, and NS129 native volume B/J/force meet initial physical targets; WOUT surface interpolation is separate"
+    },
+    {
+      "id": "S02b",
+      "phase": "P3",
+      "capability": "Strict projected warm integer 3-D recovery attempt",
+      "cases": "integer_3d prescribed iota at NS=33",
+      "evidence": "vmex_forward_smoke",
+      "status": "failed",
+      "artifact": "results/vmex/integer_3d_iota_ns33_niter3000_projected/attempt_summary.json",
+      "scope": "Seed Jacobian sign stable, but 1e-14 solver tolerance missed after 3000 iterations; no solved physical score"
+    },
+    {
+      "id": "S02c",
+      "phase": "P3",
+      "capability": "Loose-root projected warm integer 3-D recovery",
+      "cases": "integer_3d prescribed iota at NS=33,65,129",
+      "evidence": "analytic_recovery",
+      "status": "failed",
+      "artifact": "results/vmex/integer_3d_iota_ns129_niter3000_projected_ftol1e-10/native_scores.json",
+      "scope": "Explicit 1e-10 roots return but all native physical error targets fail; diagnostic, not accepted recovery"
     }
   ]
 }

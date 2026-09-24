@@ -732,17 +732,17 @@ A negative scientific result can close an experiment if its mathematical assumpt
 
 | Phase | Status on delivery | Evidence / next action |
 |---|---|---|
-| P0 | Partial | Public repo and required source pins exist; 504 code/config ledger entries, 9 partial reviews. Complete semantic source/test review and reproducible environment metadata. |
+| P0 | Partial | Public repo and required source pins exist; 504 code/config ledger entries, 14 partial reviews. Complete semantic source/test review and reproducible environment metadata. |
 | P1 | Partial | 29 tests and 14 references reproduced; all 28 decks passed parser/setup checks. B/C fits clear the smoke gate; sampled sheared charts and local implicit-root derivatives pass. A sampled guard now rejects measured near-domain folds. Final output error budget remains. |
-| P2 | Partial | Native symmetric field sampling, symmetric Solov'ev projection and LASYM WOUT-state-WOUT surface round trip run; LASYM live Cartesian API unavailable, fitted lift limited. 3-D, derivatives and other file routes remain. |
-| P3 | Partial | Axisymmetric integer both closures meet first NS=129 targets; asymmetric Solov'ev WOUT surface B converges, but volume J/force remains unscored. Cold integer 3-D NS=33 prescribed-iota failed at 3000/30000 iterations; projected initialization remains. |
+| P2 | Partial | Native integer 3-D projected volume B/J/force passes first targets at NS=129 without solving; symmetric Solov'ev projection and LASYM WOUT round trip also run. Higher derivatives, LASYM volume and other file routes remain. |
+| P3 | Partial | Axisymmetric integer both closures meet first NS=129 targets; asymmetric Solov'ev WOUT surface B converges, but volume J/force remains unscored. Cold and strict warm integer 3-D failed; loose roots at three NS fail physical targets. |
 | P4 | Reference derivatives run; solver work planned | Smoke runner exists; complete family input-map differentiation is not implemented. |
 | P5 | Planned | Review/execute Boozer, bounce and diagnostics tests with independent references. |
 | P6 | Planned | Vacuum operators first, then anchored coupled roots, then exterior fitting. |
 | P7 | Planned | Same-representation polishing and stationary response. |
 | P8 | Planned | Direct exact-family optimization, then transverse and source studies. |
 | P9 | Planned | Small scoped adjacent/mirror integrations, with unavailable statuses where needed. |
-| P10 | Partial | Reference figures and one measured axisymmetric recovery figure; matched performance work remains. |
+| P10 | Partial | Reference, axisymmetric and integer 3-D projection/loose-root figures generated and inspected; matched performance work remains. |
 
 ### Entry 2026-09-23: handoff preparation
 
@@ -855,6 +855,22 @@ A negative scientific result can close an experiment if its mathematical assumpt
 **Change and reproducible failure:** `benchmarks/run_vmex.py` now accepts an explicit iteration cap and saves a structured `forward.json` when VMEX raises `VmecConvergenceError`. A repeated cold NS=33 run capped at 3,000 iterations took 12.44 s including first compilation, ended with the same exception, and last printed components `3.62e-9 / 1.87e-9 / 8.87e-10`. Artifacts: `results/vmex/integer_3d_iota_ns33_niter3000/forward.json` and `attempt_history.json`. These are failed solver attempts, not numerical-reference or exact-equilibrium failures. No Cartesian field, current or force was scored.
 
 **Branch/PR state, blockers and next exact action:** benchmark changes are uncommitted on `main`; no upstream branch or PR exists. Review staged diff and publish as owner. Next, construct and verify a field-consistent exact-state projection for integer 3-D, then use it as a warm initialization at NS=33; inspect the solver's admissible axis and Jacobian before any longer cold run. Resume the LASYM direct live-surface diagnosis independently.
+
+### Entry 2026-09-24: integer 3-D field-consistent projected state
+
+**Phase / run IDs:** P0/P2, G04. Benchmark base commit `be9c840`; VMEX source pin unchanged. Added `benchmarks/integer_surface_projection.py`, `benchmarks/project_integer_vmex.py` and `benchmarks/plot_integer_projection.py`. The exact geometric chart's Cartesian tangents and exact B give toroidal/poloidal flux derivatives and both angular derivatives of lambda. Three surfaces at `s=0.2,0.5,0.8` gave `chip/phip=-2` within `1e-10`; the residual lambda gradient was `8.81e-11` to `9.56e-11` of the flux scale with `h=1e-5`. The first projection check divided by the almost-zero lambda gradient itself and falsely failed at relative 0.61-0.73; the corrected declared flux scale gave the meaningful result. A broadcasting error in its first field reconstruction call was fixed before the measured run. Artifact: `results/projection/integer_3d_surface.json`.
+
+**State conversion and measurements:** sampled exact full-mesh R/Z Fourier coefficients were mapped through VMEX's mode normalization and m=1 constraint with lambda zero. At NS=33 the resulting half-mesh Jacobian had one sign (`tau` from `-0.01101` to `-0.00639`), unlike the cold initializer. Generated state arrays and independent native volume scores are in `results/projection/integer_3d_vmex_ns{33,65,129}/`. Native 96-point volume B relative errors were `2.59e-5, 2.98e-7, 2.42e-7`; J relative errors were `3.55e-3, 9.72e-5, 7.14e-6`; pressure-normalized force ratios were `3.78e-2, 1.03e-3, 8.15e-5`. The NS=129 projected state meets the initial B/J/force targets, without any nonlinear solve. Separate WOUT surface B maxima were `1.42e-4, 3.55e-5, 8.86e-6`; the first two fail the surface B target even though native volume B at NS=65 passes. Memory unmeasured. The source ledger now has 14 partial entries, no complete semantic review.
+
+**Figure and next action:** `python3 benchmarks/plot_integer_projection.py` generated `figures/vmex_integer_3d_projection.png` from saved JSON, visually inspected it and recorded its SHA in `results/projection/integer_3d_figure_manifest.json`. Continue with strict warm recovery from the projected state, keeping the no-solve scores separate.
+
+### Entry 2026-09-24: strict warm failure and loose-root physical gap
+
+**Phase / run IDs:** P3, S02b/S02c. Extended `benchmarks/run_vmex.py` to accept a projected state seed and an explicitly named `BENCH_FTOL` override, recording seed SHA, tolerance, initialization and failure status. At NS=33 with the strict `1e-14` target, the projected warm solve avoided the cold Jacobian sign error but ended `MORE ITERATIONS REQUIRED` at 3,000 iterations. Its printed FSQR/FSQZ/FSQL reached about `9.00e-13 / 9.50e-13 / 7.12e-13` at iteration 1,000 and drifted to `1.39e-10 / 9.23e-11 / 6.17e-11` by 3,000. Artifact: `results/vmex/integer_3d_iota_ns33_niter3000_projected/attempt_summary.json`; no strict solved field was scored.
+
+**Exploratory loose roots:** with explicit `BENCH_FTOL=1e-10`, the warm solve returned at iterations 311, 335 and 420 for NS=33,65,129. Their native 96-point volume B relative errors were `8.71e-4, 7.06e-4, 1.30e-4`; J relative errors `0.439, 0.149, 2.92e-3`; force ratios `4.93, 1.70, 1.74e-2`. All fail the initial physical targets and are not accepted recoveries. The reference-to-VMEX normalized surface-label discrepancies reached `0.00424, 0.00470, 0.00534`, while projected seed discrepancies were at most `1.45e-6` on the same volume points. Saved WOUTs and native samples remain in `results/vmex/integer_3d_iota_ns{33,65,129}_niter3000_projected_ftol1e-10/`; the solver times were 3.34, 4.33 and 6.87 s, and native sampling took 45.73, 46.38 and 47.79 s. Memory unmeasured. The result may involve a weakly controlled trajectory, gauge or branch; no cause is established from these scores alone.
+
+**Branch/PR state, blockers and next exact action:** benchmark changes are uncommitted on `main`; no upstream branch or PR exists. Run the repository tests and JSON checks; inspect staged diff and `tools/publish.sh`, then publish as the verified owner. Next, compare the raw unpreconditioned VMEX force/residual of the projected seed and loose roots under the identical grid and gauge, and probe short warm trajectories before changing the convergence rule. Do not relax acceptance from the loose-root FSQ alone. Continue the direct live LASYM surface parity check separately.
 
 ```text
 Date/time and benchmark commit:
