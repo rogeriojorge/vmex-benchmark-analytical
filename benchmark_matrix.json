@@ -90,10 +90,40 @@
       "id": "S03",
       "phase": "P3",
       "capability": "Native independent solver comparison",
-      "cases": "VMEX, DESC, VMEC2000, VMEC++",
+      "cases": "VMEX, DESC, VMEC2000, VMEC++; GVEC when pinned and runnable",
       "evidence": "independent_numerical_reference",
       "status": "planned",
       "artifact": null
+    },
+    {
+      "id": "S03a",
+      "phase": "P3",
+      "capability": "Analytical chart and compensated poloidal remap",
+      "cases": "axisymmetric control, integer 3-D; sheared A after its input gate",
+      "evidence": "analytic_projection",
+      "status": "planned",
+      "artifact": null,
+      "scope": "Certify continuum B invariance, then separately quantify finite geometry, B, J and force errors and spectral width for each native projection; no solver recovery inferred"
+    },
+    {
+      "id": "S03b",
+      "phase": "P3",
+      "capability": "Matched gauge sensitivity across equilibrium codes",
+      "cases": "VMEX constraint-strength ladder, VMEC2000, VMEC++, DESC; GVEC when pinned and runnable",
+      "evidence": "independent_numerical_reference",
+      "status": "planned",
+      "artifact": null,
+      "scope": "Same physical boundary, profiles, flux, start charts and held-out Cartesian samples; record native solver status, gauge motion, spectral width, Jacobian, B/J/force, cost and failures separately"
+    },
+    {
+      "id": "S03c",
+      "phase": "P3",
+      "capability": "Coordinate constraint design decision",
+      "cases": "VMEX default, reduced and zero constraint with an explicit gauge-control candidate",
+      "evidence": "discrete_consistency",
+      "status": "planned",
+      "artifact": null,
+      "scope": "Recommend a default change or DESC-like approach only after accepted roots, physical and resolution gates, gauge stability and independent force checks"
     },
     {
       "id": "D01",
