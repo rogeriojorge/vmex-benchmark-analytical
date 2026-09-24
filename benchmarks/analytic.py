@@ -131,6 +131,27 @@ def shear_chart(k, theta, t, eps, S, lam, xp=np):
                      xp.sqrt((h+eps)/2)*xp.sin(t), -xp.arcsin(Y)/lam), -1)
 
 
+def validate_sheared_surface_chart_sampled(case, *, ntheta=64, nt=1025):
+    """Reject a sampled toroidal-angle fold before using the quadrant inverse.
+
+    The analytical smooth-domain condition is weaker than graph validity for
+    physical toroidal angle. This numerical guard is not a global proof.
+    """
+    validate(case)
+    if case.family != "sheared":
+        return
+    eps, S, lam, edge = case.parameters
+    theta, t = np.broadcast_arrays(2*np.pi*np.arange(ntheta)[:, None]/ntheta,
+                                    np.linspace(0, 2*np.pi, nt)[None, :])
+    xyz = shear_chart(np.sqrt(2*edge), theta, t, eps, S, lam)
+    phi = np.unwrap(np.arctan2(xyz[..., 1], xyz[..., 0]), axis=-1)
+    if (not np.isfinite(xyz).all() or
+        np.min(np.hypot(xyz[..., 0], xyz[..., 1])) <= 0 or
+        np.min(np.diff(phi, axis=-1)) <= 0 or
+        np.max(np.abs(phi[:, -1]-phi[:, 0]-2*np.pi)) > 1e-10):
+        raise ValueError("Sampled sheared surface is not a single-valued physical-angle graph.")
+
+
 def surface(case, label, theta, phi):
     """NumPy boundary sampler. Its bisection is NOT an AD input map.
 

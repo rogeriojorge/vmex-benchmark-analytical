@@ -733,7 +733,7 @@ A negative scientific result can close an experiment if its mathematical assumpt
 | Phase | Status on delivery | Evidence / next action |
 |---|---|---|
 | P0 | Partial | Public repo and required source pins exist; 504 code/config ledger entries, 3 partial reviews. Complete semantic source/test review and reproducible environment metadata. |
-| P1 | Partial | 29 tests and 14 references reproduced; all 28 decks passed parser/setup checks. B/C fits clear the smoke gate; sampled sheared charts and local implicit-root derivatives pass. Branch-boundary derivative and final output error budget remain. |
+| P1 | Partial | 29 tests and 14 references reproduced; all 28 decks passed parser/setup checks. B/C fits clear the smoke gate; sampled sheared charts and local implicit-root derivatives pass. A sampled guard now rejects measured near-domain folds. Final output error budget remains. |
 | P2 | Partial | Native symmetric field sampling and symmetric Solov'ev projection run; LASYM live Cartesian API unavailable, fitted lift limited. 3-D, derivatives and file round trips remain. |
 | P3 | Partial | Axisymmetric integer both closures meet first NS=129 targets; asymmetric Solov'ev WOUT surface B converges, but volume J/force remains unscored. Other cells remain. |
 | P4 | Reference derivatives run; solver work planned | Smoke runner exists; complete family input-map differentiation is not implemented. |
@@ -831,6 +831,14 @@ A negative scientific result can close an experiment if its mathematical assumpt
 **Results:** the six sampled A/B/C points passed position agreement with the independently implemented surface inversion, nonzero angular derivative and central-difference checks at `h=1e-3,1e-4,1e-5,1e-6`. The smallest directional-position errors for each point ranged from `7.38e-13` to `1.95e-12` in reference length units; all central-difference series showed roundoff growth at the smallest step. The check perturbed radial label coordinate, poloidal angle, physical toroidal angle and three sheared parameters together. It establishes local sample derivatives, not a global branch-boundary derivative, shape derivative at fixed physical point or VMEX equilibrium response. No solver or GPU was used; runtime was 2.1 s, memory unmeasured.
 
 **Failed attempts, branch state and next exact action:** no failed derivative candidate was retained. Commit and publish the reviewed benchmark block with owner identity; then add explicit bad-domain and branch-boundary cases and resume the LASYM live-state field diagnosis/source ledger before additional recovery claims. No upstream branch or PR exists.
+
+### Entry 2026-09-23: sheared near-domain graph failure and input guard
+
+**Phase / run ID:** P1, R06. Benchmark base commit `aacde00`; source pins unchanged. Added `benchmarks/verify_sheared_domain_edges.py` and a sampled graph guard in `benchmarks/analytic.py`, invoked by `benchmarks/build_inputs.py`. Ran `python3 benchmarks/verify_sheared_domain_edges.py`, `python3 -m pytest -q` (29 passed in 10.78 s), and `python3 benchmarks/build_inputs.py` (all 14 cases regenerated for two closures). Artifact: `results/reference/sheared_domain_edges.json`; no inputs changed in Git.
+
+**Measured finding and failed attempt:** the first near-domain check expected all analytically admissible margins to remain physical-angle graphs and failed. The C-family margins `S-asin(sqrt(2 edge)) = 0.001, 0.01, 0.1` instead had sampled minimum normalized angular slopes `-3.224, -2.222, -0.209`. Their selected target angles each had three chart crossings, although the chart radius stayed positive and the existing smooth-domain validator accepted the parameters. Margins `0.2, 0.5, 1.0, 3.073` had sampled minimum slopes `0.0137, 0.0685, 0.1565, 0.4355`. The added guard rejects the three folded samples before producing VMEX input decks; five invalid-parameter cases were independently rejected by the analytical validator. Fifteen samples at toroidal quadrant boundaries and offsets agreed with the independent bisection surface to roundoff at one safe margin. The guard is a finite-grid check, not a global proof or a certified threshold. Runtime of the final probe was 2.0 s; memory unmeasured.
+
+**Branch/PR state, blockers and next exact action:** benchmark changes are uncommitted on `main`; no upstream branch or PR exists. Review staged diff and publish this block as owner. Then compare direct live LASYM state surface geometry/field against its WOUT result and complete the reachable VMEX source/test ledger before a volume current/force implementation. Do not treat the failed fitted-state lift as a nonlinear recovery failure.
 
 ```text
 Date/time and benchmark commit:

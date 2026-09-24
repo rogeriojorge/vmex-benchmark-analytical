@@ -391,6 +391,16 @@
       "status": "passed",
       "artifact": "results/reference/sheared_derivative.json",
       "scope": "Custom JVP checked against independent bisection geometry at four central-difference steps; local branches only"
+    },
+    {
+      "id": "R06",
+      "phase": "P1",
+      "capability": "Sheared near-domain graph and invalid-parameter guard",
+      "cases": "sheared C parameter margins and quadrant boundaries",
+      "evidence": "analytic_reference_sampled",
+      "status": "passed",
+      "artifact": "results/reference/sheared_domain_edges.json",
+      "scope": "Three smooth-domain admissible margins folded with three chart crossings; input generation now rejects sampled folds; no global graph proof"
     }
   ]
 }

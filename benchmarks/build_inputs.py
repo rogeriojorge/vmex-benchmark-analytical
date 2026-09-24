@@ -13,7 +13,8 @@ jax.config.update("jax_enable_x64", True)
 import numpy as np
 from numpy.polynomial import Polynomial
 
-from analytic import ROOT, cases, field, flux, iota, label_at_s, surface, validate
+from analytic import (ROOT, cases, field, flux, iota, label_at_s, surface,
+                      validate, validate_sheared_surface_chart_sampled)
 
 LENGTH_M = 1.0
 FIELD_T = 1.0
@@ -104,6 +105,7 @@ if __name__ == "__main__":
     records = []
     for case in cases().values():
         validate(case)
+        validate_sheared_surface_chart_sampled(case)
         max_m, max_n = STRONG_BOUNDARY_RESOLUTION.get(case.name, (MAX_M, MAX_N))
         fit_grid = max(FIT_GRID, 4*max_m, 4*max_n)
         rows, ntor, geometry_error, symmetry_error = boundary_coefficients(
