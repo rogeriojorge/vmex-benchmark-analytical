@@ -74,6 +74,8 @@ A [constraint-switch diagnostic](results/vmex/integer_3d_constraint_switch.json)
 
 A [bounded NS33 coordinate/lambda scan](results/projection/integer_3d_gauge_scan_ns33.json) tried 16 single-mode poloidal shifts with the compensating Clebsch lambda. Its best sampled shift lowered `FSQR+FSQZ` from `1.17` to `0.791`, still far above the strict solver tolerance. After finite VMEX projection, native B/J/force errors were `3.12e-5 / 4.67e-3 / 5.14e-2`, versus `2.59e-5 / 3.55e-3 / 3.78e-2` for the unshifted seed. This limited scan neither preserves the sampled field to roundoff nor recovers an accepted root.
 
+For that selected shift, an [independent continuum chart check](results/projection/integer_3d_gauge_surface_continuum.json) reconstructed B with relative error decreasing from `1.82e-8` at finite-difference step `2e-4` to `1.05e-10` at `1e-5`. The separate [VMEX surface projection check](results/projection/integer_3d_gauge_surface_vmex.json) found geometry maximum error `2.06e-9` and B relative error `2.06e-5` at `s=0.5`; the unshifted state’s surface B error there was `1.57e-5`. The continuum gauge identity is sound, while this finite representation and field route remain above the surface B target.
+
 ![Integer 3-D projection and loose-root comparison](figures/vmex_integer_3d_projection.png)
 
 ![Integer 3-D short warm trajectory](figures/vmex_integer_3d_trajectory.png)
@@ -83,6 +85,8 @@ A [bounded NS33 coordinate/lambda scan](results/projection/integer_3d_gauge_scan
 ![Integer 3-D constraint switch](figures/vmex_integer_constraint_switch.png)
 
 ![Integer 3-D gauge scan](figures/vmex_integer_gauge_scan.png)
+
+![Integer 3-D gauge surface convergence](figures/vmex_integer_gauge_surface.png)
 
 ![Measured asymmetric Solov'ev surface B refinement](figures/vmex_lasym_surface_B.png)
 

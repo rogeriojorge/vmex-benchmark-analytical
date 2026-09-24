@@ -501,6 +501,26 @@
       "status": "failed",
       "artifact": "results/projection/integer_3d_gauge_scan_ns33.json",
       "scope": "16 one-mode coordinate/lambda shifts scanned; best reduces FSQR+FSQZ only modestly and finite projection worsens native B/J/force versus unshifted seed; no accepted recovery"
+    },
+    {
+      "id": "G05a",
+      "phase": "P2",
+      "capability": "Continuum Clebsch field under selected poloidal gauge transform",
+      "cases": "integer_3d at s=0.5",
+      "evidence": "analytical_consistency",
+      "status": "passed",
+      "artifact": "results/projection/integer_3d_gauge_surface_continuum.json",
+      "scope": "Finite-difference chart reconstruction converges toward exact B; this is an analytical check without a VMEX state"
+    },
+    {
+      "id": "G05b",
+      "phase": "P2",
+      "capability": "Finite VMEX projection of selected gauge-transformed surface",
+      "cases": "integer_3d at NS=33, s=0.5",
+      "evidence": "analytic_projection",
+      "status": "diagnostic_only",
+      "artifact": "results/projection/integer_3d_gauge_surface_vmex.json",
+      "scope": "Projected geometry fits to 2.06e-9 absolute but surface B error 2.06e-5, above the initial 1e-5 surface gate; no nonlinear solve"
     }
   ]
 }

@@ -4108,14 +4108,14 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/fields.py",
       "sha256": "18d7543235cf4a5ed7b61dbd6eea1a0c59618e4a37cd68f787eb7f8519f4c12f",
-      "review_scope": "energies_and_force_norms:438-523 inspected for magnetic/pressure energy and residual normalization; remaining fields not reviewed",
-      "model": "half-mesh magnetic and pressure energy and force normalization",
+      "review_scope": "lambda_scale:271-282 and magnetic_fields conventions:294-399 inspected; energies_and_force_norms:438-523 inspected; remaining fields not reviewed",
+      "model": "half-mesh magnetic/pressure fields, lambda normalization and force norms",
       "units": "internal energy integrals and dimensionless force normalization",
       "derivative_semantics": "value-only; energy derivatives not reviewed",
       "tests_read": [],
       "oracle": "integer 3-D projected and loose-root constraint switch",
-      "benchmark_cell": "P3/S02g",
-      "finding": "FSQ normalization depends on state energy/geometry; same-state tcon switch keeps this normalization fixed",
+      "benchmark_cell": "P3/S02g; P2/G05b",
+      "finding": "FSQ normalization depends on state energy/geometry; same-state tcon switch keeps this normalization fixed; full-mesh lambda enters B via lamscale times its angular derivatives",
       "status": "partial"
     },
     {
@@ -4455,15 +4455,15 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/postprocess.py",
       "sha256": "5a64aaec1caf1cc5bededea1ac4abd72cbe2d16a5b63bc33123c381135d6b69d",
-      "review_scope": "not inspected semantically",
-      "model": null,
-      "units": null,
-      "derivative_semantics": null,
+      "review_scope": "lambda_full_mesh_from_wout:600-640 documentation and inverse convention inspected; implementation beyond shown recurrence not reviewed",
+      "model": "WOUT half-mesh to internal full-mesh lambda inverse",
+      "units": "internal lambda with lamscale/phipf normalization",
+      "derivative_semantics": "value-only inverse; derivatives not reviewed",
       "tests_read": [],
-      "oracle": null,
-      "benchmark_cell": null,
-      "finding": null,
-      "status": "unreviewed"
+      "oracle": "selected integer 3-D gauge surface projection and flux check",
+      "benchmark_cell": "P2/G05b",
+      "finding": "WOUT lambda rescaling is separate from internal full-mesh lambda used in live state",
+      "status": "partial"
     },
     {
       "repository": "uwplasma/vmex",
@@ -4801,8 +4801,8 @@
         "tests/test_restart.py:78-125, 296-318"
       ],
       "oracle": "independent asymmetric Solovev Cartesian B on five surfaces",
-      "benchmark_cell": "S01d",
-      "finding": "WOUT surface path accepts LASYM; live _state_field_spectra rejects LASYM before parity construction; round-trip surface B agrees to roundoff",
+      "benchmark_cell": "S01d; P2/G05b",
+      "finding": "WOUT surface path accepts LASYM; live _state_field_spectra rejects LASYM before parity construction; round-trip surface B agrees to roundoff; live-state finite surface field scored for selected gauge against exact B at matching points",
       "status": "partial"
     },
     {
