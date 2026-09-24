@@ -1,7 +1,7 @@
 """Run one fixed-boundary input and save native Cartesian physical samples.
 
-Usage: python benchmarks/run_vmex.py inputs/input.integer_axisymmetric_iota [NS]
-An optional NS runs one cold radial level. A converged solve is scored but is
+Usage: python benchmarks/run_vmex.py inputs/input.integer_axisymmetric_iota [NS [NITER]]
+Optional NS and NITER run one bounded cold radial level. A converged solve is scored but is
 not accepted without the plan's representation and convergence gates.
 """
 import importlib.metadata
@@ -18,16 +18,20 @@ import jax
 jax.config.update("jax_enable_x64", True)
 import numpy as np
 import vmex
+from vmex.core.errors import VmecConvergenceError
 
 from analytic import ROOT
 from analytic import cases
 from native_samples import sample_native, sample_lifted_lasym
 from score_samples import score
 
-if len(sys.argv) not in (2, 3):
+if len(sys.argv) not in (2, 3, 4):
     raise SystemExit(__doc__)
 path = Path(sys.argv[1]).resolve()
 ns_override = int(sys.argv[2]) if len(sys.argv) == 3 else None
+if len(sys.argv) == 4:
+    ns_override = int(sys.argv[2])
+niter_override = int(sys.argv[3]) if len(sys.argv) == 4 else 30000
 if ns_override is not None and ns_override < 3:
     raise SystemExit("NS override must be at least 3")
 manifest = path.parent / "manifest.json"
@@ -40,15 +44,32 @@ if manifest.exists():
 inp = vmex.VmecInput.from_file(path)
 if inp.lfreeb:
     raise SystemExit("Use the coupled free-boundary protocol in plan P6; this runner is fixed-boundary only.")
+if niter_override < 1:
+    raise SystemExit("NITER must be positive")
 if ns_override is not None:
-    inp = replace(inp, ns_array=[ns_override], ftol_array=[1e-14], niter_array=[30000])
+    inp = replace(inp, ns_array=[ns_override], ftol_array=[1e-14], niter_array=[niter_override])
 out_name = path.name.removeprefix("input.")
 if ns_override is not None:
     out_name += f"_ns{ns_override}"
+if len(sys.argv) == 4:
+    out_name += f"_niter{niter_override}"
 out = ROOT / "results/vmex" / out_name
 out.mkdir(parents=True, exist_ok=True)
 start = perf_counter()
-result = vmex.solve_multigrid(inp, verbose=True)
+try:
+    result = vmex.solve_multigrid(inp, verbose=True)
+except VmecConvergenceError as exc:
+    repo = Path(vmex.__file__).resolve().parent
+    proc = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True, capture_output=True)
+    failure = dict(schema=1, evidence="vmex_forward_smoke", status="failed",
+                   full_benchmark_pass=False, vmex_commit=proc.stdout.strip() if proc.returncode == 0 else None,
+                   input=str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else path.name,
+                   ns_override=ns_override, niter_limit=niter_override,
+                   solve_seconds_including_first_compile=perf_counter()-start,
+                   exception_type=type(exc).__name__, reason=str(exc),
+                   continuous_field_scored=False, memory_unmeasured=True)
+    (out / "forward.json").write_text(json.dumps(failure, indent=2, allow_nan=False)+"\n")
+    raise SystemExit("VMEX did not converge; inspect forward.json") from exc
 jax.block_until_ready(result.state)
 seconds = perf_counter()-start
 wout = vmex.wout_from_result(inp, result)

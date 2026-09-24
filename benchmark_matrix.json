@@ -411,6 +411,16 @@
       "status": "passed",
       "artifact": "results/vmex/solovev_asymmetric_iota_ns129/lasym_roundtrip.json",
       "scope": "Five surfaces per NS; geometry and B match original WOUT to roundoff; no live volume field, J or force"
+    },
+    {
+      "id": "S02a",
+      "phase": "P3",
+      "capability": "Cold fixed-boundary 3-D integer recovery attempt",
+      "cases": "integer_3d prescribed iota at NS=33",
+      "evidence": "vmex_forward_smoke",
+      "status": "failed",
+      "artifact": "results/vmex/integer_3d_iota_ns33_niter3000/attempt_history.json",
+      "scope": "Solver reported initial Jacobian sign change and MORE ITERATIONS REQUIRED at 3000 and 30000; no converged state or physical score"
     }
   ]
 }

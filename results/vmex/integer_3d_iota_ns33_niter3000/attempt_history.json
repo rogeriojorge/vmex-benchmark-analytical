@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "evidence": "vmex_forward_smoke",
+  "case": "integer_3d",
+  "closure": "prescribed_iota",
+  "ns": 33,
+  "status": "failed",
+  "source": "VMEX terminal iteration output; later bounded run also has forward.json",
+  "attempts": [
+    {
+      "niter_limit": 30000,
+      "ftol": 1e-14,
+      "initial_jacobian_changed_sign": true,
+      "axis_guess_improved_by_solver": true,
+      "last_reported_iteration": 30000,
+      "last_reported_fsqr": 1.15e-10,
+      "last_reported_fsqz": 8.18e-11,
+      "last_reported_fsql": 4.54e-11,
+      "exception": "VmecConvergenceError: MORE ITERATIONS REQUIRED",
+      "elapsed_seconds": null,
+      "memory_bytes": null
+    },
+    {
+      "niter_limit": 3000,
+      "ftol": 1e-14,
+      "initial_jacobian_changed_sign": true,
+      "axis_guess_improved_by_solver": true,
+      "last_reported_iteration": 3000,
+      "last_reported_fsqr": 3.62e-9,
+      "last_reported_fsqz": 1.87e-9,
+      "last_reported_fsql": 8.87e-10,
+      "exception": "VmecConvergenceError: MORE ITERATIONS REQUIRED",
+      "elapsed_seconds": 12.438736374955624,
+      "memory_bytes": null
+    }
+  ],
+  "physical_field_scored": false
+}
