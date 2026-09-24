@@ -321,6 +321,56 @@
       "status": "failed",
       "artifact": "results/vmex/integer_axisymmetric_current/forward.json",
       "scope": "Converged discrete solve; NS=65 current and force exceed initial physical targets"
+    },
+    {
+      "id": "G01a",
+      "phase": "P2",
+      "capability": "Exact symmetric Solovev projection in continuous VMEX basis",
+      "cases": "solovev_symmetric, 2/4/8 spline spans",
+      "evidence": "analytic_projection",
+      "status": "passed",
+      "artifact": "results/projection/solovev_symmetric.json",
+      "scope": "Cartesian B samples; force floor and quadrature limit recorded; no nonlinear solve"
+    },
+    {
+      "id": "S01c",
+      "phase": "P3",
+      "capability": "Axisymmetric integer current-prescribed cold recovery",
+      "cases": "NS=129",
+      "evidence": "analytic_recovery",
+      "status": "passed",
+      "artifact": "results/vmex/integer_axisymmetric_current_ns129/forward.json",
+      "scope": "Initial B/J/force targets met on 96 physical-volume samples; wider matrix remains open"
+    },
+    {
+      "id": "S01d",
+      "phase": "P3",
+      "capability": "Asymmetric Solovev WOUT surface B recovery",
+      "cases": "LASYM=T; NCURR=0; NS=33,65,129",
+      "evidence": "analytic_recovery",
+      "status": "passed",
+      "artifact": "results/vmex/solovev_asymmetric_iota_ns129/wout_surface_scores.json",
+      "scope": "Five area-weighted surfaces and B only; NS129 worst error 7.86e-6; no volume J/force certificate"
+    },
+    {
+      "id": "G02a",
+      "phase": "P2",
+      "capability": "Live Cartesian LASYM interior field",
+      "cases": "solovev_asymmetric",
+      "evidence": "integration",
+      "status": "unavailable",
+      "artifact": "results/vmex/solovev_asymmetric_iota_ns33/span8_forward.json",
+      "scope": "VmecInteriorField.from_state raises NotImplementedError for LASYM"
+    },
+    {
+      "id": "G02b",
+      "phase": "P2",
+      "capability": "Continuous fitted LASYM field/current reconstruction",
+      "cases": "solovev_asymmetric; NS=33,65,129",
+      "evidence": "analytic_recovery",
+      "status": "failed",
+      "artifact": "results/vmex/solovev_asymmetric_iota_ns129/span32_forward.json",
+      "scope": "Fixed span caps caused large or nonconvergent fitted-state B/J/force errors; rank prevented an unconstrained NS129 lift"
     }
   ]
 }

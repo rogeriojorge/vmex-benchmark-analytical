@@ -21,7 +21,7 @@ import vmex
 
 from analytic import ROOT
 from analytic import cases
-from native_samples import sample_native
+from native_samples import sample_native, sample_lifted_lasym
 from score_samples import score
 
 if len(sys.argv) not in (2, 3):
@@ -73,12 +73,23 @@ case_name = next((r["case"] for r in rows if r["file"] == path.name), None) if m
 if case_name is None:
     raise SystemExit("A manifest case is required for native physical sampling.")
 sample_start = perf_counter()
-samples = sample_native(inp, result.state, cases()[case_name])
+try:
+    if inp.lasym:
+        samples = sample_lifted_lasym(inp, result.state, cases()[case_name])
+        field_path = "continuous_fitted_state_lasym"
+    else:
+        samples = sample_native(inp, result.state, cases()[case_name])
+        field_path = "native_clebsch_cartesian"
+except (ValueError, NotImplementedError) as exc:
+    record.update(postprocess_status="failed", postprocess_reason=f"{type(exc).__name__}: {exc}")
+    (out / "forward.json").write_text(json.dumps(record, indent=2, allow_nan=False)+"\n")
+    raise SystemExit("VMEX solved, but physical postprocessing failed; inspect forward.json") from exc
 sample_path = out / "native_samples.npz"
 np.savez_compressed(sample_path, **samples)
 scores = score(samples)
 (out / "native_scores.json").write_text(json.dumps(scores, indent=2, allow_nan=False)+"\n")
 record.update(continuous_field_scored=True, native_sample_sha256=hashlib.sha256(
     sample_path.read_bytes()).hexdigest(), native_score=scores,
+    field_path=field_path,
     native_sample_and_score_seconds=perf_counter()-sample_start)
 (out / "forward.json").write_text(json.dumps(record, indent=2, allow_nan=False)+"\n")

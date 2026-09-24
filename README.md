@@ -50,7 +50,13 @@ At the pinned VMEX baseline, the axisymmetric integer case converged with prescr
 | 65 | 7.90e-6 | 2.49e-3 | 2.76e-2 |
 | 129 | 6.51e-7 | 8.24e-5 | 8.18e-4 |
 
-The `NS=129` run meets the initial single-run B, J and force targets. Its largest normalized discrete force component was 9.66e-15. This is one fixed-boundary case; projection error, independent angular refinement and the other required geometries remain open. The near-axis sample was the main source of the larger `NS=65` current/force error. A prescribed-current multigrid run at `NS=65` gave B error 7.97e-6, J error 2.49e-3 and force ratio 2.75e-2, with current and force still above their planned targets. All run records and native sample arrays are in [results/vmex](results/vmex).
+The `NS=129` prescribed-iota run meets the initial single-run B, J and force targets. Its largest normalized discrete force component was 9.66e-15. The current-prescribed `NS=129` run also meets them: B error 6.89e-7, J error 8.25e-5 and force ratio 8.18e-4. The near-axis sample was the main source of the larger `NS=65` current/force error. A current-prescribed multigrid run at `NS=65` gave B error 7.97e-6, J error 2.49e-3 and force ratio 2.75e-2, with current and force still above their planned targets. This is one fixed-boundary physical case; independent angular refinement and the other required geometries remain open. All run records and native sample arrays are in [results/vmex](results/vmex).
+
+The separate exact symmetric Solov’ev projection into VMEX’s continuous basis had sampled B relative L2 error from 1.59e-12 to 1.06e-12 over 2, 4 and 8 degree-5 spline spans. It used no nonlinear solve and its strong-force certificate showed a finite floor. See [the projection record](results/projection/solovev_symmetric.json); this basis check is separate from the solved state’s native field interpolation.
+
+For the genuinely asymmetric Solov’ev input, the discrete solve converged at `NS=33, 65, 129`. VMEX’s live Cartesian interior field API currently rejects LASYM. Its WOUT surface field route does accept LASYM: the worst of five area-weighted surface B errors decreased from 1.26e-4 to 3.15e-5 to 7.86e-6. These are surface B checks only. A continuous fitted-state lift was also tried, but fixed span caps made its errors much larger and could reverse their refinement trend; failed trials and arrays remain in [results/vmex](results/vmex). No LASYM volume current/force recovery is certified.
+
+![Measured asymmetric Solov'ev surface B refinement](figures/vmex_lasym_surface_B.png)
 
 ![Measured axisymmetric VMEX recovery](figures/vmex_axisymmetric_recovery.png)
 
@@ -86,7 +92,7 @@ The [execution matrix](benchmark_matrix.json) records implemented, planned and b
 
 An exact interior field is not automatically an exact free-boundary solution. The free-boundary plan distinguishes exact vacuum/operator tests, independently converged numerical coupled equilibria, and approximate exterior fits to an exact interior target. Genuinely symmetry-broken 3-D extensions outside the exact families also require numerical references. These distinctions are part of the benchmark, not missing labels to be filled with assumed answers.
 
-Only the axisymmetric integer fixed-boundary VMEX recovery described above has run. No DESC, free-boundary, GPU or kinetic benchmark has run yet. The [public benchmark repository](https://github.com/rogeriojorge/vmex-benchmark-analytical) was created using the verified owner's authentication. [The source review](docs/SOURCE_REVIEW.md) identifies inspected paths and the full local semantic audit still needed; an inventory and focused parser review are not a whole-source semantic review.
+The fixed-boundary VMEX runs described above are the only nonlinear recovery measurements so far. No DESC, free-boundary, GPU or kinetic benchmark has run yet. The [public benchmark repository](https://github.com/rogeriojorge/vmex-benchmark-analytical) was created using the verified owner's authentication. [The source review](docs/SOURCE_REVIEW.md) identifies inspected paths and the full local semantic audit still needed; an inventory and focused parser review are not a whole-source semantic review.
 
 ## Local source inventory and publication
 

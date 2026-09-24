@@ -9,6 +9,9 @@ import jax.numpy as jnp
 import numpy as np
 from vmex.core import profiles
 from vmex.core.extender import VmecInteriorField
+from vmex.core.strong_force import (
+    lift_high_order_state, evaluate_high_order_fields, evaluate_strong_force)
+from vmex.core.solver import prepare_runtime, resolution_from_input
 
 from analytic import label_at_s, surface
 from build_inputs import LENGTH_M, FIELD_T, MU0
@@ -73,4 +76,36 @@ def sample_native(inp, state, case, *, runtime=None, chunk_size=8):
         raise ValueError("VMEX native field or coordinate inversion returned nonfinite values")
     return dict(case_name=case.name, xyz=xyz, B=B, J=J, gradp=gp,
                 weights=weights, s=s_ref, vmex_s=s_native,
+                length_m=LENGTH_M, field_t=FIELD_T, mu0=MU0)
+
+
+def sample_lifted_lasym(inp, state, case):
+    """Score a LASYM state through VMEX's continuous fitted-state route.
+
+    This is a distinct reconstruction from ``VmecInteriorField``. The live
+    Cartesian field API rejects LASYM, so its interpolation error cannot be
+    inferred from this result. Points lie on the fitted VMEX coordinates.
+    """
+    ns = int(np.shape(state.R_cos)[0])
+    runtime = prepare_runtime(inp, resolution_from_input(inp, ns=ns))
+    lifted = lift_high_order_state(state, runtime, degree=5, max_spans=ns)
+    nodes, radial_weights = np.polynomial.legendre.leggauss(3)
+    radial = (nodes+1)/2
+    s, theta, zeta = np.meshgrid(radial, 2*np.pi*np.arange(8)/8,
+                                 2*np.pi*np.arange(4)/4, indexing="ij")
+    rho = jnp.sqrt(s)
+    fields = evaluate_high_order_fields(lifted, rho, theta, zeta)
+    forces = evaluate_strong_force(lifted, rho, theta, zeta)
+    xyz = np.asarray(fields.position).reshape(-1, 3)
+    B = np.asarray(forces.B).reshape(-1, 3)
+    J = np.asarray(forces.J).reshape(-1, 3)
+    gp = np.cross(J, B)-np.asarray(forces.force).reshape(-1, 3)
+    jac = np.abs(np.asarray(forces.sqrt_g))
+    weights = jac/(2*np.asarray(rho))*(radial_weights/2)[:, None, None]
+    weights *= (2*np.pi/8)*(2*np.pi/4)*case.nfp
+    weights = weights.reshape(-1)
+    if not all(np.isfinite(x).all() for x in (xyz, B, J, gp, weights)) or np.any(weights <= 0):
+        raise ValueError("Fitted LASYM field or Jacobian is invalid")
+    return dict(case_name=case.name, xyz=xyz, B=B, J=J, gradp=gp,
+                weights=weights, s=s.ravel(), vmex_s=s.ravel(),
                 length_m=LENGTH_M, field_t=FIELD_T, mu0=MU0)

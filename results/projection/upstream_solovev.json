@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "evidence": "analytic_projection",
+  "status": "passed",
+  "vmex_commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+  "test_module": "tests/test_strong_force_solovev.py",
+  "passed": 7,
+  "seconds": 75.86,
+  "scope": "Pinned VMEX upstream exact Solovev projection tests, not an independent benchmark-repository projection",
+  "separate_native_test": {
+    "passed": 1,
+    "skipped": 1,
+    "warnings": 2,
+    "seconds": 79.84,
+    "skipped_reason": "pytest.mark.full excludes the native high-derivative ladder",
+    "warning_scope": "Fitted fallback high derivative accuracy warning"
+  }
+}

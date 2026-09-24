@@ -19,13 +19,19 @@
     "sampled analytical identities",
     "candidate input fits",
     "VMEX parser/setup conversion for 28 decks",
-    "axisymmetric integer iota recovery at NS=129"
+    "axisymmetric integer iota recovery at NS=129",
+    "symmetric Solovev continuous-basis B projection",
+    "axisymmetric integer current-prescribed recovery at NS=129",
+    "asymmetric Solovev WOUT surface B refinement through NS=129"
   ],
   "limited": [
     "source semantic review incomplete",
     "native axisymmetric NS=65 current/force error above initial targets",
     "projection error not separated",
-    "B/C final output impact unmeasured"
+    "B/C final output impact unmeasured",
+    "continuous-basis force certificate reaches a floor; native high-derivative test skipped by default",
+    "live Cartesian interior field API rejects LASYM",
+    "continuous fitted LASYM lift failed current/force quality and became rank limited at NS=129"
   ],
   "unavailable_evidence": [
     "other required VMEX recoveries",
