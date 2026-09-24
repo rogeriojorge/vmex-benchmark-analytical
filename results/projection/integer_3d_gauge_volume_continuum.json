@@ -1,0 +1,327 @@
+{
+  "schema": 1,
+  "evidence": "analytical_consistency",
+  "status": "passed",
+  "case": "integer_3d",
+  "scope": "continuum Clebsch remap; B reconstructed and curl B checked from mapped covariant fields over five interior surfaces",
+  "n_theta": 32,
+  "n_phi": 16,
+  "h_geometry": 2e-05,
+  "radial_steps": [
+    0.0004,
+    0.0002,
+    0.0001
+  ],
+  "lambda_definition": "lambda=-phip*u; poloidal remap mode (m,n)=(2,0)",
+  "max_remapped_B_relative_l2": 2.582847922705329e-10,
+  "max_remapped_curlB_relative_l2": 0.0001156312660113041,
+  "minimum_map_derivative": 0.95,
+  "orientation_preserved_on_sample": true,
+  "elapsed_s": 3.4177772499388084,
+  "max_rss_mib": 384.71875,
+  "surfaces": [
+    {
+      "chart": "base",
+      "amplitude": 0.0,
+      "surfaces": [
+        {
+          "s": 0.1,
+          "phip": -0.00676582350031261,
+          "chip": 0.013531647002047533,
+          "map_derivative_min": 1.0,
+          "map_derivative_max": 1.0,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.007565667596307874,
+          "oriented_jacobian_max": -0.0060505391016307105,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 2.633446360173385e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 4.1614730586475645e-06,
+              "max_abs_curlB_error": 5.756216914213142e-05
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 2.4603160975638874e-06,
+              "max_abs_curlB_error": 3.140550137016699e-05
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 2.32186222510297e-06,
+              "max_abs_curlB_error": 2.66980657499694e-05
+            }
+          ]
+        },
+        {
+          "s": 0.3,
+          "phip": -0.006765823470301052,
+          "chip": 0.013531646942218369,
+          "map_derivative_min": 1.0,
+          "map_derivative_max": 1.0,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.008294312108758112,
+          "oriented_jacobian_max": -0.005519007076918531,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.0709290131857638e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 1.0631119144638512e-05,
+              "max_abs_curlB_error": 0.00014487391882384953
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 1.06318812857183e-05,
+              "max_abs_curlB_error": 0.0001458118897600742
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 1.062646646876374e-05,
+              "max_abs_curlB_error": 0.0001460495572783676
+            }
+          ]
+        },
+        {
+          "s": 0.5,
+          "phip": -0.0067658234679015645,
+          "chip": 0.013531646937432706,
+          "map_derivative_min": 1.0,
+          "map_derivative_max": 1.0,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.008897055838756237,
+          "oriented_jacobian_max": -0.005145114072850242,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.1823443883902147e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 2.719700088503091e-05,
+              "max_abs_curlB_error": 0.00040098746897086936
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 2.7195853869955654e-05,
+              "max_abs_curlB_error": 0.0004012547916702485
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 2.7194681934511295e-05,
+              "max_abs_curlB_error": 0.0004013217174006364
+            }
+          ]
+        },
+        {
+          "s": 0.7,
+          "phip": -0.006765823467240881,
+          "chip": 0.013531646936269823,
+          "map_derivative_min": 1.0,
+          "map_derivative_max": 1.0,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.00946953603458414,
+          "oriented_jacobian_max": -0.004834066529144109,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.361763224894337e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 5.852738307004811e-05,
+              "max_abs_curlB_error": 0.0008897363259779701
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 5.8526544191722956e-05,
+              "max_abs_curlB_error": 0.0008898692604382561
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 5.852585913188585e-05,
+              "max_abs_curlB_error": 0.0008899024885229564
+            }
+          ]
+        },
+        {
+          "s": 0.9,
+          "phip": -0.006765823466964109,
+          "chip": 0.01353164693589168,
+          "map_derivative_min": 1.0,
+          "map_derivative_max": 1.0,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.010042561770885618,
+          "oriented_jacobian_max": -0.004558236058978504,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.5173382969377614e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 0.00011562917685026882,
+              "max_abs_curlB_error": 0.0017781854977394558
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 0.00011563104668437944,
+              "max_abs_curlB_error": 0.0017782785346055774
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 0.00011562530757972794,
+              "max_abs_curlB_error": 0.0017783016635778198
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chart": "remapped",
+      "amplitude": 0.1,
+      "surfaces": [
+        {
+          "s": 0.1,
+          "phip": -0.006765823500291787,
+          "chip": 0.013531647002076737,
+          "map_derivative_min": 0.982,
+          "map_derivative_max": 1.018,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.007429485579587383,
+          "oriented_jacobian_max": -0.005941629397801711,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 2.582847922705329e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 4.198994814031045e-06,
+              "max_abs_curlB_error": 5.9889619155388454e-05
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 2.4661723481243777e-06,
+              "max_abs_curlB_error": 3.172221826321322e-05
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 2.320158385152098e-06,
+              "max_abs_curlB_error": 2.7136451661194392e-05
+            }
+          ]
+        },
+        {
+          "s": 0.3,
+          "phip": -0.0067658234703486435,
+          "chip": 0.013531646942245868,
+          "map_derivative_min": 0.958,
+          "map_derivative_max": 1.042,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.007945951000361627,
+          "oriented_jacobian_max": -0.005287208779761899,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.0778716957315183e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 1.0629802114330845e-05,
+              "max_abs_curlB_error": 0.00014445486018208073
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 1.0631947332266408e-05,
+              "max_abs_curlB_error": 0.00014573412437822006
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 1.0633047658422915e-05,
+              "max_abs_curlB_error": 0.00014605999842266137
+            }
+          ]
+        },
+        {
+          "s": 0.5,
+          "phip": -0.00676582346789183,
+          "chip": 0.013531646937440646,
+          "map_derivative_min": 0.95,
+          "map_derivative_max": 1.05,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.008452203047074917,
+          "oriented_jacobian_max": -0.004887858369293881,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.1799863788072056e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 2.71974479878347e-05,
+              "max_abs_curlB_error": 0.00040064859777039246
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 2.7198324717471637e-05,
+              "max_abs_curlB_error": 0.0004012135551842581
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 2.720376658601568e-05,
+              "max_abs_curlB_error": 0.00040135516251216474
+            }
+          ]
+        },
+        {
+          "s": 0.7,
+          "phip": -0.0067658234671535145,
+          "chip": 0.013531646936143109,
+          "map_derivative_min": 0.958,
+          "map_derivative_max": 1.042,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.009071815521364067,
+          "oriented_jacobian_max": -0.004631035734974627,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.4023004657861375e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 5.8526872360284645e-05,
+              "max_abs_curlB_error": 0.0008900287222936469
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 5.852451335804999e-05,
+              "max_abs_curlB_error": 0.0008904537057818304
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 5.8537643163119766e-05,
+              "max_abs_curlB_error": 0.0008905599770230725
+            }
+          ]
+        },
+        {
+          "s": 0.9,
+          "phip": -0.006765823466884769,
+          "chip": 0.013531646935747047,
+          "map_derivative_min": 0.982,
+          "map_derivative_max": 1.018,
+          "map_orientation_preserved": true,
+          "oriented_jacobian_min": -0.00986179565906319,
+          "oriented_jacobian_max": -0.004476187809908,
+          "jacobian_sign_consistent": true,
+          "reconstructed_B_relative_l2": 1.6730492051849635e-10,
+          "current_curl_radial_step_study": [
+            {
+              "radial_step": 0.0004,
+              "curlB_relative_l2": 0.00011563035417401569,
+              "max_abs_curlB_error": 0.001778743211081782
+            },
+            {
+              "radial_step": 0.0002,
+              "curlB_relative_l2": 0.00011563017057121929,
+              "max_abs_curlB_error": 0.001779132030524599
+            },
+            {
+              "radial_step": 0.0001,
+              "curlB_relative_l2": 0.0001156312660113041,
+              "max_abs_curlB_error": 0.0017792290589273947
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "no_nonlinear_solve": true
+}
