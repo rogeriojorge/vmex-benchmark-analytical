@@ -14,7 +14,8 @@ import jax
 jax.config.update("jax_enable_x64", True)
 import numpy as np
 import vmex
-from vmex.core.solver import SpectralState, evaluate_forces, prepare_runtime, resolution_from_input
+from vmex.core.solver import (SpectralState, evaluate_forces, hot_restart_state,
+                              prepare_runtime, resolution_from_input, runtime_with_baselines)
 
 from analytic import ROOT
 
@@ -29,12 +30,16 @@ STATE_NAMES = ("R_cos", "R_sin", "Z_cos", "Z_sin", "L_cos", "L_sin")
 
 
 def score(state, runtime):
-    _, residual, diagnostic = evaluate_forces(state, runtime)
+    # Match solve(initial_state=...): boundary transfer precedes rebinding the
+    # m=1 constraint baselines to this specific state.
+    prepared = hot_restart_state(runtime, state)
+    prepared_runtime = runtime_with_baselines(runtime, prepared)
+    _, residual, diagnostic = evaluate_forces(prepared, prepared_runtime)
     values = {key: float(np.asarray(getattr(residual, key))) for key in
               ("fsqr", "fsqz", "fsql", "fedge", "gcr2", "gcz2", "gcl2")}
     values.update(wb=float(np.asarray(diagnostic.wb)), wp=float(np.asarray(diagnostic.wp)),
                   jacobian_sign_changed=bool(np.asarray(diagnostic.jacobian_sign_changed)))
-    return values
+    return prepared, values
 
 
 def main():
@@ -59,8 +64,8 @@ def main():
                                                   for name in STATE_NAMES})
         else:
             returned = read_seed(root_path)
-        seed_score = score(seed, runtime)
-        root_score = score(returned, runtime)
+        seed_prepared, seed_score = score(seed, runtime)
+        root_prepared, root_score = score(returned, runtime)
         forward = json.loads((wout_path.parent / "forward.json").read_text())
         if source_commit is None:
             source_commit = forward["vmex_commit"]
@@ -69,10 +74,13 @@ def main():
         restart_minus_solver = {key: root_score[key] - forward[key]
                                 for key in ("fsqr", "fsqz", "fsql")}
         component_shifts = {name: float(np.linalg.norm(
-            np.asarray(getattr(returned, name))-np.asarray(getattr(seed, name))))
+            np.asarray(getattr(root_prepared, name))-np.asarray(getattr(seed_prepared, name))))
             for name in ("R_cos", "R_sin", "Z_cos", "Z_sin", "L_cos", "L_sin")}
         rows.append(dict(ns=ns, projected=seed_score, wout_restarted=root_score,
                          restarted_state_sha256=hashlib.sha256(root_path.read_bytes()).hexdigest(),
+                         projected_edge_adjustment_l2=float(np.linalg.norm(
+                             np.asarray(seed_prepared.R_cos[-1])-np.asarray(seed.R_cos[-1]))+
+                             np.linalg.norm(np.asarray(seed_prepared.Z_sin[-1])-np.asarray(seed.Z_sin[-1]))),
                          wout_restart_minus_solver_residual=restart_minus_solver,
                          state_component_l2_shifts=component_shifts))
         print(f"NS={ns}: projected={seed_score}; WOUT restart={root_score}", flush=True)
@@ -81,6 +89,7 @@ def main():
         status="diagnostic_only", vmex_commit=source_commit,
         common_deck="inputs/input.integer_3d_iota",
         common_ftol=1e-10, common_niter=3000, no_acceptance_inferred=True,
+        warm_start_baselines_rebound_per_state=True,
         wout_restart_roundtrip_checked=True, memory_unmeasured=True, rows=rows),
         indent=2, allow_nan=False)+"\n")
 

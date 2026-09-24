@@ -66,7 +66,11 @@ Strict warm recovery from the projected NS=33 state [still failed](results/vmex/
 
 A [same-grid invariant-force comparison](results/vmex/integer_3d_raw_residual_comparison.json) found projected NS=129 VMEX `(FSQR, FSQZ)=(1.47, 5.34)` despite its small independent physical errors. Reconstructed loose-root WOUTs returned components near `1e-10`, agreeing with saved solver values to within `6.5e-15`. This is a discrete residual versus physical-field discrepancy, not accepted recovery or a diagnosed cause.
 
+The comparison was repeated with VMEX's actual warm-start boundary transfer and constraint-baseline rebinding; its reported components changed only at roundoff. A [bounded NS33 warm run](results/vmex/integer_3d_short_warm_ns33_ftol1e-4/probe.json) reached `FTOL=1e-4` after 65 iterations, but native B/J/force errors had increased to `1.51e-3 / 0.326 / 3.72` from the projected seed's `2.59e-5 / 3.55e-3 / 3.78e-2`. [Its saved trajectory](figures/vmex_integer_3d_trajectory.png) shows the discrete force reduction alongside those independent physical scores. This remains diagnostic only.
+
 ![Integer 3-D projection and loose-root comparison](figures/vmex_integer_3d_projection.png)
+
+![Integer 3-D short warm trajectory](figures/vmex_integer_3d_trajectory.png)
 
 ![Measured asymmetric Solov'ev surface B refinement](figures/vmex_lasym_surface_B.png)
 

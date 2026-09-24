@@ -461,6 +461,16 @@
       "status": "diagnostic_only",
       "artifact": "results/vmex/integer_3d_raw_residual_comparison.json",
       "scope": "Projected R/Z invariant residuals are large despite small continuous physical errors; WOUT-restarted loose roots reproduce solver residuals but fail independent physical targets"
+    },
+    {
+      "id": "S02e",
+      "phase": "P3",
+      "capability": "Bounded short warm trajectory with native physical scoring",
+      "cases": "integer_3d prescribed iota at NS=33",
+      "evidence": "bounded_warm_trajectory",
+      "status": "diagnostic_only",
+      "artifact": "results/vmex/integer_3d_short_warm_ns33_ftol1e-4/probe.json",
+      "scope": "At iteration 65 discrete components meet 1e-4, while native B/J/force errors are above those of the projected seed; not accepted recovery"
     }
   ]
 }

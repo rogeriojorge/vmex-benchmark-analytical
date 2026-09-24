@@ -4656,14 +4656,14 @@
       "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
       "path": "vmex/core/solver.py",
       "sha256": "f6f0467783093ccb78b5b7a83b9023f0e10acaed291545da0411efa5abf44441",
-      "review_scope": "SpectralState:215-234; resolution:570-580; initial and physical state mapping:579-625; evaluate_forces:1436-1466 and force pipeline:1335-1368 inspected; other solve paths not reviewed",
+      "review_scope": "SpectralState:215-234; resolution:570-580; initial and physical state mapping:579-625; evaluate_forces:1436-1466 and force pipeline:1335-1368 inspected; hot_restart_state:780-817, runtime_with_baselines:818-850 and solve warm-start path:2835-2888 inspected; other solve paths not reviewed",
       "model": "fixed-boundary spectral state and cold/warm initialization",
       "units": "internal R/Z/lambda coefficients; normalized force components",
       "derivative_semantics": "solver tangent/adjoint not reviewed",
       "tests_read": [],
       "oracle": "integer 3-D projected seed and bounded warm runs",
-      "benchmark_cell": "P3/S02b; P3/S02d",
-      "finding": "Warm seed avoided cold Jacobian sign failure; strict NS33 run still failed at 3000 iterations; same-grid projected-state invariant R/Z FSQ grows from NS33 to NS129 and is not a physical-field error metric",
+      "benchmark_cell": "P3/S02b; P3/S02d; P3/S02e",
+      "finding": "Warm seed avoided cold Jacobian sign failure; strict NS33 run still failed at 3000 iterations; same-grid projected-state invariant R/Z FSQ grows from NS33 to NS129 and is not a physical-field error metric; corrected warm-start baselines change measured FSQ only at roundoff for integer 3-D projected seed",
       "status": "partial"
     },
     {
