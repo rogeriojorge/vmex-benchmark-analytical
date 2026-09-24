@@ -70,11 +70,15 @@ The comparison was repeated with VMEX's actual warm-start boundary transfer and 
 
 The [projected NS33 force localization](results/vmex/integer_3d_force_localization_ns33.json) places 86% of R and 86% of Z invariant-force sums in radial rows 16–31 of 0–32, and 85% of R and 87% of Z in poloidal modes 3–6. The checked spectral block sums reproduce VMEX's scalar residuals. This rules out a force concentrated solely at the axis or fixed boundary; the cause remains open.
 
+A [constraint-switch diagnostic](results/vmex/integer_3d_constraint_switch.json) reevaluated each saved state with VMEX's spectral-condensation strength set to zero. On the NS33 projection, R/Z invariant residuals fell from `0.254/0.919` to `8.51e-7/9.99e-7`; at NS129 they fell from `1.47/5.34` to `5.17e-8/6.18e-8`. The state and independent physical scores did not change in this evaluation. The large projected VMEX residual is therefore dominated by its coordinate constraint. Whether a physical-field-preserving coordinate remap can satisfy that constraint and recover the exact state remains untested.
+
 ![Integer 3-D projection and loose-root comparison](figures/vmex_integer_3d_projection.png)
 
 ![Integer 3-D short warm trajectory](figures/vmex_integer_3d_trajectory.png)
 
 ![Integer 3-D projected force localization](figures/vmex_integer_force_localization.png)
+
+![Integer 3-D constraint switch](figures/vmex_integer_constraint_switch.png)
 
 ![Measured asymmetric Solov'ev surface B refinement](figures/vmex_lasym_surface_B.png)
 

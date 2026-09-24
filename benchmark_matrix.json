@@ -481,6 +481,16 @@
       "status": "diagnostic_only",
       "artifact": "results/vmex/integer_3d_force_localization_ns33.json",
       "scope": "Projected R/Z force is concentrated in outer interior rows and low m/n modes; each block sum reproduces the public invariant residual, but no root cause is certified"
+    },
+    {
+      "id": "S02g",
+      "phase": "P3",
+      "capability": "Spectral-condensation constraint switch on saved integer 3-D states",
+      "cases": "integer_3d prescribed iota at NS=33,65,129",
+      "evidence": "vmex_constraint_switch_diagnostic",
+      "status": "diagnostic_only",
+      "artifact": "results/vmex/integer_3d_constraint_switch.json",
+      "scope": "Zeroing tcon0 removes most projected R/Z invariant force without changing the state; this isolates a coordinate-constraint contribution but does not certify physical recovery"
     }
   ]
 }
