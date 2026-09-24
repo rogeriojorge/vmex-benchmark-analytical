@@ -471,6 +471,16 @@
       "status": "diagnostic_only",
       "artifact": "results/vmex/integer_3d_short_warm_ns33_ftol1e-4/probe.json",
       "scope": "At iteration 65 discrete components meet 1e-4, while native B/J/force errors are above those of the projected seed; not accepted recovery"
+    },
+    {
+      "id": "S02f",
+      "phase": "P3",
+      "capability": "Spectral and radial localization of integer 3-D VMEX force",
+      "cases": "integer_3d prescribed iota at NS=33",
+      "evidence": "vmex_spectral_force_localization",
+      "status": "diagnostic_only",
+      "artifact": "results/vmex/integer_3d_force_localization_ns33.json",
+      "scope": "Projected R/Z force is concentrated in outer interior rows and low m/n modes; each block sum reproduces the public invariant residual, but no root cause is certified"
     }
   ]
 }

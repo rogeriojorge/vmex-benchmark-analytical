@@ -68,9 +68,13 @@ A [same-grid invariant-force comparison](results/vmex/integer_3d_raw_residual_co
 
 The comparison was repeated with VMEX's actual warm-start boundary transfer and constraint-baseline rebinding; its reported components changed only at roundoff. A [bounded NS33 warm run](results/vmex/integer_3d_short_warm_ns33_ftol1e-4/probe.json) reached `FTOL=1e-4` after 65 iterations, but native B/J/force errors had increased to `1.51e-3 / 0.326 / 3.72` from the projected seed's `2.59e-5 / 3.55e-3 / 3.78e-2`. [Its saved trajectory](figures/vmex_integer_3d_trajectory.png) shows the discrete force reduction alongside those independent physical scores. This remains diagnostic only.
 
+The [projected NS33 force localization](results/vmex/integer_3d_force_localization_ns33.json) places 86% of R and 86% of Z invariant-force sums in radial rows 16–31 of 0–32, and 85% of R and 87% of Z in poloidal modes 3–6. The checked spectral block sums reproduce VMEX's scalar residuals. This rules out a force concentrated solely at the axis or fixed boundary; the cause remains open.
+
 ![Integer 3-D projection and loose-root comparison](figures/vmex_integer_3d_projection.png)
 
 ![Integer 3-D short warm trajectory](figures/vmex_integer_3d_trajectory.png)
+
+![Integer 3-D projected force localization](figures/vmex_integer_force_localization.png)
 
 ![Measured asymmetric Solov'ev surface B refinement](figures/vmex_lasym_surface_B.png)
 
