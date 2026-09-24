@@ -29,7 +29,7 @@ if [ "${PUBLISH:-0}" != 1 ]; then
     exit 0
 fi
 if ! git diff --cached --quiet; then
-    git commit -m "Add analytical references and staged VMEX benchmark plan"
+    git commit -m "${COMMIT_MESSAGE:-Add analytical references and staged VMEX benchmark plan}"
 fi
 # Reject unexpected new-project authorship rather than rewriting it.
 if git log --format='%an|%cn' | grep -v '^rogeriojorge|rogeriojorge$'; then

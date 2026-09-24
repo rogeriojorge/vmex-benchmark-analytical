@@ -50,6 +50,12 @@ def score(data):
             raise ValueError("s must contain one normalized flux label per point.")
         target = label_at_s(case, np.asarray(data["s"]))
         result["surface_label_max_over_edge"] = float(np.max(abs(label-target))/case.edge)
+    if "vmex_s" in data:
+        vmex_s = np.asarray(data["vmex_s"], dtype=float)
+        if vmex_s.shape != (len(xyz),) or not np.isfinite(vmex_s).all():
+            raise ValueError("Invalid VMEX inverted flux labels.")
+        if "s" in data:
+            result["vmex_s_minus_reference_max_abs"] = float(np.max(abs(vmex_s-np.asarray(data["s"]))))
     return result
 
 

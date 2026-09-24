@@ -26,8 +26,9 @@
       "capability": "VMEX parser, units and signed closure recovery",
       "cases": "14 generated cases x NCURR 0/1",
       "evidence": "discrete_consistency",
-      "status": "planned",
-      "artifact": null
+      "status": "passed",
+      "artifact": "results/inputs/vmex_parser.json",
+      "scope": "Parser, boundary coefficients, signed setup flux/iota/current and profile values; physical field sign checked in axisymmetric integer recovery only"
     },
     {
       "id": "R03",
@@ -35,8 +36,9 @@
       "capability": "Strong-boundary resolution",
       "cases": "sheared B/C",
       "evidence": "analytic_reference_sampled",
-      "status": "blocked",
-      "artifact": null
+      "status": "passed",
+      "artifact": "inputs/manifest.json",
+      "scope": "Candidate boundary fit below 1e-6 m; final field-output error decomposition remains open"
     },
     {
       "id": "G01",
@@ -71,8 +73,9 @@
       "capability": "Fixed-boundary recovery",
       "cases": "mandatory mild cases x both closures",
       "evidence": "analytic_recovery",
-      "status": "implemented_not_run",
-      "artifact": null
+      "status": "planned",
+      "artifact": null,
+      "scope": "Aggregate mandatory mild-case recovery remains open; see S01a and S01b for first measured cells"
     },
     {
       "id": "S02",
@@ -298,6 +301,26 @@
       "evidence": "integration",
       "status": "planned",
       "artifact": null
+    },
+    {
+      "id": "S01a",
+      "phase": "P3",
+      "capability": "Axisymmetric integer prescribed-iota cold recovery",
+      "cases": "NS=33,65,129",
+      "evidence": "analytic_recovery",
+      "status": "passed",
+      "artifact": "results/vmex/figure_manifest.json",
+      "scope": "Initial B/J/force targets met at NS=129 on 96 physical-volume samples; independent angular and projection gates remain"
+    },
+    {
+      "id": "S01b",
+      "phase": "P3",
+      "capability": "Axisymmetric integer current-prescribed multigrid smoke",
+      "cases": "NS=17,33,65",
+      "evidence": "analytic_recovery",
+      "status": "failed",
+      "artifact": "results/vmex/integer_axisymmetric_current/forward.json",
+      "scope": "Converged discrete solve; NS=65 current and force exceed initial physical targets"
     }
   ]
 }

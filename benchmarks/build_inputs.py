@@ -21,6 +21,7 @@ MU0 = 4e-7*np.pi  # Fixed convention, recorded; not an unspecified CODATA consta
 MAX_M = 12
 MAX_N = 12
 FIT_GRID = 128
+STRONG_BOUNDARY_RESOLUTION = {"sheared_B": (16, 96), "sheared_C": (24, 100)}
 PROFILE_DEGREES = (8, 12, 16, 20)
 PROFILE_TOL = 1e-8
 OUT = ROOT / "inputs"
@@ -103,14 +104,17 @@ if __name__ == "__main__":
     records = []
     for case in cases().values():
         validate(case)
-        rows, ntor, geometry_error, symmetry_error = boundary_coefficients(case)
+        max_m, max_n = STRONG_BOUNDARY_RESOLUTION.get(case.name, (MAX_M, MAX_N))
+        fit_grid = max(FIT_GRID, 4*max_m, 4*max_n)
+        rows, ntor, geometry_error, symmetry_error = boundary_coefficients(
+            case, max_m=max_m, max_n=max_n, grid=fit_grid)
         polp, poli, polI, profile_errors = fit_profiles(case)
         for closure in (0, 1):
             suffix = "iota" if closure == 0 else "current"
             path = OUT / f"input.{case.name}_{suffix}"
             axis_symmetric = is_axisymmetric(case)
             lines = ["&INDATA", "  LFREEB = F", f"  LASYM = {'T' if case.lasym else 'F'}",
-                     f"  NFP = {case.nfp}", f"  MPOL = {MAX_M+1}", f"  NTOR = {ntor}",
+                     f"  NFP = {case.nfp}", f"  MPOL = {max_m+1}", f"  NTOR = {ntor}",
                      "  NS_ARRAY = 17 33 65", "  FTOL_ARRAY = 1e-10 1e-12 1e-14",
                      "  NITER_ARRAY = 10000 20000 30000", "  NSTEP = 200", "  DELT = 0.5",
                      "  GAMMA = 0", "  PRES_SCALE = 1", "  PMASS_TYPE = 'power_series'",
@@ -135,7 +139,8 @@ if __name__ == "__main__":
                                 symmetric_omitted_coeff_m=symmetry_error*LENGTH_M,
                                 profile_errors=profile_errors, vmex_run=False,
                                 status="candidate_input_not_equilibrium",
-                                resolution=dict(mpol=MAX_M+1, ntor=ntor, ns=[17,33,65])))
+                                resolution=dict(mpol=max_m+1, ntor=ntor,
+                                                fit_grid=fit_grid, ns=[17,33,65])))
         print(f"{case.name:34s} boundary={geometry_error:.2e} profile={max(profile_errors.values()):.2e}")
     (OUT / "manifest.json").write_text(json.dumps(dict(schema=1, mu0=MU0,
         length_m=LENGTH_M, field_t=FIELD_T, reference_sign="CCW R-Z theta: iota negative; validate in VMEX",

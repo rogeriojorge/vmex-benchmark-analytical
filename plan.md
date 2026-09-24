@@ -732,17 +732,17 @@ A negative scientific result can close an experiment if its mathematical assumpt
 
 | Phase | Status on delivery | Evidence / next action |
 |---|---|---|
-| P0 | Partial | Owner authentication and local Git identity verified; reference suite rerun. Public repo publication, source pins and semantic ledger remain. |
-| P1 | Partial | 29 tests and 14 reference cases reproduced locally; VMEX sign/parser checks and B/C boundary refinement remain. |
-| P2 | Planned | Build the common native-state adapter and exact projections. |
-| P3 | Implemented smoke, not run | VMEX unavailable in the handoff runtime; start mild fixed-boundary recovery locally. |
+| P0 | Partial | Public repo and required source pins exist; 504 code/config ledger entries, 3 partial reviews. Complete semantic source/test review and reproducible environment metadata. |
+| P1 | Partial | 29 tests and 14 references reproduced; all 28 decks passed VMEX parser/setup checks. B/C fits clear the smoke gate; final output error budget and global sheared chart checks remain. |
+| P2 | Partial | Native state B, Cartesian curl and pressure-gradient sampling runs; exact projection and higher spatial derivatives remain. |
+| P3 | Partial | Axisymmetric integer iota cold NS=33/65/129 and current multigrid NS=65 measured. Other required geometry/closure cells remain. |
 | P4 | Reference derivatives run; solver work planned | Smoke runner exists; complete family input-map differentiation is not implemented. |
 | P5 | Planned | Review/execute Boozer, bounce and diagnostics tests with independent references. |
 | P6 | Planned | Vacuum operators first, then anchored coupled roots, then exterior fitting. |
 | P7 | Planned | Same-representation polishing and stationary response. |
 | P8 | Planned | Direct exact-family optimization, then transverse and source studies. |
 | P9 | Planned | Small scoped adjacent/mirror integrations, with unavailable statuses where needed. |
-| P10 | Reference figures only | Solver performance and final result figures await measured data. |
+| P10 | Partial | Reference figures and one measured axisymmetric recovery figure; matched performance work remains. |
 
 ### Entry 2026-09-23: handoff preparation
 
@@ -773,6 +773,22 @@ A negative scientific result can close an experiment if its mathematical assumpt
 **Next exact actions:** finish staged diff/privacy inspection; invoke `PUBLISH=1 sh tools/publish.sh` only if clean; record the resulting URL and commit; create a clean pinned VMEX baseline worktree and clone the supplement; then inventory and review the parser/profile/field paths before checking input interpretation.
 
 **Working tree / branch / PR state:** new local `main` repository with staged scaffold; no public repository or PR at this entry.
+
+### Entry 2026-09-23: pinned input conversion and first native recovery
+
+**Phase / run IDs:** P0-P3, P10; I01, R03, S01a, S01b. The public `rogeriojorge/vmex-benchmark-analytical` repository was created under the verified owner account at initial commit `8171799`. No upstream branch or PR was created.
+
+**Source commits and environment:** clean detached VMEX baseline `b5f5267efc0795c4a49a224e321e9b370975c14c`, analytical supplement `4c0b690ddebdc71811c88223eb9f44a98ab64222`, SOLVAX `2e246a5d6093662f9b5f72c46f995cd7c4bbd479`, and booz_xform_jax `cd25084422de10b620bd86ede0bbd51ba06d7fa6`. The VMEX runtime used Python 3.11.14 and VMEX 0.8.1 on a CPU. Exact private checkout/environment locations are in a Git-local handoff note, excluded from commits. `tools/audit_sources.py` inventoried 657 tracked text/source files; `results/audit/review_ledger.json` has 504 code/config entries, 3 marked partial and none marked complete. This is not a complete semantic audit. Optional integrations remain unpinned and unrun.
+
+**Changes and commands:** added `benchmarks/verify_inputs_vmex.py`, native physical sampling, a recovery plot generator and run records. From the repository root: `python3 benchmarks/build_inputs.py`; `PYTHONPATH="$VMEX_BASELINE" "$BENCHMARK_PYTHON" benchmarks/verify_inputs_vmex.py`; `PYTHONPATH="$VMEX_BASELINE" "$BENCHMARK_PYTHON" benchmarks/run_vmex.py inputs/input.integer_axisymmetric_iota 33` (repeat with 65 and 129); `PYTHONPATH="$VMEX_BASELINE" "$BENCHMARK_PYTHON" benchmarks/run_vmex.py inputs/input.integer_axisymmetric_current`; `python3 benchmarks/plot_vmex_recovery.py`. The two environment variables are defined privately in the Git-local handoff note. The reference suite was rerun and still passed 29 tests.
+
+**Input results and failed attempts:** a Fourier ladder showed the first B/C boundaries were underresolved. For B, `(max_m,max_n)=(16,96)` gave held-out maximum 8.59e-9 m. For C, `(24,100)` gave 3.34e-7 m; a trial with `n=112` reached 9.80e-8 m but VMEX rejected its RBC subscript because its declared boundary limit is `|n|<=101`. The supported `n=100` candidate clears the 1e-6 m smoke gate. All 28 regenerated decks passed parser/setup checks of boundary coefficients, pressure, signed flux, iota or normalized current, with no unexpected theta flip. Artifact: `results/inputs/vmex_parser.json`. This does not certify the boundary contribution to every final solver output.
+
+**Recovery measurements:** axisymmetric integer prescribed-iota cold NS=33/65/129 converged with final FSQR components below 1e-14. Native-sample `(E_B,E_J,F/RMS(grad p_exact))` were `(5.76e-5,2.58e-2,2.88e-1)`, `(7.90e-6,2.49e-3,2.76e-2)`, `(6.51e-7,8.24e-5,8.18e-4)`. At NS=129, `FSQR=9.66e-15`, `FSQZ=3.53e-15`, `FSQL=1.71e-16`; native sample flux-label error was 3.17e-6. The final NS=129 sample meets the initial single-run targets. Current-prescribed multigrid NS=65 converged with `(7.97e-6,2.49e-3,2.75e-2)`, failing the current/force physical targets at that resolution. The near-axis Gauss point dominated the NS=65 current/force error. The first uniform-radial sampler gave an incomplete-volume weight sum, so it was replaced by Gauss radial quadrature and both closure runs were repeated. Solver portions took 2.42-6.07 s per process; native sampling/scoring took about 43-44 s and dominated wall time. Peak memory was not captured. Records and small sampled arrays are in `results/vmex/`; WOUT files are local and excluded from Git.
+
+**Independent checks and figure:** the scorer evaluates the analytical field at the same Cartesian points and obtains J and grad p independently. `figures/vmex_axisymmetric_recovery.png` was generated from saved run records, visually inspected, and linked to source hashes in `results/vmex/figure_manifest.json`. The volume quadrature sums to 0.308425146 m3 for the axisymmetric case, matching its independent exact volume at the shown precision. These measurements are nonlinear recovery evidence for one case, not a projection or broad capability certificate.
+
+**Decision and next exact action:** keep P0-P3 partial. Complete semantic review of the native field, input, setup, profile and solver paths with tests; implement an exact-state projection to separate representation from recovery; then run axisymmetric current at NS=129 and start asymmetric Solov'ev with both closure modes. Before any wider 3-D or gradient study, verify source/field error floors and final input-fit effects on scored observables. The present benchmark working tree has unpublished changes on `main`; no upstream PR exists.
 
 ```text
 Date/time and benchmark commit:

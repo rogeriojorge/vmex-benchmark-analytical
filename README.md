@@ -40,11 +40,25 @@ The scripts use float64. Recorded package versions and machine information are i
 
 ![Reference Taylor test](figures/reference_derivatives.png)
 
+## First measured VMEX recovery
+
+At the pinned VMEX baseline, the axisymmetric integer case converged with prescribed iota at three cold radial resolutions. Errors use 96 native Cartesian field samples on a 3×8×4 physical-volume quadrature. They compare the solved state with the independent exact field; `J` is the curl of native `B`, and the pressure gradient uses VMEX's inverted flux coordinate and parsed pressure profile.
+
+| NS | B relative L2 | J relative L2 | Force RMS / exact pressure-gradient RMS |
+|---:|---:|---:|---:|
+| 33 | 5.76e-5 | 2.58e-2 | 2.88e-1 |
+| 65 | 7.90e-6 | 2.49e-3 | 2.76e-2 |
+| 129 | 6.51e-7 | 8.24e-5 | 8.18e-4 |
+
+The `NS=129` run meets the initial single-run B, J and force targets. Its largest normalized discrete force component was 9.66e-15. This is one fixed-boundary case; projection error, independent angular refinement and the other required geometries remain open. The near-axis sample was the main source of the larger `NS=65` current/force error. A prescribed-current multigrid run at `NS=65` gave B error 7.97e-6, J error 2.49e-3 and force ratio 2.75e-2, with current and force still above their planned targets. All run records and native sample arrays are in [results/vmex](results/vmex).
+
+![Measured axisymmetric VMEX recovery](figures/vmex_axisymmetric_recovery.png)
+
 ## Candidate VMEX inputs
 
 `inputs/` contains 28 generated INDATA candidates: 14 configurations, each with prescribed iota and prescribed current. The current profile is generated from an independent Ampere integral and converted to VMEX's derivative-profile convention. Pressure, flux and geometric scales are recorded in [inputs/manifest.json](inputs/manifest.json).
 
-The first Fourier truncation resolves the mild examples for a smoke run, but **not sheared B and C**. Their sampled boundary-fit errors are about 2.8e-3 m and 1.3e-2 m at a 1 m length scale. Refining radial resolution cannot repair that input error. The first forward runner refuses those manifests until they are refined. No candidate has yet been certified by VMEX in this bundle.
+The regenerated boundary candidates use `(MPOL, NTOR) = (17, 96)` for sheared B and `(25, 100)` for sheared C. Their independent sampled Fourier-fit maxima are 8.59e-9 m and 3.34e-7 m at a 1 m length scale, below the 1e-6 m smoke gate. VMEX's pinned parser and setup accepted all 28 candidates: their sign map has `signgs=-1` and no unexpected theta flip, and sampled pressure, iota or normalized current agree with the independent reference fits. The details are in [results/inputs/vmex_parser.json](results/inputs/vmex_parser.json). These checks do not certify the final output error budget or an equilibrium solve.
 
 ![Boundary input fit error](figures/boundary_fit.png)
 
@@ -56,7 +70,7 @@ python benchmarks/run_vmex.py inputs/input.integer_axisymmetric_current
 python benchmarks/run_gradient_smoke.py inputs/input.integer_axisymmetric_iota
 ```
 
-Those scripts were syntax-checked but not run in the handoff environment, where VMEX was absent. The forward runner records scalar and solver output; it does not certify physical accuracy. The gradient smoke varies only PHIEDGE at fixed boundary and profiles. It does not differentiate the complete analytical family. Complete those adapters and the native-field sampler in phases P1-P4 before reporting recovery or continuum derivatives.
+The forward runner now saves native Cartesian samples and physical scores after a converged solve. The gradient smoke remains unrun; it varies only PHIEDGE at fixed boundary and profiles and does not differentiate the complete analytical family. Complete the other recovery and derivative checks in phases P2-P4 before broader claims.
 
 The shared scorer accepts an NPZ file of **native physical samples**, with its contract in the script and plan:
 
@@ -72,7 +86,7 @@ The [execution matrix](benchmark_matrix.json) records implemented, planned and b
 
 An exact interior field is not automatically an exact free-boundary solution. The free-boundary plan distinguishes exact vacuum/operator tests, independently converged numerical coupled equilibria, and approximate exterior fits to an exact interior target. Genuinely symmetry-broken 3-D extensions outside the exact families also require numerical references. These distinctions are part of the benchmark, not missing labels to be filled with assumed answers.
 
-No VMEX, DESC, free-boundary, GPU or kinetic benchmark has been run yet. No remote repository was created by this handoff preparation. The local agent creates it using the owner's authentication. [The source review](docs/SOURCE_REVIEW.md) identifies inspected paths and the full local audit still needed; a whole-source semantic review is not claimed from an interface inspection.
+Only the axisymmetric integer fixed-boundary VMEX recovery described above has run. No DESC, free-boundary, GPU or kinetic benchmark has run yet. The [public benchmark repository](https://github.com/rogeriojorge/vmex-benchmark-analytical) was created using the verified owner's authentication. [The source review](docs/SOURCE_REVIEW.md) identifies inspected paths and the full local semantic audit still needed; an inventory and focused parser review are not a whole-source semantic review.
 
 ## Local source inventory and publication
 

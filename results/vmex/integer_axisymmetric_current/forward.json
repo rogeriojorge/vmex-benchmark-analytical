@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "evidence": "vmex_forward_smoke",
+  "full_benchmark_pass": false,
+  "vmex_commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+  "vmex_version": "0.8.1",
+  "input": "inputs/input.integer_axisymmetric_current",
+  "python": "3.11.14 (main, Oct 11 2025, 02:11:58) [Clang 15.0.0 (clang-1500.3.9.4)]",
+  "platform": "macOS-14.4.1-arm64-arm-64bit",
+  "devices": [
+    "TFRT_CPU_0"
+  ],
+  "solve_seconds_including_first_compile": 6.0718064999673516,
+  "converged": true,
+  "fsqr": 8.007844836733695e-15,
+  "fsqz": 9.988912458312652e-15,
+  "fsql": 1.2630204172028632e-18,
+  "scalars": {
+    "wb": 0.00396728465560949,
+    "volume_p": 0.3084251375340425,
+    "betatotal": 0.03076923123375082
+  },
+  "continuous_field_scored": true,
+  "input_sign_recovery_certified": false,
+  "native_sample_sha256": "e09fb17407cb66828103f06aa20dd5eeafad74f1ceea9c812a6d28ec31895ada",
+  "native_score": {
+    "schema": 1,
+    "evidence": "physical_samples_vs_analytic",
+    "case": "integer_axisymmetric",
+    "sample_count": 96,
+    "quadrature_volume_m3": 0.3084251457693661,
+    "field_relative_l2": 7.966838583604627e-06,
+    "current_relative_l2": 0.0024895722493094587,
+    "gradp_relative_l2": 2.3674071697508137e-05,
+    "force_rms_N_m3": 7748.514546478603,
+    "force_fixed_magnetic_scale": 0.00973707055018033,
+    "force_pressure_scale": 0.02753999500608337,
+    "field_max_abs_T": 3.0116035202537172e-05,
+    "accepted": null,
+    "surface_label_max_over_edge": 1.021405182655144e-14,
+    "vmex_s_minus_reference_max_abs": 1.7754565490385454e-05
+  },
+  "native_sample_and_score_seconds": 44.02909066597931
+}

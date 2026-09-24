@@ -4,17 +4,34 @@
   "phases": {
     "P0": "partial",
     "P1": "partial",
-    "P2": "planned",
-    "P3": "implemented_not_run",
+    "P2": "partial",
+    "P3": "partial",
     "P4": "implemented_not_run",
     "P5": "planned",
     "P6": "planned",
     "P7": "planned",
     "P8": "planned",
     "P9": "planned",
-    "P10": "planned"
+    "P10": "partial"
   },
-  "verified": ["reference tests", "sampled analytical identities", "candidate input fits"],
-  "limited": ["sheared B/C boundary fits"],
-  "unavailable_evidence": ["VMEX parser", "VMEX nonlinear recovery", "native VMEX field samples", "free boundary", "GPU", "adjacent integrations"]
+  "verified": [
+    "reference tests",
+    "sampled analytical identities",
+    "candidate input fits",
+    "VMEX parser/setup conversion for 28 decks",
+    "axisymmetric integer iota recovery at NS=129"
+  ],
+  "limited": [
+    "source semantic review incomplete",
+    "native axisymmetric NS=65 current/force error above initial targets",
+    "projection error not separated",
+    "B/C final output impact unmeasured"
+  ],
+  "unavailable_evidence": [
+    "other required VMEX recoveries",
+    "equilibrium derivatives",
+    "free boundary",
+    "GPU",
+    "adjacent integrations"
+  ]
 }

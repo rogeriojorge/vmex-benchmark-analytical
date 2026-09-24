@@ -1,17 +1,77 @@
 {
   "schema": 1,
   "audit_date": "2026-09-23",
-  "scope_note": "Pinned VMEX and Landreman sources; adjacent interfaces reviewed, full local source inventory and semantic review still required. Null pins must be resolved and recorded before results are accepted.",
+  "scope_note": "Clean pinned VMEX, Landreman, SOLVAX and booz_xform_jax checkouts were inventoried; optional repositories remain unpinned and unrun. Semantic review is incomplete.",
   "repositories": [
-    {"name": "vmex", "repo": "uwplasma/vmex", "pin": "b5f5267efc0795c4a49a224e321e9b370975c14c", "role": "primary solver", "required": true},
-    {"name": "analytic_3d_equilibria", "repo": "landreman/analytic_3d_equilibria", "pin": "4c0b690ddebdc71811c88223eb9f44a98ab64222", "role": "independent paper supplement and DESC comparison", "required": true},
-    {"name": "SOLVAX", "repo": "uwplasma/SOLVAX", "pin": null, "role": "structured and Krylov response solves", "required": true},
-    {"name": "booz_xform_jax", "repo": "uwplasma/booz_xform_jax", "pin": null, "role": "Boozer transform", "required": true},
-    {"name": "virtual_casing_jax", "repo": "uwplasma/virtual_casing_jax", "pin": null, "role": "plasma-source field and singular quadrature", "required": false},
-    {"name": "ESSOS", "repo": "uwplasma/ESSOS", "pin": null, "role": "coil fields and trajectory integration", "required": false},
-    {"name": "NEO_JAX", "repo": "uwplasma/NEO_JAX", "pin": null, "role": "effective-ripple integration", "required": false},
-    {"name": "GKX", "repo": "uwplasma/GKX", "pin": null, "role": "geometry and optional linear gyrokinetic integration", "required": false},
-    {"name": "DKX", "repo": "uwplasma/DKX", "pin": null, "role": "geometry and optional kinetic closure integration", "required": false},
-    {"name": "pyQSC_JAX", "repo": "uwplasma/pyQSC_JAX", "pin": "6c7c7ea8d14932d3400c5daa61432a6b93a426a9", "role": "optional draft PR 2, not main; restricted near-axis checks", "required": false}
+    {
+      "name": "vmex",
+      "repo": "uwplasma/vmex",
+      "pin": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+      "role": "primary solver",
+      "required": true
+    },
+    {
+      "name": "analytic_3d_equilibria",
+      "repo": "landreman/analytic_3d_equilibria",
+      "pin": "4c0b690ddebdc71811c88223eb9f44a98ab64222",
+      "role": "independent paper supplement and DESC comparison",
+      "required": true
+    },
+    {
+      "name": "SOLVAX",
+      "repo": "uwplasma/SOLVAX",
+      "pin": "2e246a5d6093662f9b5f72c46f995cd7c4bbd479",
+      "role": "structured and Krylov response solves",
+      "required": true
+    },
+    {
+      "name": "booz_xform_jax",
+      "repo": "uwplasma/booz_xform_jax",
+      "pin": "cd25084422de10b620bd86ede0bbd51ba06d7fa6",
+      "role": "Boozer transform",
+      "required": true
+    },
+    {
+      "name": "virtual_casing_jax",
+      "repo": "uwplasma/virtual_casing_jax",
+      "pin": null,
+      "role": "plasma-source field and singular quadrature",
+      "required": false
+    },
+    {
+      "name": "ESSOS",
+      "repo": "uwplasma/ESSOS",
+      "pin": null,
+      "role": "coil fields and trajectory integration",
+      "required": false
+    },
+    {
+      "name": "NEO_JAX",
+      "repo": "uwplasma/NEO_JAX",
+      "pin": null,
+      "role": "effective-ripple integration",
+      "required": false
+    },
+    {
+      "name": "GKX",
+      "repo": "uwplasma/GKX",
+      "pin": null,
+      "role": "geometry and optional linear gyrokinetic integration",
+      "required": false
+    },
+    {
+      "name": "DKX",
+      "repo": "uwplasma/DKX",
+      "pin": null,
+      "role": "geometry and optional kinetic closure integration",
+      "required": false
+    },
+    {
+      "name": "pyQSC_JAX",
+      "repo": "uwplasma/pyQSC_JAX",
+      "pin": "6c7c7ea8d14932d3400c5daa61432a6b93a426a9",
+      "role": "optional draft PR 2, not main; restricted near-axis checks",
+      "required": false
+    }
   ]
 }
