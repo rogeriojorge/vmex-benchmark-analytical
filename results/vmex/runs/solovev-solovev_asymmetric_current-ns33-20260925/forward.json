@@ -1,0 +1,116 @@
+{
+  "schema": 2,
+  "run_id": "solovev-solovev_asymmetric_current-ns33-20260925",
+  "parent_run_id": null,
+  "status": "scored_diagnostic",
+  "evidence": "vmex_fixed_boundary_diagnostic",
+  "input_file": "inputs/input.solovev_asymmetric_current",
+  "input_sha256": "53be23bd8c26c04fe1070feca7c71fe7ad2cefdb741b2c57badbfbfd21b5ddfa",
+  "seed_sha256": null,
+  "source": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.0",
+    "distribution_version": "0.11.0",
+    "version_source": "checkout_pyproject",
+    "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "controls": {
+    "requested": {
+      "ns": 33,
+      "niter": 30000,
+      "ftol": "1e-12",
+      "tcon0": null,
+      "keep_terminal": true
+    },
+    "effective": {
+      "ns_array": [
+        33
+      ],
+      "ftol_array": [
+        1e-12
+      ],
+      "niter_array": [
+        30000
+      ],
+      "tcon0": 1.0
+    }
+  },
+  "start_time_utc": "2026-09-25T06:59:37.828678+00:00",
+  "environment": {
+    "python": "3.12.13",
+    "platform": {
+      "system": "Linux",
+      "release": "7.0.11-76070011-generic",
+      "machine": "x86_64"
+    },
+    "jax": "0.11.0",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "devices": [
+      "cpu:0"
+    ],
+    "host_peak_rss_mib": 1083.37890625,
+    "device_memory_peak_mib": null
+  },
+  "artifacts": {
+    "input_copy": {
+      "path": "input.indata",
+      "sha256": "53be23bd8c26c04fe1070feca7c71fe7ad2cefdb741b2c57badbfbfd21b5ddfa"
+    },
+    "wout": {
+      "path": "wout.nc",
+      "sha256": "472800436ba3287f8165466e13765a96f30cd49ef0f973d52247cf88e9333061"
+    },
+    "point_cloud": {
+      "path": "point_cloud.npz",
+      "sha256": "19e8571df8dac798df52a61cebea6357e6f6431d256dc062b8585cd5325c1367"
+    },
+    "solver_observations": {
+      "path": "vmex_observations.npz",
+      "sha256": "87aa1ab124217275baeb336a091a1c73cf16d94e69d399b663da5ca7fb51273e"
+    },
+    "native_scores": {
+      "path": "native_scores.json",
+      "sha256": "0110e3a91f392d23ebb4bba30bbef9237c3a613d4f8c8026f132a0d0935573f8"
+    }
+  },
+  "representation_resolved": true,
+  "measurement_resolved": false,
+  "root_certified": false,
+  "accepted": false,
+  "solve_seconds": 16.215372037986526,
+  "solver_converged": true,
+  "iterations": 502,
+  "ier_flag": 11,
+  "fsqr": 9.903995360121418e-13,
+  "fsqz": 8.377206091987494e-13,
+  "fsql": 1.655958959288577e-13,
+  "scalars": {
+    "wb": 0.004165399441960783,
+    "volume_p": 0.3233173949408086,
+    "betatotal": 0.030720780866296177
+  },
+  "end_time_utc": "2026-09-25T06:59:58.754096+00:00",
+  "field_path": "continuous_fitted_state_lasym",
+  "native_sample_and_score_seconds": 36.367491420998704,
+  "pointwise_thresholds_met": false,
+  "native_score": {
+    "schema": 2,
+    "evidence": "physical_samples_vs_analytic",
+    "case": "solovev_asymmetric",
+    "sample_count": 96,
+    "quadrature_volume_m3": 0.32333445491773605,
+    "field_relative_l2": 0.0001531150436254846,
+    "current_relative_l2": 0.005747288043077434,
+    "gradp_relative_l2": 0.00018741945223334187,
+    "force_rms_N_m3": 18201.370928334596,
+    "force_fixed_magnetic_scale": 0.02287251727748752,
+    "force_pressure_scale": 0.06469381920807465,
+    "field_max_abs_T": 0.0004617030219124916,
+    "surface_label_max_over_edge": 2.1429936696709673e-05,
+    "native_flux_label_minus_reference_max_abs": 0.0,
+    "native_flux_label_minus_reference_rms": 0.0
+  }
+}
