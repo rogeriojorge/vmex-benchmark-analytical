@@ -4,6 +4,24 @@ Exact toroidal equilibria, physical-field checks and a staged benchmark of VMEX'
 
 The primary references are [Landreman's analytical equilibria](https://arxiv.org/abs/2609.26742), their [supplementary implementation](https://github.com/landreman/analytic_3d_equilibria), and an explicitly derived asymmetric Solov'ev case. The implementation plan and continuing logbook are in [plan.md](plan.md). Start a local implementation session with [AGENT_PROMPT.md](AGENT_PROMPT.md).
 
+## Current VMEX results (continuation of 05e9473, September 2026)
+
+Historical VMEX `b5f5267` unless stated. "Point cloud" means fixed Cartesian sample points, not a resolved volume norm. Full records, commands and hashes are in the [logbook](plan.md#17-continuing-logbook).
+
+| Question | Result | Evidence level |
+|---|---|---|
+| Does the refinement observer see real corrections? | The old observer measured a memo hit. The saved NS65 zero-TCON0 "base" was already refined (raw 5.5e-7 → 1.19e-7); a second uncached pass certifies a root at 6.2e-14 in the same operator | Certified root |
+| Do saved NS65 branch endpoints satisfy the base linearization? | Yes: defect `A d_h + F_P q_h` falls as h² (3e-4 → 3e-8) with zero frozen-data drift | Linear-operator check |
+| Axisymmetric c (nonzero) and delta (null) responses, NS129 | c: 1.6e-5 relative error; delta null: E_B = 1.6e-6 (JVP with matched input tangent), branch FD 1.3–1.6e-6; root, linear, transpose and FD-window gates pass | Pointwise certificate (4 points) |
+| Null response versus NS (branch FD, 96 points) | 1.1e-3, 1.2e-3, 2.9e-4, 4.4e-6 for NS 17/33/65/129 | Point cloud |
+| Integer 3-D, NS129/257 zero TCON0, full volume | Mid-radius and edge meet the B/J/force gates (edge B 2.5e-7 at NS257); volume J/force fail in the first 2–3 axis cells | Resolved grids, bounded failure |
+| Cause of the axis failure | (1) VMEX field evaluator copies the first surface into the regular axis row: first-order axis B, NS-independent near-axis J. Fixed upstream in [uwplasma/vmex#452](https://github.com/uwplasma/vmex/pull/452) (unmerged). (2) After that fix a solver-side near-axis J defect remains (open) | Source-confirmed; reproducers included |
+| Default versus zero TCON0 | Integer 3-D NS129: zero is better on every grid. Sheared-A NS17: the default converges, zero caps. No global recommendation | Matched pairs |
+| Sheared A | Full-flux lambda reproduces the surface field to 1.6e-10; NS65 exact projection meets J/force gates (B 1.06e-5; 9.9e-6 at MPOL 17). Seeded solves drift away from it, cold multigrid fails (flux label error 0.46) | Projection only; solver limitation open |
+| LASYM | Symmetric problem with LASYM=T reproduces LASYM=F to round-off; genuine asymmetric Solov'ev converges (NS65 B 2.2e-5, fitted-state route) | Solver-state control |
+| Exact field-line flow, MGRID | Closed-form flow, tangent map, det = 1 and scaling tests pass; MGRID interpolation of an exact harmonic field is second order | Interface fixtures |
+| Direct integer-family optimization | No substantive C_J/C_B tradeoff: both objectives are driven to minimum beta and asymmetry | Documented limit |
+
 ## Results currently included
 
 These are **analytical reference results, not VMEX solver results**. The original reference suite passed 29 tests, and sampled force identities passed on 14 configurations. The latest clean Python 3.12 reference-environment run passes 55 tests with VMEX absent; it does not measure solver accuracy. The largest sampled force RMS divided by pressure-gradient RMS was 1.66e-15. Tests also cover an independent Grad-Shafranov identity, volume and toroidal-flux integrals, coordinate covariance, current integration, flux inversion, field Jacobians and sensitivity cancellations.
