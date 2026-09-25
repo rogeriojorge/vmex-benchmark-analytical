@@ -46,6 +46,9 @@ def main(argv=None):
     parser.add_argument("--niter", type=int, default=10000)
     parser.add_argument("--refine-tol", type=float, default=1e-11)
     parser.add_argument("--skip-memo-probe", action="store_true")
+    parser.add_argument("--no-host-solve", action="store_true",
+                        help="refine directly from --saved-state (e.g. an exact projection); no raw host solve")
+    parser.add_argument("--passes", type=int, default=1, help="observed refinement passes (each uncached)")
     parser.add_argument("--output-parent", type=Path, default=ROOT/"results/audit/refinement_observation")
     args = parser.parse_args(argv)
 
@@ -80,6 +83,46 @@ def main(argv=None):
     cfg = fresh_config()
     params = implicit.params_from_input(inp)
     record["params_sha256"] = observer.hashlib.sha256(implicit._params_key(params)).hexdigest()
+
+    if args.no_host_solve:
+        if not args.saved_state:
+            raise SystemExit("--no-host-solve needs --saved-state")
+        from vmex.core.solver import SpectralState
+        implicit._template_runtime(cfg)
+        implicit._boundary_pack_tables(cfg)
+        mask = SpectralState(**{n: np.asarray(getattr(implicit._fixed_boundary_dof_mask(cfg), n))
+                                for n in observer.FIELDS})
+        saved_npz = np.load(args.saved_state)
+        start = SpectralState(**{n: np.asarray(saved_npz[n]) for n in observer.FIELDS})
+        record["raw_host"] = None
+        record["start_state"] = {"path": str(args.saved_state), "file_sha256": sha256_file(args.saved_state),
+                                 "state_sha256": observer.tree_hash(start)}
+        arrays.update(_arrays("start", start))
+        arrays.update(_arrays("mask", mask))
+        record["observations"] = {}
+        current = start
+        for index in range(args.passes):
+            t = perf_counter()
+            current, obs, _ = observer.observe_refinement(implicit, cfg, params, current, mask)
+            obs["seconds"] = perf_counter() - t
+            obs["derivative_gate"] = observer.derivative_gate(obs)
+            record["observations"][f"pass{index+1}"] = obs
+            arrays.update(_arrays(f"pass{index+1}", current))
+            write_json(out/"observation.partial.json", record)
+            print("pass", index+1, obs["residual_before_refinement_operator"]["preconditioned"]["norm"],
+                  "->", obs["residual_after_refinement_operator"]["preconditioned"]["norm"],
+                  "changed", obs["state_changed"], flush=True)
+            if obs["status"]["root_certified"] or not obs["state_changed"]:
+                break
+        npz = out/"observation_arrays.npz"
+        with npz.open("xb") as handle:
+            np.savez_compressed(handle, **arrays)
+        record["arrays"] = {"path": npz.name, "sha256": sha256_file(npz)}
+        record["elapsed_seconds"] = perf_counter() - started
+        record["peak_host_rss_mib"] = _rss_mib()
+        write_json(out/"observation.json", record, exclusive=True)
+        (out/"observation.partial.json").unlink()
+        return
 
     t = perf_counter()
     raw, mask, host = observer.raw_host_state(implicit, cfg, params)
