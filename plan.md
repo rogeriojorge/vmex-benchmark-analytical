@@ -771,3 +771,12 @@ The paired TCON0=1 run from the same saved seed did converge in 208 iterations a
 **Identity/publication:** GitHub CLI authenticates as `rogeriojorge`; local author and committer both resolve to `rogeriojorge <6816712+rogeriojorge@users.noreply.github.com>`. `tools/publish.sh` was inspected and deliberately not invoked because its publish path pushes directly to `main`; use explicit branch-targeted Git commands after reviewing the staged diff. All new commits and the push remain pending; there is no PR.
 
 **Exact next action:** Finish the staged-diff/privacy/license review, refresh and verify the active handoff checksum list, commit and push the work to `t0-t1-d5484d1`, then append a publication receipt with the new commit and remote tip. Resume with the bounded TCON0=0 root-floor diagnostic specified above.
+
+
+### Publication receipt, 2026-09-25
+
+**Published checkpoint:** Commit `58c194a280f0e98ff37e2c770c301bc48dc0fdbd` (`Record sheared-A and axisymmetric diagnostics`) was created with author and committer `rogeriojorge <6816712+rogeriojorge@users.noreply.github.com>` and pushed to `origin/t0-t1-d5484d1`. GitHub authentication was verified as `rogeriojorge`. The exact staged diff passed whitespace and privacy scans; no credentials, local paths, host aliases, AI authors, or co-author trailers were present. The active checksum list validated after refreshing its README/plan entries. The public license/notice files were left intact.
+
+**Branch/PR state:** The continuation branch remote tip is `58c194a280f0e98ff37e2c770c301bc48dc0fdbd`. No PR was opened. Neither `main` nor an upstream VMEX/adjacent-code branch was changed. The only remaining local change is this publication receipt and its updated checksum line; it will be committed and pushed as a follow-up on the same branch.
+
+**Exact next action:** Commit and push this receipt, verify the clean branch tip and checksum manifest, then continue with one bounded NS65 TCON0=0 root-floor diagnostic on the saved base state. Report raw/preconditioned residual blocks, the actual refinement correction sequence, and gauge/rank conditioning. Preserve the current matched field differences as uncertified and do not draw a TCON0 recommendation.
