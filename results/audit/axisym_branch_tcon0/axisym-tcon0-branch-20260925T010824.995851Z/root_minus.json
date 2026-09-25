@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "case": "minus",
+  "status": "anchored_diagnostic_root",
+  "tcon0": 0.0,
+  "root": {
+    "residual_before_anchor": 1.2101378393050675e-07,
+    "residual_after_anchor": 1.2101378393050675e-07,
+    "state_anchor_shift_l2": 0.0,
+    "solver_state_l2": 8.013895832981044,
+    "solver_stats_delta": {
+      "solves": 1,
+      "iterations": 1091,
+      "solve_seconds": 0.5099310000659898,
+      "refinements": 1,
+      "refinement_steps": 7,
+      "refinement_krylov_iterations": 6151,
+      "refinement_factorizations": 1,
+      "refinement_seconds": 3.7154957089805976,
+      "jacobians": 0,
+      "jacobian_columns": 0,
+      "jacobian_krylov_iterations": 0,
+      "jacobian_seconds": 0,
+      "adjoints": 0,
+      "adjoint_krylov_iterations": 0,
+      "adjoint_seconds": 0,
+      "adjoint_certificate_fallbacks": 0,
+      "anchors": 0,
+      "anchor_steps": 0,
+      "anchor_krylov_iterations": 0,
+      "anchor_factorizations": 0,
+      "anchor_seconds": 0
+    }
+  },
+  "input": {
+    "path": "input_delta_ns65_minus.indata",
+    "sha256": "19a3622f7239616aa6da0ecea68e1733d9e8a5252666952a3d41a3dcc8b14cf2"
+  },
+  "state": {
+    "path": "state_minus.npz",
+    "sha256": "984d5d15ff3584cc0207be6a08d9c572685bb0eaa0ba7cc1dceb632a34fd2e8b"
+  }
+}

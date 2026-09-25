@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "evidence": "matched_projection_figure",
+  "figure": "figures/vmex_sheared_a_lambda_projection.png",
+  "figure_sha256": "72d4807c563bb464d86e48eb5d00c5f80ba6f058feb58702b6a76836756d0d54",
+  "script": "benchmarks/plot_sheared_lambda_projection.py",
+  "script_sha256": "baa05c5ff44be76c705103b6ad4d6822edc00ab58b32536f9faf5a6a569574fc",
+  "source_report_sha256": {
+    "lambda_zero": "16be101e15eff97977b56c2304c5459a6fb91dc7d47a68e46061a5d065ea837d",
+    "straight_field_lambda": "334309a6f50c5a4d4932ba284ea9e49e2a3871dd8980b78045bf2ce5efd964dd"
+  },
+  "same_source_pin": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+  "same_input_sha256": "def5ce4ef00329b7c7c7c69c1c60821d2e6d1c8d7db5c3694c8ed17d6de78897",
+  "same_reference_samples_sha256": "45ee4217c6c01efd41cd211d12059bf76dbf86830567956806164b83085af5c2",
+  "same_geometry_coefficients": true,
+  "sample_count": 96,
+  "metrics": {
+    "field_relative_l2": [
+      0.1340551037904,
+      0.0007065518688677467
+    ],
+    "current_relative_l2": [
+      0.26527814333510663,
+      0.0051311881280863645
+    ],
+    "gradp_relative_l2": [
+      0.0003581410859574973,
+      0.0003581410859574973
+    ],
+    "force_pressure_scale": [
+      1.2091582191647388,
+      0.02440645484139893
+    ]
+  },
+  "interpretation": "projection comparison only; no nonlinear root or resolved-volume claim"
+}

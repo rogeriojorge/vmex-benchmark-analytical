@@ -1,0 +1,325 @@
+{
+  "schema": 1,
+  "evidence": "matched_axisymmetric_delta_branch_tcon0_control",
+  "status": "diagnostic",
+  "accepted_derivative": false,
+  "accepted_coordinate_relabel": false,
+  "source": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.0",
+    "distribution_version": "0.11.0",
+    "version_source": "checkout_pyproject",
+    "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "input_sha256": "fc3e7591846aa18bb2365a2db731e865baa5d569ea5bfe4c9392bd71b7fc6852",
+  "base_input_fit_gate": {
+    "pressure": 8,
+    "iota": 8,
+    "current": 8,
+    "ntor": 0
+  },
+  "tcon0": 0.0,
+  "ns": 65,
+  "ftol": 1e-12,
+  "max_iterations": 10000,
+  "delta_centered_step": 1e-05,
+  "reference_arrays_sha256": "c9b9856f48a90b7a7e2bc6e531b3ec19105052e536c3b837f14fa69d2292df11",
+  "reference_point_count": 96,
+  "reference_s": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.45,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.65,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.82,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94,
+    0.94
+  ],
+  "inputs": {
+    "base": {
+      "path": "input_delta_ns65_base.indata",
+      "sha256": "7a75525e3efcd626f96811bec3c243b3dc8911f0832bcb2249cc46c9c4142deb"
+    },
+    "plus": {
+      "path": "input_delta_ns65_plus.indata",
+      "sha256": "3ac64e9ec1df13abdfefd97bcf9a2520443c9a5a30a60ec5b7edab672be0d5b0"
+    },
+    "minus": {
+      "path": "input_delta_ns65_minus.indata",
+      "sha256": "19a3622f7239616aa6da0ecea68e1733d9e8a5252666952a3d41a3dcc8b14cf2"
+    }
+  },
+  "perturbed_parameter_vectors": {
+    "plus": {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0,
+        0.015635
+      ],
+      "fit_gate": {
+        "boundary_max_error_m": 2.491971296100253e-12,
+        "omitted_symmetric_coefficient_m": 2.3554292197247584e-17,
+        "pressure": 1.4423668172496637e-15,
+        "iota": 6.661338147750939e-16,
+        "enclosed_current": 7.181990549289702e-16
+      }
+    },
+    "minus": {
+      "parameters": [
+        1.0,
+        1.0,
+        1.0,
+        0.015615
+      ],
+      "fit_gate": {
+        "boundary_max_error_m": 2.470533278905917e-12,
+        "omitted_symmetric_coefficient_m": 2.2113031464829726e-17,
+        "pressure": 8.887472179195937e-16,
+        "iota": 6.661338147750939e-16,
+        "enclosed_current": 7.717455612666939e-16
+      }
+    }
+  },
+  "roots": [
+    {
+      "schema": 1,
+      "case": "base",
+      "status": "anchored_diagnostic_root",
+      "tcon0": 0.0,
+      "root": {
+        "residual_before_anchor": 1.188382947183954e-07,
+        "residual_after_anchor": 1.188382947183954e-07,
+        "state_anchor_shift_l2": 0.0,
+        "solver_state_l2": 8.013864371159869,
+        "solver_stats_delta": {
+          "solves": 1,
+          "iterations": 1091,
+          "solve_seconds": 2.634928791085258,
+          "refinements": 1,
+          "refinement_steps": 7,
+          "refinement_krylov_iterations": 6151,
+          "refinement_factorizations": 1,
+          "refinement_seconds": 18.799343749997206,
+          "jacobians": 0,
+          "jacobian_columns": 0,
+          "jacobian_krylov_iterations": 0,
+          "jacobian_seconds": 0,
+          "adjoints": 0,
+          "adjoint_krylov_iterations": 0,
+          "adjoint_seconds": 0,
+          "adjoint_certificate_fallbacks": 0,
+          "anchors": 0,
+          "anchor_steps": 0,
+          "anchor_krylov_iterations": 0,
+          "anchor_factorizations": 0,
+          "anchor_seconds": 0
+        }
+      },
+      "input": {
+        "path": "input_delta_ns65_base.indata",
+        "sha256": "7a75525e3efcd626f96811bec3c243b3dc8911f0832bcb2249cc46c9c4142deb"
+      },
+      "state": {
+        "path": "state_base.npz",
+        "sha256": "0d39b98743838c4ace02c046f25850e2c135d4cc5f75159bcba32db8e3a1cf5a"
+      }
+    },
+    {
+      "schema": 1,
+      "case": "plus",
+      "status": "anchored_diagnostic_root",
+      "tcon0": 0.0,
+      "root": {
+        "residual_before_anchor": 8.423407042385342e-08,
+        "residual_after_anchor": 8.423407042385342e-08,
+        "state_anchor_shift_l2": 0.0,
+        "solver_state_l2": 8.013918379269674,
+        "solver_stats_delta": {
+          "solves": 1,
+          "iterations": 1091,
+          "solve_seconds": 0.5177077910630032,
+          "refinements": 1,
+          "refinement_steps": 7,
+          "refinement_krylov_iterations": 6151,
+          "refinement_factorizations": 1,
+          "refinement_seconds": 3.6828175419941545,
+          "jacobians": 0,
+          "jacobian_columns": 0,
+          "jacobian_krylov_iterations": 0,
+          "jacobian_seconds": 0,
+          "adjoints": 0,
+          "adjoint_krylov_iterations": 0,
+          "adjoint_seconds": 0,
+          "adjoint_certificate_fallbacks": 0,
+          "anchors": 0,
+          "anchor_steps": 0,
+          "anchor_krylov_iterations": 0,
+          "anchor_factorizations": 0,
+          "anchor_seconds": 0
+        }
+      },
+      "input": {
+        "path": "input_delta_ns65_plus.indata",
+        "sha256": "3ac64e9ec1df13abdfefd97bcf9a2520443c9a5a30a60ec5b7edab672be0d5b0"
+      },
+      "state": {
+        "path": "state_plus.npz",
+        "sha256": "7727c86334e5b0cfc355a27873639330ee3e48eb657fe400ee2a872463656e1f"
+      }
+    },
+    {
+      "schema": 1,
+      "case": "minus",
+      "status": "anchored_diagnostic_root",
+      "tcon0": 0.0,
+      "root": {
+        "residual_before_anchor": 1.2101378393050675e-07,
+        "residual_after_anchor": 1.2101378393050675e-07,
+        "state_anchor_shift_l2": 0.0,
+        "solver_state_l2": 8.013895832981044,
+        "solver_stats_delta": {
+          "solves": 1,
+          "iterations": 1091,
+          "solve_seconds": 0.5099310000659898,
+          "refinements": 1,
+          "refinement_steps": 7,
+          "refinement_krylov_iterations": 6151,
+          "refinement_factorizations": 1,
+          "refinement_seconds": 3.7154957089805976,
+          "jacobians": 0,
+          "jacobian_columns": 0,
+          "jacobian_krylov_iterations": 0,
+          "jacobian_seconds": 0,
+          "adjoints": 0,
+          "adjoint_krylov_iterations": 0,
+          "adjoint_seconds": 0,
+          "adjoint_certificate_fallbacks": 0,
+          "anchors": 0,
+          "anchor_steps": 0,
+          "anchor_krylov_iterations": 0,
+          "anchor_factorizations": 0,
+          "anchor_seconds": 0
+        }
+      },
+      "input": {
+        "path": "input_delta_ns65_minus.indata",
+        "sha256": "19a3622f7239616aa6da0ecea68e1733d9e8a5252666952a3d41a3dcc8b14cf2"
+      },
+      "state": {
+        "path": "state_minus.npz",
+        "sha256": "984d5d15ff3584cc0207be6a08d9c572685bb0eaa0ba7cc1dceb632a34fd2e8b"
+      }
+    }
+  ],
+  "all_roots_anchored": true,
+  "all_field_inversions_valid": true,
+  "valid_counts": {
+    "base": 96,
+    "plus": 96,
+    "minus": 96
+  },
+  "branch_B_fd_l2_fixed_scale": 0.39801155175917796,
+  "branch_B_fd_minus_exact_null_l2": 0.39801155175917796,
+  "branch_B_fd_minus_default_tcon0_l2": 0.49031913157299956,
+  "default_tcon0_branch_B_fd_l2": 0.1839586551044788,
+  "arrays": {
+    "path": "branch_tcon0_ns65.npz",
+    "sha256": "c25dd1e08aa732a94dc2d4b39508f0dfa41bce301606c935867e87d675a3c66e"
+  },
+  "script": "benchmarks/probe_axisymmetric_tcon0_branch.py",
+  "script_sha256": "f8f8fd6f521ee791590f71c6b357f96f27986c829edc19122daff4b4560bb0b2",
+  "command": "python benchmarks/probe_axisymmetric_tcon0_branch.py",
+  "elapsed_seconds": 42.92025270801969,
+  "host_peak_rss_mib": 2110.390625
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "amendment": "tcon0_zero_branch_root_status",
+  "status": "diagnostic_only",
+  "raw_report_unchanged": true,
+  "source_report": "results/audit/axisym_branch_tcon0/axisym-tcon0-branch-20260925T010824.995851Z/tcon0_branch_probe.json",
+  "source_report_sha256": "4ef56762a6485a3cddf99d2c0a7bec4395b0573075769d2a134ac40462f3bdb4",
+  "root_source_sha256": "f8f8fd6f521ee791590f71c6b357f96f27986c829edc19122daff4b4560bb0b2",
+  "current_probe_source": "benchmarks/probe_axisymmetric_tcon0_branch.py",
+  "current_probe_source_sha256": "c133b0d4840e698f11785aff9974461df8204bdff3319ede23addd336b5a8d0f",
+  "current_probe_source_matches_run": false,
+  "certificate_rule": "root_certified iff residual_after_anchor <= refine_tol; the saved probe used refine_tol=1e-11",
+  "roots": [
+    {
+      "case": "base",
+      "recorded_status": "anchored_diagnostic_root",
+      "corrected_status": "residual_unresolved",
+      "residual_after_anchor": 1.188382947183954e-07,
+      "certificate_tolerance": 1e-11,
+      "residual_to_tolerance": 11883.829471839541
+    },
+    {
+      "case": "plus",
+      "recorded_status": "anchored_diagnostic_root",
+      "corrected_status": "residual_unresolved",
+      "residual_after_anchor": 8.423407042385342e-08,
+      "certificate_tolerance": 1e-11,
+      "residual_to_tolerance": 8423.407042385343
+    },
+    {
+      "case": "minus",
+      "recorded_status": "anchored_diagnostic_root",
+      "corrected_status": "residual_unresolved",
+      "residual_after_anchor": 1.2101378393050675e-07,
+      "certificate_tolerance": 1e-11,
+      "residual_to_tolerance": 12101.378393050676
+    }
+  ],
+  "all_roots_certified": false,
+  "derivative_interpretation": "The saved branch field finite difference is not a certified equilibrium response because every TCON0=0 root exceeds the fixed-point residual certificate tolerance.",
+  "script": "benchmarks/amend_axisymmetric_tcon0_root_status.py",
+  "script_sha256": "e3c1209fac39ad6f884dc9e6c7ec1ceb41d9f713ae7712dfb090775b54263177",
+  "command": "python benchmarks/amend_axisymmetric_tcon0_root_status.py"
+}
