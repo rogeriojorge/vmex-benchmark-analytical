@@ -7,7 +7,10 @@ import json
 import os
 from pathlib import Path
 import subprocess
-import tomllib
+try:  # Python >= 3.11; the DESC environment is 3.10
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover
+    tomllib = None
 import uuid
 
 import numpy as np
@@ -254,7 +257,7 @@ def source_metadata(module_file: str | Path, package: str, version: str | None) 
     if root.returncode:
         return base
     project_metadata = Path(root.stdout.strip())/"pyproject.toml"
-    if project_metadata.is_file():
+    if project_metadata.is_file() and tomllib is not None:
         try:
             project = tomllib.loads(project_metadata.read_text(encoding="utf-8")).get("project", {})
             source_version = project.get("version")
