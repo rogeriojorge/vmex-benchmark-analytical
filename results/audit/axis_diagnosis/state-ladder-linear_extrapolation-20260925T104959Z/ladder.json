@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "run_id": "state-ladder-linear_extrapolation-20260925T104959Z",
+  "evidence": "exact_projection_no_solve",
+  "axis_row": "linear_extrapolation",
+  "deck_sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab",
+  "points": "exact chart at s, n x n angles (one period)",
+  "rows": [
+    {
+      "ns": 129,
+      "state_sha256": "077046c1f6985b2f322fbbf667b7593b91f637ddcb286af43995cd5c65c3b271",
+      "by_s": {
+        "1e-08": {
+          "all_valid": true,
+          "B_relative_l2": 3.1399186829529053e-06,
+          "parallel_rms_over_B": 2.6783306017750743e-06,
+          "flux_label_error_max": 1.8574946337291367e-09,
+          "J_relative_l2_ij": 0.0005386571652495191,
+          "J_relative_l2_ji": 2.0000536280852788
+        },
+        "0.0001": {
+          "all_valid": true,
+          "B_relative_l2": 1.0180894970036027e-05,
+          "parallel_rms_over_B": 1.0044036801652663e-05,
+          "flux_label_error_max": 1.8550686848443942e-07,
+          "J_relative_l2_ij": 0.0048733530615257545,
+          "J_relative_l2_ji": 2.000062759438661
+        },
+        "0.01": {
+          "all_valid": true,
+          "B_relative_l2": 0.00010210911135551908,
+          "parallel_rms_over_B": 0.00010205065621950823,
+          "flux_label_error_max": 5.178054702133228e-06,
+          "J_relative_l2_ij": 0.02828094169974312,
+          "J_relative_l2_ji": 2.0000843753365656
+        },
+        "0.5": {
+          "all_valid": true,
+          "B_relative_l2": 8.808248985788806e-07,
+          "parallel_rms_over_B": 6.61198737431381e-07,
+          "flux_label_error_max": 3.5119636434544077e-06,
+          "J_relative_l2_ij": 7.552073090440893e-06,
+          "J_relative_l2_ji": 1.9999992366809025
+        }
+      },
+      "source": "results/audit/measurement_c2/integer3d-ns129-tcon0-0-full-c2-v3-20260925/spectral_state.npz",
+      "zero_lambda_rows": 4
+    }
+  ],
+  "elapsed_seconds": 4.902919707936235
+}
