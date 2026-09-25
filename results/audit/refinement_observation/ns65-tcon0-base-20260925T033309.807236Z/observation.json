@@ -1,0 +1,477 @@
+{
+  "schema": 1,
+  "run_id": "ns65-tcon0-base-20260925T033309.807236Z",
+  "question": "C0/C1 single-pass refinement observation",
+  "command": "python benchmarks/observe_root_refinement.py --deck results/audit/axisym_branch_tcon0/axisym-tcon0-branch-20260925T010824.995851Z/input_delta_ns65_base.indata --saved-state results/audit/axisym_branch_tcon0/axisym-tcon0-branch-20260925T010824.995851Z/state_base.npz --ns 65 --label ns65-tcon0-base",
+  "execution_source_sha256": "2ffa109d4043aacd9737529ee740004c704837ffa357b74cb6b2c8ef8d35b094",
+  "deck": {
+    "path": "results/audit/axisym_branch_tcon0/axisym-tcon0-branch-20260925T010824.995851Z/input_delta_ns65_base.indata",
+    "sha256": "7a75525e3efcd626f96811bec3c243b3dc8911f0832bcb2249cc46c9c4142deb"
+  },
+  "jax": "0.11.0",
+  "vmex_distribution": "0.10.0",
+  "devices_used": [
+    "cpu:0"
+  ],
+  "effective": {
+    "ns": 65,
+    "ftol": 1e-12,
+    "niter": 10000,
+    "refine_tol": 1e-11,
+    "tcon0": 0.0,
+    "ncurr": 1
+  },
+  "params_sha256": "7304f4ab31a9711173c705e633c1c8b25a5877f041a4c8fac6d4b1db7f80baae",
+  "raw_host": {
+    "host_returned": true,
+    "converged": true,
+    "iterations": 1091,
+    "ier_flag": 11,
+    "fsqr_fsqz_fsql": [
+      9.982863454489994e-13,
+      4.705302558622449e-13,
+      2.5201332026634834e-14
+    ],
+    "raw_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+    "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+    "seconds": 3.2818443330470473
+  },
+  "saved_state": {
+    "path": "results/audit/axisym_branch_tcon0/axisym-tcon0-branch-20260925T010824.995851Z/state_base.npz",
+    "file_sha256": "0d39b98743838c4ace02c046f25850e2c135d4cc5f75159bcba32db8e3a1cf5a",
+    "state_sha256": "bcabe6a5147097391bf28fd8a44eb80be01accb66acb3e156565c31a8a3e8a81",
+    "identical_to_raw_host": false,
+    "difference_from_raw_host_l2": 0.07742635253858475
+  },
+  "observations": {
+    "raw_host": {
+      "observer": "single_pass_uncached_refined_state",
+      "observer_vmex_pin": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+      "memo_untouched": true,
+      "refine_tol": 1e-11,
+      "input_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+      "output_state_sha256": "1f15bf832a75e5476348671a77f787b51bc7346265dd1da78eb63a64971d664a",
+      "state_changed": true,
+      "correction_norm": 0.07742989070294715,
+      "attempted_steps": 7,
+      "trace": [
+        {
+          "kind": "block_factorization",
+          "at_state_sha256": "4c2bd83def43faeacb02360a465bafe2e81e4e9b5f9666d534e3fefff80132db"
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "4c2bd83def43faeacb02360a465bafe2e81e4e9b5f9666d534e3fefff80132db",
+          "output_sha256": "12a4ae7cd768798f16166a4d75739e6f9c7585b70d652a621a2b7f3d29a267d9",
+          "trial_preconditioned_residual": 0.0002441003225914566,
+          "reported_linear_relative_residual": 1.2190561755678534e-08,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 8.857007331351567e-07,
+            "correction_norm": 0.07721669366820808,
+            "true_linear_defect_over_residual": 2.7512138844889303e-06,
+            "merit_directional_derivative_over_residual_sq": -1.000000003055944
+          },
+          "distance_to_returned_over_state": 3.457565663226107e-05,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "12a4ae7cd768798f16166a4d75739e6f9c7585b70d652a621a2b7f3d29a267d9",
+          "output_sha256": "ac79b13eb7838f80856ce038f2dfb4a5ffc21e377213a467f0a8653a8909383c",
+          "trial_preconditioned_residual": 4.986414185653666e-07,
+          "reported_linear_relative_residual": 0.0015672024218294884,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 0.000706822701690555,
+            "correction_norm": 0.002524489040220043,
+            "true_linear_defect_over_residual": 0.0015672024440755849,
+            "merit_directional_derivative_over_residual_sq": -0.999997543899067
+          },
+          "distance_to_returned_over_state": 0.00034331838741747636,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "ac79b13eb7838f80856ce038f2dfb4a5ffc21e377213a467f0a8653a8909383c",
+          "output_sha256": "485353dea86106af1804246caaff48ddaa28d4040460364a45af0e4916efe707",
+          "trial_preconditioned_residual": 2.5157197261248585e-07,
+          "reported_linear_relative_residual": 0.18922081426476986,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 1.9532818460585185e-06,
+            "correction_norm": 0.0014833584578117182,
+            "true_linear_defect_over_residual": 0.18922083679100707,
+            "merit_directional_derivative_over_residual_sq": -0.9641954896756584
+          },
+          "distance_to_returned_over_state": 0.00017008148576751377,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "485353dea86106af1804246caaff48ddaa28d4040460364a45af0e4916efe707",
+          "output_sha256": "61f615f3b641babe05a983b428aa7ea86fbe7f26f034e42361ffef8bd085aa4c",
+          "trial_preconditioned_residual": 1.1907360288328809e-07,
+          "reported_linear_relative_residual": 0.17229121701513894,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 1.0377206378845693e-06,
+            "correction_norm": 0.0013526139803918306,
+            "true_linear_defect_over_residual": 0.17229122292384405,
+            "merit_directional_derivative_over_residual_sq": -0.9703157736142669
+          },
+          "distance_to_returned_over_state": 4.537172337343039e-19,
+          "accepted_as_returned_state": true
+        },
+        {
+          "kind": "gcrot_newton_step",
+          "input_sha256": "4c2bd83def43faeacb02360a465bafe2e81e4e9b5f9666d534e3fefff80132db",
+          "output_sha256": "12b1a64d2df3f218716fc11a731be59c1c21e2eaaad4f481789b7380cb735d12",
+          "trial_preconditioned_residual": 0.00024328954605593703,
+          "reported_linear_relative_residual": 0.00034533152259396077,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "preconditioned",
+            "input_residual_norm": 5.517960204485733e-07,
+            "correction_norm": 0.07691824962773658,
+            "true_linear_defect_over_residual": 0.00034532466956506836,
+            "merit_directional_derivative_over_residual_sq": -0.9999998804011644
+          },
+          "distance_to_returned_over_state": 9.498818184253489e-05,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "gcrot_newton_step",
+          "input_sha256": "12b1a64d2df3f218716fc11a731be59c1c21e2eaaad4f481789b7380cb735d12",
+          "output_sha256": "a1f58a75ae42d370f3153c6db79607da213a94db9dc00f3116197d7996f20505",
+          "trial_preconditioned_residual": 1.3172251827068067e-07,
+          "reported_linear_relative_residual": 2.218729019674445e-06,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "preconditioned",
+            "input_residual_norm": 0.00024328954605593703,
+            "correction_norm": 0.0008330150606427467,
+            "true_linear_defect_over_residual": 2.2187322852343907e-06,
+            "merit_directional_derivative_over_residual_sq": -0.9999999999944711
+          },
+          "distance_to_returned_over_state": 0.00013319985118863503,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "gcrot_newton_step",
+          "input_sha256": "a1f58a75ae42d370f3153c6db79607da213a94db9dc00f3116197d7996f20505",
+          "output_sha256": "b397875c3b8de8b7f4f3e5260d5cd6945faff58f84fa7b5c75ed60a5a7a21d0a",
+          "trial_preconditioned_residual": 3.1415924082549396e-07,
+          "reported_linear_relative_residual": 0.0003656093292123779,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "preconditioned",
+            "input_residual_norm": 1.3172251827068067e-07,
+            "correction_norm": 0.0015244504910791492,
+            "true_linear_defect_over_residual": 0.00036560976816548335,
+            "merit_directional_derivative_over_residual_sq": -0.999999870801977
+          },
+          "distance_to_returned_over_state": 9.096097913542128e-05,
+          "accepted_as_returned_state": false
+        }
+      ],
+      "returned_trial_indices": [
+        4
+      ],
+      "residual_before_refinement_operator": {
+        "frozen_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+        "preconditioned": {
+          "norm": 5.517960204485733e-07,
+          "blocks": {
+            "R_cos": 2.7018901084495378e-08,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 1.471914045979092e-08,
+            "L_cos": 0.0,
+            "L_sin": 5.509375409891702e-07
+          }
+        },
+        "raw": {
+          "norm": 8.857007331351567e-07,
+          "blocks": {
+            "R_cos": 7.301370291144056e-07,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 5.012686985386617e-07,
+            "L_cos": 0.0,
+            "L_sin": 9.767254348064796e-09
+          }
+        }
+      },
+      "residual_after_refinement_operator": {
+        "frozen_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "1f15bf832a75e5476348671a77f787b51bc7346265dd1da78eb63a64971d664a",
+        "preconditioned": {
+          "norm": 1.1907360288328807e-07,
+          "blocks": {
+            "R_cos": 7.146848222755825e-09,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 1.0674456795643961e-08,
+            "L_cos": 0.0,
+            "L_sin": 1.183786358943446e-07
+          }
+        },
+        "raw": {
+          "norm": 4.4176257345900363e-07,
+          "blocks": {
+            "R_cos": 1.8847277719949421e-07,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 3.994836854877895e-07,
+            "L_cos": 0.0,
+            "L_sin": 6.705862578688717e-09
+          }
+        }
+      },
+      "residual_after_refrozen_operator": {
+        "frozen_state_sha256": "1f15bf832a75e5476348671a77f787b51bc7346265dd1da78eb63a64971d664a",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "1f15bf832a75e5476348671a77f787b51bc7346265dd1da78eb63a64971d664a",
+        "preconditioned": {
+          "norm": 1.1907360288328807e-07,
+          "blocks": {
+            "R_cos": 7.146848222755825e-09,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 1.0674456795643961e-08,
+            "L_cos": 0.0,
+            "L_sin": 1.183786358943446e-07
+          }
+        },
+        "raw": {
+          "norm": 4.4176257345900363e-07,
+          "blocks": {
+            "R_cos": 1.8847277719949421e-07,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 3.994836854877895e-07,
+            "L_cos": 0.0,
+            "L_sin": 6.705862578688717e-09
+          }
+        }
+      },
+      "status": {
+        "host_returned": true,
+        "refinement_attempted": true,
+        "root_certified": false,
+        "response_certified": false
+      },
+      "seconds": 57.451423292048275,
+      "derivative_gate": {
+        "root_certified": false,
+        "derivative_may_be_accepted": false,
+        "reason": "root certificate failed; diagnostic only"
+      }
+    },
+    "saved": {
+      "observer": "single_pass_uncached_refined_state",
+      "observer_vmex_pin": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+      "memo_untouched": true,
+      "refine_tol": 1e-11,
+      "input_state_sha256": "bcabe6a5147097391bf28fd8a44eb80be01accb66acb3e156565c31a8a3e8a81",
+      "output_state_sha256": "08818d78c9f131d6fc8b5fd027a257b8f072dbf0b01cf37f7284dfec56955e06",
+      "state_changed": true,
+      "correction_norm": 0.0008301435318432538,
+      "attempted_steps": 4,
+      "trace": [
+        {
+          "kind": "block_factorization",
+          "at_state_sha256": "6142c1881dac995f74e0989e74f9d2bf1ee444d7370b4cb4f33a20ba68dac819"
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "6142c1881dac995f74e0989e74f9d2bf1ee444d7370b4cb4f33a20ba68dac819",
+          "output_sha256": "55117b72fa8c900ca1a202efe98e7a9d7d6fb7fe626e3a66b3e8c8e29baf6dda",
+          "trial_preconditioned_residual": 5.078913490800809e-08,
+          "reported_linear_relative_residual": 3.001479846474671e-10,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 4.4067975337127953e-07,
+            "correction_norm": 0.0008204428262333751,
+            "true_linear_defect_over_residual": 4.207987367735938e-06,
+            "merit_directional_derivative_over_residual_sq": -0.9999999875192876
+          },
+          "distance_to_returned_over_state": 1.2272701620602396e-06,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "55117b72fa8c900ca1a202efe98e7a9d7d6fb7fe626e3a66b3e8c8e29baf6dda",
+          "output_sha256": "b756ac65dccfda1ad0879f9f58599981ee361e9f42a817c708574b9fe43ba5de",
+          "trial_preconditioned_residual": 7.034241329694678e-12,
+          "reported_linear_relative_residual": 5.6238348914260876e-08,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 1.9682155468954444e-07,
+            "correction_norm": 9.716617379806994e-06,
+            "true_linear_defect_over_residual": 1.02819616700526e-05,
+            "merit_directional_derivative_over_residual_sq": -0.9999999920065742
+          },
+          "distance_to_returned_over_state": 5.50696512859913e-09,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "b756ac65dccfda1ad0879f9f58599981ee361e9f42a817c708574b9fe43ba5de",
+          "output_sha256": "82b41a3dc713680eb2ca9cbf033fc019bb77116814f71557c0c50b6eb92e8609",
+          "trial_preconditioned_residual": 6.221813732877998e-14,
+          "reported_linear_relative_residual": 2.2577528660213128e-08,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 2.749296569562111e-11,
+            "correction_norm": 4.379524948732605e-08,
+            "true_linear_defect_over_residual": 0.07267270829916053,
+            "merit_directional_derivative_over_residual_sq": -0.999955316613952
+          },
+          "distance_to_returned_over_state": 0.0,
+          "accepted_as_returned_state": true
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "82b41a3dc713680eb2ca9cbf033fc019bb77116814f71557c0c50b6eb92e8609",
+          "output_sha256": "b4c44facbc6257b47673eb87588c93260eb0a84a35ee5265e036c33c732fcefe",
+          "trial_preconditioned_residual": 6.976852185591419e-14,
+          "reported_linear_relative_residual": 3.7534170298781396e-07,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 6.325100302792517e-12,
+            "correction_norm": 1.4220148379800767e-11,
+            "true_linear_defect_over_residual": 0.3085732263130036,
+            "merit_directional_derivative_over_residual_sq": -0.9539540434821955
+          },
+          "distance_to_returned_over_state": 1.7880903104280843e-12,
+          "accepted_as_returned_state": false
+        }
+      ],
+      "returned_trial_indices": [
+        3
+      ],
+      "residual_before_refinement_operator": {
+        "frozen_state_sha256": "bcabe6a5147097391bf28fd8a44eb80be01accb66acb3e156565c31a8a3e8a81",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "bcabe6a5147097391bf28fd8a44eb80be01accb66acb3e156565c31a8a3e8a81",
+        "preconditioned": {
+          "norm": 1.188382947183954e-07,
+          "blocks": {
+            "R_cos": 7.130434084464413e-09,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 1.0646116703806112e-08,
+            "L_cos": 0.0,
+            "L_sin": 1.1814549251017685e-07
+          }
+        },
+        "raw": {
+          "norm": 4.4067975337127953e-07,
+          "blocks": {
+            "R_cos": 1.8804769543896572e-07,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 3.98487061513619e-07,
+            "L_cos": 0.0,
+            "L_sin": 6.691119316447734e-09
+          }
+        }
+      },
+      "residual_after_refinement_operator": {
+        "frozen_state_sha256": "bcabe6a5147097391bf28fd8a44eb80be01accb66acb3e156565c31a8a3e8a81",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "08818d78c9f131d6fc8b5fd027a257b8f072dbf0b01cf37f7284dfec56955e06",
+        "preconditioned": {
+          "norm": 6.221813732877998e-14,
+          "blocks": {
+            "R_cos": 4.097943450161802e-16,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.3372535059664233e-16,
+            "L_cos": 0.0,
+            "L_sin": 6.221634876556327e-14
+          }
+        },
+        "raw": {
+          "norm": 6.325100302792517e-12,
+          "blocks": {
+            "R_cos": 5.647308639645951e-12,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.848618098200152e-12,
+            "L_cos": 0.0,
+            "L_sin": 1.3187098723276514e-14
+          }
+        }
+      },
+      "residual_after_refrozen_operator": {
+        "frozen_state_sha256": "08818d78c9f131d6fc8b5fd027a257b8f072dbf0b01cf37f7284dfec56955e06",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "08818d78c9f131d6fc8b5fd027a257b8f072dbf0b01cf37f7284dfec56955e06",
+        "preconditioned": {
+          "norm": 6.221813732877998e-14,
+          "blocks": {
+            "R_cos": 4.097943450161802e-16,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.3372535059664233e-16,
+            "L_cos": 0.0,
+            "L_sin": 6.221634876556327e-14
+          }
+        },
+        "raw": {
+          "norm": 6.325100302792517e-12,
+          "blocks": {
+            "R_cos": 5.647308639645951e-12,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.848618098200152e-12,
+            "L_cos": 0.0,
+            "L_sin": 1.3187098723276514e-14
+          }
+        }
+      },
+      "status": {
+        "host_returned": true,
+        "refinement_attempted": true,
+        "root_certified": true,
+        "response_certified": false
+      },
+      "seconds": 0.45411920896731317,
+      "derivative_gate": {
+        "root_certified": true,
+        "derivative_may_be_accepted": true,
+        "reason": null
+      }
+    }
+  },
+  "public_memo_probe": {
+    "config_is_content_interned_note": "make_config interns by content; identical settings share this memo within one process",
+    "first_call_refined": true,
+    "second_call_memo_hit": true,
+    "same_object": true,
+    "output_sha256": "1f15bf832a75e5476348671a77f787b51bc7346265dd1da78eb63a64971d664a",
+    "seconds": 3.938166292035021,
+    "make_config_returned_same_object": true,
+    "matches_observer_output": true
+  },
+  "arrays": {
+    "path": "observation_arrays.npz",
+    "sha256": "c590b816b70bd52d1734edd3f65f3132911951776db73ac92549efa7095187a2"
+  },
+  "elapsed_seconds": 65.16713908396196,
+  "peak_host_rss_mib": 1879.90625
+}

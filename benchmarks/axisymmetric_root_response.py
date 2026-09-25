@@ -24,6 +24,8 @@ from vmex.core.virtual_casing import _state_field_spectra
 
 from analytic import ROOT, cases, field, flux, iota, label_at_s, surface
 from build_inputs import FIELD_T, LENGTH_M, MU0, boundary_coefficients, fit_profiles
+from measurement import exact_field_parameter_tangents, scaled_response_error
+import refinement_observer
 from evidence import reserve_run_directory, sha256_file, source_metadata, write_json
 
 
@@ -31,6 +33,7 @@ PINNED_VMEX = "b5f5267efc0795c4a49a224e321e9b370975c14c"
 PARAMETERS = ("c", "delta")
 PARAMETER_INDEX = {"c": 2, "delta": 3}
 PARAMETER_SCALES = {"c": 1.0, "delta": 1.0}
+# Plan eq. (3) uses a_star = the base parameter value (fractional change).
 BLOCK_SCALES = {
     "boundary_m": LENGTH_M,
     "pressure_am_pa": FIELD_T**2/MU0,
@@ -186,38 +189,35 @@ def _sample_points(case):
 
 
 def _exact_field_tangents(case, points):
-    values = []
-    for point in points:
-        def evaluate(parameters):
-            changed = replace(case, parameters=(case.parameters[0], case.parameters[1],
-                                                  parameters[0], parameters[1]))
-            return FIELD_T*field(changed, jnp.asarray(point))[0]
-        values.append(np.asarray(jax.jacfwd(evaluate)(jnp.asarray(case.parameters[2:]))))
     # (point, B component, c/delta direction)
-    return np.stack(values)
-
-
-def _fixed_point_residual(cfg, params, state, mask):
-    frozen = jax.tree.map(jax.lax.stop_gradient, state)
-    project = implicit._dof_projector(cfg, mask)
-    residual = implicit.residual_fn(cfg, frozen, mask, formulation="preconditioned")
-    value = residual(project(state), params)
-    return _tree_norm(value)
+    return exact_field_parameter_tangents(case, points, (2, 3),
+                                          length_m=LENGTH_M, field_t=FIELD_T)
 
 
 def _root_and_anchor(cfg, params):
+    """Raw host state plus exactly one observed, uncached refinement.
+
+    Replaces the historical observer, which measured after the public callback
+    had already refined and then re-called the memoized refinement (a cache
+    hit).  Historical keys are kept; their values now come from the single
+    pass, measured in the refinement's own operator (frozen at the raw state).
+    """
     previous_stats = dict(implicit._SOLVE_STATS.get(cfg, {}))
-    state, mask = implicit.solve_implicit_with_aux(params, cfg)
-    state = jax.block_until_ready(state)
-    before = _fixed_point_residual(cfg, params, state, mask)
-    anchored = implicit._refine_fixed_point(cfg, params, state, mask)
+    raw, mask, host = refinement_observer.raw_host_state(implicit, cfg, params)
+    anchored, observation, _ = refinement_observer.observe_refinement(
+        implicit, cfg, params, raw, mask)
     anchored = jax.block_until_ready(anchored)
-    after = _fixed_point_residual(cfg, params, anchored, mask)
-    shift = _tree_norm(_tree_difference(anchored, state))
-    return anchored, mask, {"residual_before_anchor": before,
+    before = observation["residual_before_refinement_operator"]["preconditioned"]["norm"]
+    after = observation["residual_after_refinement_operator"]["preconditioned"]["norm"]
+    return anchored, mask, {"observer": "single_pass_v1",
+                            "residual_before_anchor": before,
                             "residual_after_anchor": after,
-                            "state_anchor_shift_l2": shift,
-                            "solver_state_l2": _tree_norm(state),
+                            "state_anchor_shift_l2": observation["correction_norm"],
+                            "solver_state_l2": _tree_norm(raw),
+                            "raw_host": host,
+                            "refinement": observation,
+                            "status": observation["status"],
+                            "derivative_gate": refinement_observer.derivative_gate(observation),
                             "solver_stats_delta": {
                                 key: (value-previous_stats.get(key, 0)
                                       if isinstance(value, (int, float)) else value)
@@ -225,7 +225,12 @@ def _root_and_anchor(cfg, params):
                             }}
 
 
-def _score_response(actual, expected, fixed_scale):
+def _score_response(actual, expected, fixed_scale, parameter_scale=None):
+    """Historical raw-norm fields plus the invariant plan-eq.(3) record.
+
+    ``*_l2`` and ``*_over_fixed_scale`` keep their original (sample-count
+    dependent, B_star/L_star) meaning for comparison with saved reports.
+    """
     difference = np.asarray(actual)-np.asarray(expected)
     actual = np.asarray(actual)
     expected = np.asarray(expected)
@@ -238,6 +243,10 @@ def _score_response(actual, expected, fixed_scale):
         "absolute_error_over_fixed_scale": float(np.linalg.norm(difference)/fixed_scale),
         "relative_error": (float(np.linalg.norm(difference)/np.linalg.norm(expected))
                            if np.linalg.norm(expected) > 1e-14*fixed_scale else None),
+        **({"point_cloud_eq3": scaled_response_error(
+            actual, expected, np.ones(len(actual)),
+            parameter_scale=parameter_scale, field_scale=FIELD_T)}
+           if parameter_scale is not None else {}),
     }
 
 
@@ -354,7 +363,8 @@ def _run_rung(ns, steps, frozen_steps, output, source, base_parameters,
             frozen_path_rows.append({
                 "step": step,
                 "B_frozen_linear_path_fd": _score_response(
-                    frozen_fd, expected, FIELD_T/LENGTH_M),
+                    frozen_fd, expected, FIELD_T/LENGTH_M,
+                    base_parameters[PARAMETER_INDEX[name]]),
                 "B_frozen_fd_minus_jvp_over_fixed_scale": float(
                     np.linalg.norm(frozen_fd-dB)/(FIELD_T/LENGTH_M)),
             })
@@ -362,7 +372,7 @@ def _run_rung(ns, steps, frozen_steps, output, source, base_parameters,
         response_records[name] = {
             "parameter_scale": PARAMETER_SCALES[name],
             "field_at_fixed_cartesian_points": _score_response(
-                dB, expected, FIELD_T/LENGTH_M),
+                dB, expected, FIELD_T/LENGTH_M, base_parameters[PARAMETER_INDEX[name]]),
             "beta_volume": {
                 "vmex_jvp": dbeta,
                 "exact_derivative": beta_exact[name],
@@ -443,7 +453,8 @@ def _run_rung(ns, steps, frozen_steps, output, source, base_parameters,
             target = exact_B[:, :, PARAMETERS.index(name)]
             row = {
                 "step": step,
-                "B_branch_fd": _score_response(fd_B, target, FIELD_T/LENGTH_M),
+                "B_branch_fd": _score_response(fd_B, target, FIELD_T/LENGTH_M,
+                                              base_parameters[PARAMETER_INDEX[name]]),
                 "B_fd_minus_jvp_over_fixed_scale": float(
                     np.linalg.norm(fd_B-jvp_B)/(FIELD_T/LENGTH_M)),
                 "beta_branch_fd": fd_beta,
@@ -500,6 +511,8 @@ def _run_rung(ns, steps, frozen_steps, output, source, base_parameters,
         "base_input_sha256": sha256_file(base_input_path),
         "base_solver_input_artifact_sha256": sha256_file(base_input_artifact),
         "root_anchor": root_record,
+        # Accepted derivatives require the base root certificate (plan section 3).
+        "derivative_gate": root_record["derivative_gate"],
         "sample_points_xyz_m": np.asarray(points).tolist(),
         "sample_flux_coordinate_seed": np.asarray(initial_flux).tolist(),
         "input_tangents": {

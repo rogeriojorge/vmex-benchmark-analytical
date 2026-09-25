@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "run_id": "ns65-tcon0-root-floor-20260925T033801Z",
+  "metric": "point_cloud_uniform_weights_screening",
+  "deck_sha256": "7a75525e3efcd626f96811bec3c243b3dc8911f0832bcb2249cc46c9c4142deb",
+  "states_npz_sha256": "2cb3f58a3c16271938731522fad799d704fdaf36d192ffe93eae8eb3dde9b30e",
+  "points_npz_sha256": "c9b9856f48a90b7a7e2bc6e531b3ec19105052e536c3b837f14fa69d2292df11",
+  "points": 96,
+  "states": {
+    "raw": {
+      "state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+      "all_valid": true,
+      "valid_count": 96,
+      "B_relative_l2": 7.3139384381029e-06,
+      "max_flux_label_error": 2.6115204659032942e-05
+    },
+    "pass1": {
+      "state_sha256": "1f15bf832a75e5476348671a77f787b51bc7346265dd1da78eb63a64971d664a",
+      "all_valid": true,
+      "valid_count": 96,
+      "B_relative_l2": 1.6668296774785527e-06,
+      "max_flux_label_error": 6.492961969417621e-06
+    },
+    "pass2": {
+      "state_sha256": "08818d78c9f131d6fc8b5fd027a257b8f072dbf0b01cf37f7284dfec56955e06",
+      "all_valid": true,
+      "valid_count": 96,
+      "B_relative_l2": 1.673454588432504e-06,
+      "max_flux_label_error": 6.502954690804086e-06
+    }
+  },
+  "pairwise": {
+    "raw_minus_pass1_relative_l2": 6.449890010048174e-06,
+    "raw_minus_pass2_relative_l2": 6.417801304541443e-06,
+    "pass1_minus_pass2_relative_l2": 1.0846241536284376e-07
+  },
+  "arrays": {
+    "path": "fields.npz",
+    "sha256": "6df2fb5a7f57dd02d94d9cb88177b7015e86cd9fae238a6cd667fc7d12a4b531"
+  },
+  "elapsed_seconds": 2.143370416946709
+}

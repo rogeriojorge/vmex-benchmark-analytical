@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "run_id": "ns65-delta-default-20260925T033907Z",
+  "question": "C1 eq.(2) branch-tangent defect, default TCON NS65 delta",
+  "base_deck_sha256": "639145871f95866e6b0f09b31ce8a6abc8ca7352607f45d7945a166c757c5fa5",
+  "response_arrays_sha256": "3fa34a565c46402336870a4b6e78dd63d75b8ed0a7c6963fabba9f41fedf2f5c",
+  "fine_arrays_sha256": "93213116c568576c59764097d2ce5ebe6dc095f30b4b9b04ead944190d115e1e",
+  "base_state_sha256": "b9426222c9845d72e06ad100d1d9be9a1c85912d981ca09e7d3ce6cb70b7e7c2",
+  "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+  "tcon0": 1.0,
+  "base_residual_in_own_operator": {
+    "frozen_state_sha256": "b9426222c9845d72e06ad100d1d9be9a1c85912d981ca09e7d3ce6cb70b7e7c2",
+    "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+    "state_sha256": "b9426222c9845d72e06ad100d1d9be9a1c85912d981ca09e7d3ce6cb70b7e7c2",
+    "preconditioned": {
+      "norm": 5.697625824655544e-14,
+      "blocks": {
+        "R_cos": 4.488253705438679e-16,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 2.5980175203585247e-16,
+        "L_cos": 0.0,
+        "L_sin": 5.69738980816178e-14
+      }
+    },
+    "raw": {
+      "norm": 6.482479398570825e-12,
+      "blocks": {
+        "R_cos": 5.758402142098892e-12,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 2.977102737129704e-12,
+        "L_cos": 0.0,
+        "L_sin": 1.4255361829284062e-14
+      }
+    }
+  },
+  "rows": [
+    {
+      "step": 0.001,
+      "Ad_norm": 30.21894352838761,
+      "FPq_norm": 30.218930968970707,
+      "defect_norm": 0.009112657157771303,
+      "defect_over_FPq": 0.0003015545840165004,
+      "defect_blocks": {
+        "R_cos": 0.0005873307086145791,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 6.466787508489986e-05,
+        "L_cos": 0.0,
+        "L_sin": 0.009093480146771688
+      },
+      "d_norm": 23.27729741789096,
+      "d_minus_implicit_tangent_over_tangent": 0.0004748941268121232,
+      "implicit_tangent_Az_plus_FPq_over_FPq": 0.002211170298091389,
+      "frozen_entry_drift_over_2h": 0.0,
+      "plus_residual_base_operator": 6.420440833557564e-14,
+      "plus_residual_own_operator": 6.420440833557564e-14,
+      "plus_state_sha256": "fd05b805b19f4a54333fd9e215d17efc667452acadaa4ae21c464fab90d5a3aa",
+      "minus_residual_base_operator": 6.93104426139219e-14,
+      "minus_residual_own_operator": 6.93104426139219e-14,
+      "minus_state_sha256": "42305b1523e07e50891dd91b5a94fbfc4ad8d349c0e548172eb03c5aa59e8b28"
+    },
+    {
+      "step": 0.0003,
+      "Ad_norm": 30.21149104396946,
+      "FPq_norm": 30.21149045580221,
+      "defect_norm": 0.0008188522920592645,
+      "defect_over_FPq": 2.710400181206556e-05,
+      "defect_blocks": {
+        "R_cos": 5.277876892438019e-05,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 5.806566339968016e-06,
+        "L_cos": 0.0,
+        "L_sin": 0.0008171289748557919
+      },
+      "d_norm": 23.267331531970655,
+      "d_minus_implicit_tangent_over_tangent": 0.00014553284855749895,
+      "implicit_tangent_Az_plus_FPq_over_FPq": 1.2108793745462675e-13,
+      "frozen_entry_drift_over_2h": 0.0,
+      "plus_residual_base_operator": 7.203804258017712e-14,
+      "plus_residual_own_operator": 7.203804258017712e-14,
+      "plus_state_sha256": "33daf45f744fe42ee1a4fdfea501cd7280502943db0964d77ae7cc5c2a098f2c",
+      "minus_residual_base_operator": 6.701704247826828e-14,
+      "minus_residual_own_operator": 6.701704247826828e-14,
+      "minus_state_sha256": "886ba948488768a9f5c1f16009ada3639f8f6f7009fc591d270de4b5f92914e4"
+    },
+    {
+      "step": 0.0001,
+      "Ad_norm": 30.210844550135022,
+      "FPq_norm": 30.21084449006209,
+      "defect_norm": 9.097105787098259e-05,
+      "defect_over_FPq": 3.0112053935105216e-06,
+      "defect_blocks": {
+        "R_cos": 5.863518870106429e-06,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 6.450422361801837e-07,
+        "L_cos": 0.0,
+        "L_sin": 9.077960364057068e-05
+      },
+      "d_norm": 23.266456985779918,
+      "d_minus_implicit_tangent_over_tangent": 0.00015092458918474958,
+      "implicit_tangent_Az_plus_FPq_over_FPq": 0.00019408515487736601,
+      "frozen_entry_drift_over_2h": 0.0,
+      "plus_residual_base_operator": 5.795669260529575e-14,
+      "plus_residual_own_operator": 5.795669260529575e-14,
+      "plus_state_sha256": "7dcd2c0b3accf7721678530bd1983d0d30b07e9d480bb3fc2632958384648a9e",
+      "minus_residual_base_operator": 6.320717943598171e-14,
+      "minus_residual_own_operator": 6.320717943598171e-14,
+      "minus_state_sha256": "a7abb4e8ab5b99b69b75510cdb9fc5faa9e34e8b258a746ea733042c940e7ca9"
+    },
+    {
+      "step": 3e-05,
+      "Ad_norm": 30.21077109992994,
+      "FPq_norm": 30.210771094576966,
+      "defect_norm": 8.187269373508762e-06,
+      "defect_over_FPq": 2.7100497858455627e-07,
+      "defect_blocks": {
+        "R_cos": 5.277088254675003e-07,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 5.8052380432274164e-08,
+        "L_cos": 0.0,
+        "L_sin": 8.170038745994074e-06
+      },
+      "d_norm": 23.266357522240526,
+      "d_minus_implicit_tangent_over_tangent": 0.00015218282451093972,
+      "implicit_tangent_Az_plus_FPq_over_FPq": 0.00021615919646341897,
+      "frozen_entry_drift_over_2h": 0.0,
+      "plus_residual_base_operator": 6.689859474570081e-14,
+      "plus_residual_own_operator": 6.689859474570081e-14,
+      "plus_state_sha256": "3b8363a910735bbf14ff74bdc99d4015ab5a741c3db1c4d6595db476d40c31e7",
+      "minus_residual_base_operator": 6.363658547810224e-14,
+      "minus_residual_own_operator": 6.363658547810224e-14,
+      "minus_state_sha256": "bda56618c2ae43cb0f9659bd29ea29ccf6596bd2e0316ea0d0cfffc5eb58182d"
+    },
+    {
+      "step": 1e-05,
+      "Ad_norm": 30.210764643604683,
+      "FPq_norm": 30.210764643014173,
+      "defect_norm": 9.094559258986003e-07,
+      "defect_over_FPq": 3.010370431351858e-08,
+      "defect_blocks": {
+        "R_cos": 5.863102560439232e-08,
+        "R_sin": 0.0,
+        "Z_cos": 0.0,
+        "Z_sin": 6.4474361802250735e-09,
+        "L_cos": 0.0,
+        "L_sin": 9.07541136563715e-07
+      },
+      "d_norm": 23.266348778359784,
+      "d_minus_implicit_tangent_over_tangent": 0.00015229935544064228,
+      "implicit_tangent_Az_plus_FPq_over_FPq": 0.00021809985000709073,
+      "frozen_entry_drift_over_2h": 0.0,
+      "plus_residual_base_operator": 8.062801454088385e-14,
+      "plus_residual_own_operator": 8.062801454088385e-14,
+      "plus_state_sha256": "90567dec2cc7aa57b3d30c871894b9895bcb96b0ec40d10a903b40c2c31b2fd8",
+      "minus_residual_base_operator": 5.837296147179884e-14,
+      "minus_residual_own_operator": 5.837296147179884e-14,
+      "minus_state_sha256": "d6eaed92372b606ff0d940b06c6d3984211fc59be51d8a9294cd28b3c56a4e6b"
+    }
+  ],
+  "elapsed_seconds": 5.5523690830450505
+}

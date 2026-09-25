@@ -305,6 +305,54 @@ def weighted_square_sum(values: np.ndarray, weights: np.ndarray) -> float:
     return float(np.sum(weights*np.sum(values*values, axis=tuple(range(1, values.ndim)))))
 
 
+def exact_field_parameter_tangents(case: Case, points_m: np.ndarray, indices, *,
+                                   length_m: float, field_t: float) -> np.ndarray:
+    """d B / d parameters at fixed physical points, shape (point, component, index).
+
+    The reference is dimensionless, so it is evaluated at x/L_star and scaled
+    by B_star.  For a dimensionless parameter the result is in tesla.
+    """
+    from dataclasses import replace
+    from analytic import field
+    indices = tuple(indices)
+    values = []
+    for point in np.asarray(points_m, dtype=float):
+        def evaluate(selected, point=point):
+            parameters = list(case.parameters)
+            for index, value in zip(indices, selected):
+                parameters[index] = value
+            changed = replace(case, parameters=tuple(parameters))
+            return field_t*field(changed, jnp.asarray(point)/length_m)[0]
+        base = jnp.asarray([case.parameters[i] for i in indices])
+        values.append(np.asarray(jax.jacfwd(evaluate)(base)))
+    return np.stack(values)
+
+
+def scaled_response_error(actual: np.ndarray, expected: np.ndarray, weights: np.ndarray, *,
+                          parameter_scale: float, field_scale: float) -> dict:
+    """Plan equation (3): (a*/B*) times the weighted RMS of a field-response error.
+
+    ``actual``/``expected`` have shape (point, component); for a dimensionless
+    parameter they are in tesla.  The value is invariant under duplicating a
+    point while splitting its weight, unlike a raw Euclidean vector norm.  It is
+    a point-cloud metric unless the weights are a resolved volume quadrature.
+    """
+    actual = np.asarray(actual, dtype=float)
+    expected = np.asarray(expected, dtype=float)
+    weights = np.asarray(weights, dtype=float)
+    if actual.shape != expected.shape or weights.shape != (actual.shape[0],):
+        raise ValueError("response arrays and weights have incompatible shapes")
+    scale = parameter_scale/field_scale
+    total = weighted_square_sum(np.ones((len(weights), 1)), weights)
+    error = np.sqrt(weighted_square_sum(actual-expected, weights)/total)
+    size = np.sqrt(weighted_square_sum(expected, weights)/total)
+    return {"scaled_rms_error": float(scale*error),
+            "scaled_rms_expected": float(scale*size),
+            "scaled_rms_actual": float(scale*np.sqrt(weighted_square_sum(actual, weights)/total)),
+            "parameter_scale": float(parameter_scale), "field_scale": float(field_scale),
+            "points": int(len(weights))}
+
+
 def decompose_physical_force_error(
     B: np.ndarray, J: np.ndarray, gradp: np.ndarray,
     B_reference: np.ndarray, J_reference: np.ndarray, gradp_reference: np.ndarray,

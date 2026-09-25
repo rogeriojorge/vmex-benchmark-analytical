@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "status": "failed_before_measurement",
+  "error_type": "ValueError",
+  "error": "compiler_options nested jit: template runtime not primed before residual evaluation (setup.run_setup under trace)",
+  "fix": "prime implicit._template_runtime and _boundary_pack_tables concretely; rerun under a new run id"
+}

@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "review_local_date": "2026-09-24",
+  "timezone": "America/Chicago",
+  "note": "Some inspected GitHub records use 2026-09-25 UTC; those timestamps are not rewritten.",
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "commit": "05e947370b9d0cebc0e508361e447b03523a331d",
+    "previous_review_commit": "d5484d1e7a15c9cf10599c2b0f05bdf69e22e861",
+    "commits_ahead": 6
+  },
+  "repositories": [
+    {
+      "repository": "uwplasma/vmex",
+      "role": "historical measured baseline",
+      "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c"
+    },
+    {
+      "repository": "uwplasma/vmex",
+      "role": "separate current main observed",
+      "commit": "926892ab7131a6bc0c5b61218d1f75e7b77bc401"
+    },
+    {
+      "repository": "uwplasma/vmex",
+      "role": "optional open draft PR448; unmerged",
+      "commit": "131580da529a5e7c9f9db31d6fc2361b225e9c24"
+    },
+    {
+      "repository": "landreman/analytic_3d_equilibria",
+      "role": "analytical supplement",
+      "commit": "4c0b690ddebdc71811c88223eb9f44a98ab64222"
+    },
+    {
+      "repository": "PlasmaControl/DESC",
+      "role": "existing benchmark pin, not rerun here",
+      "commit": "4f48720beac3d4169e9165923d730445118bc2de"
+    },
+    {
+      "repository": "uwplasma/SOLVAX",
+      "role": "inspected continuous Fourier Poisson implementation",
+      "commit": "2e246a5d6093662f9b5f72c46f995cd7c4bbd479"
+    }
+  ],
+  "ci": {
+    "run_id": 36086434493,
+    "job_id": 107919270163,
+    "conclusion": "success",
+    "head_sha": "05e947370b9d0cebc0e508361e447b03523a331d",
+    "steps_verified": [
+      "requirements installation",
+      "pytest",
+      "verify_reference.py",
+      "reference_derivatives.py"
+    ],
+    "reported_local_reference_test_count": 55,
+    "local_full_repository_suite_rerun_by_review": false
+  },
+  "review_method": {
+    "connected_GitHub_reads": true,
+    "web_primary_literature": true,
+    "git_clone_succeeded": false,
+    "container_network_note": "GitHub DNS resolution failed; connected reader used instead.",
+    "whole_upstream_tree_semantically_reviewed": false,
+    "new_remote_writes": false,
+    "new_vmex_or_desc_runs": false
+  },
+  "selected_source_review": [
+    {
+      "repository": "benchmark",
+      "path": "plan.md",
+      "scope": "active specification, current task table and latest work blocks; historical archives not reread in full"
+    },
+    {
+      "repository": "benchmark",
+      "path": "README.md",
+      "scope": "results and status sections"
+    },
+    {
+      "repository": "benchmark",
+      "path": "benchmarks/axisymmetric_root_response.py",
+      "ranges": [
+        [
+          1,
+          525
+        ]
+      ],
+      "focus": "parameter map, cached anchor observation, field and branch/tangent tests"
+    },
+    {
+      "repository": "benchmark",
+      "path": "benchmarks/certify_dense_axisymmetric_response.py",
+      "ranges": [
+        [
+          1,
+          245
+        ]
+      ],
+      "focus": "active dense system and linear-solver evidence"
+    },
+    {
+      "repository": "benchmark",
+      "path": "benchmarks/decompose_axisymmetric_branch_jvp.py",
+      "ranges": [
+        [
+          1,
+          245
+        ]
+      ],
+      "focus": "measured state difference and field JVP decomposition"
+    },
+    {
+      "repository": "benchmark",
+      "path": "benchmarks/project_sheared_straight_field.py",
+      "ranges": [
+        [
+          1,
+          225
+        ]
+      ],
+      "focus": "surface rates, transport lambda solve, Fourier mapping"
+    },
+    {
+      "repository": "benchmark",
+      "path": "benchmarks/measurement.py",
+      "ranges": [
+        [
+          1,
+          200
+        ]
+      ],
+      "focus": "composite acceptance, native crossing support, reference grids"
+    },
+    {
+      "repository": "uwplasma/vmex",
+      "path": "vmex/core/implicit.py",
+      "ranges": [
+        [
+          1360,
+          1520
+        ],
+        [
+          1600,
+          1910
+        ]
+      ],
+      "focus": "raw host solve, memo, actual refinement, callback and status"
+    },
+    {
+      "repository": "uwplasma/SOLVAX",
+      "path": "src/solvax/elliptic.py",
+      "ranges": [
+        [
+          1,
+          130
+        ]
+      ],
+      "focus": "continuous symbol, sign and mean projection"
+    }
+  ],
+  "completed_do_not_repeat": [
+    "reference CI/import repair",
+    "schema reader repair for tested inputs",
+    "missing NS129 integer TCON0=0 solve",
+    "preconditioned single-grid history test"
+  ],
+  "new_priorities": [
+    "uncached single-pass refinement observation",
+    "one frozen-operator branch tangent defect",
+    "response unit and weighted-RMS normalization",
+    "full-flux periodic lambda reference",
+    "independent NS129 scoring and weak stress"
+  ],
+  "local_pilot_reference": {
+    "origin": "initial user-supplied vmex-benchmark-analytical-handoff.zip",
+    "archive_sha256": "9c3356e77b9cff228fe6f2886f887913efa7f6eea3267c4032898155371bb672",
+    "not_a_fresh_current_source_checkout": true,
+    "hashes": {
+      "benchmarks/analytic.py": "bcbe45a347c882d82b148c310601c60b5ce90cf3a25a725f9978cdd8121eb3ad",
+      "cases.json": "66c4f363c35279cdb584bb53164bb22684e82a8614b89fbe838c818f2df55c94"
+    }
+  }
+}
