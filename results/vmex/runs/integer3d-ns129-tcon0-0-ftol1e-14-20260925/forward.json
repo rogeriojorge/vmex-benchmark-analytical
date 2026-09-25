@@ -1,0 +1,116 @@
+{
+  "schema": 2,
+  "run_id": "integer3d-ns129-tcon0-0-ftol1e-14-20260925",
+  "parent_run_id": null,
+  "status": "scored_diagnostic",
+  "evidence": "vmex_fixed_boundary_diagnostic",
+  "input_file": "inputs/input.integer_3d_iota",
+  "input_sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab",
+  "seed_sha256": "62058a03f1409f81a963862f07da493974f7a121cfecbe955f9a5717936eb590",
+  "source": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.0",
+    "distribution_version": "0.11.0",
+    "version_source": "checkout_pyproject",
+    "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "controls": {
+    "requested": {
+      "ns": 129,
+      "niter": 30000,
+      "ftol": "1e-14",
+      "tcon0": "0",
+      "keep_terminal": true
+    },
+    "effective": {
+      "ns_array": [
+        129
+      ],
+      "ftol_array": [
+        1e-14
+      ],
+      "niter_array": [
+        30000
+      ],
+      "tcon0": 0.0
+    }
+  },
+  "start_time_utc": "2026-09-25T11:05:37.886732+00:00",
+  "environment": {
+    "python": "3.12.13",
+    "platform": {
+      "system": "Linux",
+      "release": "7.0.11-76070011-generic",
+      "machine": "x86_64"
+    },
+    "jax": "0.11.0",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "devices": [
+      "cpu:0"
+    ],
+    "host_peak_rss_mib": 3080.26171875,
+    "device_memory_peak_mib": null
+  },
+  "artifacts": {
+    "input_copy": {
+      "path": "input.indata",
+      "sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab"
+    },
+    "wout": {
+      "path": "wout.nc",
+      "sha256": "c6bb74198b7b2be55e2055e2d691b427ac6a96ad113793ff0c2672d82aee393c"
+    },
+    "point_cloud": {
+      "path": "point_cloud.npz",
+      "sha256": "2be2c210e04bb2d5f29ec67feebb713941f4d9160796bd3f8d018e6436a17a84"
+    },
+    "solver_observations": {
+      "path": "vmex_observations.npz",
+      "sha256": "9275b788510a34f19f9bf3f3aa85fea523f03b30e3b6c280d916aee0765c9b5b"
+    },
+    "native_scores": {
+      "path": "native_scores.json",
+      "sha256": "39eab312562c0fb6bdf232b28e01d0a5f321b8e0ac54bdf2254335e663f38b8a"
+    }
+  },
+  "representation_resolved": true,
+  "measurement_resolved": false,
+  "root_certified": false,
+  "accepted": false,
+  "solve_seconds": 1880.4698815020092,
+  "solver_converged": false,
+  "iterations": 30000,
+  "ier_flag": 2,
+  "fsqr": 1.2897927515992336e-09,
+  "fsqz": 1.2835013554542647e-09,
+  "fsql": 2.0794354288174424e-13,
+  "scalars": {
+    "wb": 0.0030129061159711434,
+    "volume_p": 0.2671040042701832,
+    "betatotal": 0.03508772228097367
+  },
+  "end_time_utc": "2026-09-25T11:37:03.084728+00:00",
+  "field_path": "native_clebsch_cartesian",
+  "native_sample_and_score_seconds": 112.21142685698578,
+  "pointwise_thresholds_met": false,
+  "native_score": {
+    "schema": 2,
+    "evidence": "physical_samples_vs_analytic",
+    "case": "integer_3d",
+    "sample_count": 96,
+    "quadrature_volume_m3": 0.13355538723891902,
+    "field_relative_l2": 3.2778915368550446e-05,
+    "current_relative_l2": 0.010746362939152366,
+    "gradp_relative_l2": 0.0020264932883036256,
+    "force_rms_N_m3": 19138.630427177413,
+    "force_fixed_magnetic_scale": 0.02405031229991626,
+    "force_pressure_scale": 0.0539453700336477,
+    "field_max_abs_T": 8.095361374342282e-05,
+    "surface_label_max_over_edge": 1.3766765505351941e-14,
+    "native_flux_label_minus_reference_max_abs": 0.0013514691192249018,
+    "native_flux_label_minus_reference_rms": 0.000693840975883473
+  }
+}

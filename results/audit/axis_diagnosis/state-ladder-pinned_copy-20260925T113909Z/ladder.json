@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "run_id": "state-ladder-pinned_copy-20260925T113909Z",
+  "evidence": "exact_projection_no_solve",
+  "axis_row": "pinned_copy",
+  "deck_sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab",
+  "points": "exact chart at s, n x n angles (one period)",
+  "rows": [
+    {
+      "ns": 129,
+      "state_sha256": "2f3a67455edd551efc214a0ae020f2f4624b998639ab89801d0f01d1e42d2d0e",
+      "by_s": {
+        "1e-08": {
+          "all_valid": true,
+          "B_relative_l2": 0.000905625049334551,
+          "parallel_rms_over_B": 0.0008845948736593722,
+          "flux_label_error_max": 4.85291682857203e-06,
+          "J_relative_l2_ij": 1.0160865709008424,
+          "J_relative_l2_ji": 2.2406041372143286
+        },
+        "0.0001": {
+          "all_valid": true,
+          "B_relative_l2": 0.0030235019518455044,
+          "parallel_rms_over_B": 0.003017556164905507,
+          "flux_label_error_max": 4.39410222287558e-05,
+          "J_relative_l2_ij": 0.9112992633717159,
+          "J_relative_l2_ji": 2.195099516682138
+        },
+        "0.01": {
+          "all_valid": true,
+          "B_relative_l2": 0.01978931689388948,
+          "parallel_rms_over_B": 0.019787247715420855,
+          "flux_label_error_max": 0.000958419324839201,
+          "J_relative_l2_ij": 2.9737938045391448,
+          "J_relative_l2_ji": 3.585351065719811
+        },
+        "0.5": {
+          "all_valid": true,
+          "B_relative_l2": 3.2847090245183355e-05,
+          "parallel_rms_over_B": 3.034076705749773e-05,
+          "flux_label_error_max": 0.0013541033049884743,
+          "J_relative_l2_ij": 0.005340879835757096,
+          "J_relative_l2_ji": 1.9998907719397165
+        }
+      },
+      "source": "results/vmex/runs/integer3d-ns129-tcon0-0-ftol1e-14-20260925/state_from_wout.npz",
+      "zero_lambda_rows": null
+    }
+  ],
+  "elapsed_seconds": 71.65998039001715
+}
