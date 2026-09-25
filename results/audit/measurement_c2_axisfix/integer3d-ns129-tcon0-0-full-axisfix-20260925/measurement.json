@@ -1,0 +1,905 @@
+{
+  "schema": 1,
+  "run_id": "integer3d-ns129-tcon0-0-full-axisfix-20260925",
+  "parent_run_id": "integer3d-ns129-tcon0-0-reproduce-20260925",
+  "comparison_parent": null,
+  "status": "measurement_diagnostic",
+  "profile": "full",
+  "case": "integer_3d",
+  "state_id": "integer3d-ns129-tcon0-0-full-axisfix-20260925",
+  "vmex_source": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.0",
+    "distribution_version": "0.11.0",
+    "version_source": "checkout_pyproject",
+    "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "tracked_tree_clean": false,
+    "tracked_diff_sha256": "baf066930d07b216a9f1301f4f1d58a1157cc9721893e1987784d5941420db7e"
+  },
+  "benchmark_code_sha256": {
+    "benchmarks/verify_measurement.py": "df48602e588239c42f7801fb83b05a263449a221fdffabf57d46bb338c112e74",
+    "benchmarks/measurement.py": "864f3d7600f73f99485175f0f2da299fcb19ce81d4fbee630eaa5fe39458c2eb",
+    "benchmarks/evidence.py": "44df5394023911db4d18cafa83b2a5cbbfbe944b1b558bf1e42e333b6abff15f",
+    "benchmarks/analytic.py": "edea44905802a5b77ccc2f79689b33a364736f273788af8e5a01fd59c2945939",
+    "benchmarks/build_inputs.py": "d454eaaf62cf17f1a57aa78c1d45239c9eadb6d822d82538e949ef9a87da5d92",
+    "inputs/manifest.json": "0fc25455fac808e2f17d76b5cd4afe1b73cc72003db8727d618cfcf1e5e3a0fc"
+  },
+  "runtime": {
+    "python_version": "3.12.13",
+    "platform": "Linux",
+    "architecture": "x86_64",
+    "numpy_version": "2.5.1",
+    "jax_version": "0.11.0",
+    "jax_enable_x64": true,
+    "jax_backend": "cpu",
+    "devices": [
+      "cpu"
+    ]
+  },
+  "state_source_sha256": "34a5d0fc049d5bfa20bcb696a95af86be078794b316c6c919b48f2e46e0972b5",
+  "state_source_kind": "saved_spectral_state",
+  "input_sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab",
+  "solver_report_sha256": null,
+  "solver_provenance": null,
+  "solver_source_matches_imported": false,
+  "solver_converged": null,
+  "input_boundary_fit_m": 2.0613811902618787e-08,
+  "input_omitted_basis_max_m": 2.950389486784749e-17,
+  "started_utc": "2026-09-25T07:58:05.164307+00:00",
+  "grid_ids": [
+    "legacy96",
+    "base_8x32x32",
+    "base_shifted",
+    "radial_16x32x32",
+    "theta_64",
+    "phi_64",
+    "full_16x64x64",
+    "full_shifted",
+    "full_midpoint",
+    "target_near_axis",
+    "target_near_edge",
+    "target_native_knots_and_cell_interiors"
+  ],
+  "host_peak_rss_mib": 18467.3515625,
+  "device_memory_peak_mib": null,
+  "completed_grids": [
+    "legacy96",
+    "base_8x32x32",
+    "base_shifted",
+    "radial_16x32x32",
+    "theta_64",
+    "phi_64",
+    "full_16x64x64",
+    "full_shifted",
+    "full_midpoint",
+    "target_near_axis",
+    "target_near_edge",
+    "target_native_knots_and_cell_interiors"
+  ],
+  "latest_grid_checkpoint": {
+    "grid_id": "target_native_knots_and_cell_interiors",
+    "path": "target_native_knots_and_cell_interiors.json",
+    "sha256": "ae610f56ede77eac442f32d187b1066c97a121c17103742dc482ced4983d0508"
+  },
+  "checkpoint_manifest_sha256": "d6199b2c18d70e4b9ca5ea0216984e1346be0ffaec8124d08f3a60ccf5f786e7",
+  "rows": [
+    {
+      "grid_id": "legacy96",
+      "nradial": 3,
+      "ntheta": 8,
+      "nphi_one_period": 4,
+      "theta_shift_fraction": 0.0,
+      "phi_shift_fraction": 0.0,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 123.77076156798285,
+      "samples_artifact": {
+        "path": "grid_checkpoints/legacy96_samples.npz",
+        "sha256": "46f7b7cbedc7c838a5958e42ac5636ed11ba646f45d8d48978f316794b4ea515"
+      },
+      "sample_count": 96,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.267110774413093,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 2.5346467273671593e-05,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.004032651236931677,
+      "native_jacobian_max_abs_m3": 0.018850271946493375,
+      "native_jacobian_condition_max": 50.03739567378861,
+      "route_A": {
+        "field_relative_l2": 1.0795340437920405e-06,
+        "current_relative_l2": 1.7885693570606115e-05,
+        "gradp_relative_l2": 3.0035378926959836e-06,
+        "force_pressure_scale": 0.00019239003238022396,
+        "force_fixed_magnetic_scale": 8.577270597535853e-05,
+        "field_max_abs_T": 3.3236139582909506e-06,
+        "current_max_abs_A_per_m2": 310.1897517014484,
+        "force_max_abs_Pa_per_m": 295.57657811769536,
+        "divergence_max_abs_per_m": 3.5373596989128706e-13
+      },
+      "route_B": {
+        "field_relative_l2": 1.0795340438731522e-06,
+        "current_relative_l2": 1.7885693571535147e-05,
+        "gradp_relative_l2": 3.0035378775280503e-06,
+        "force_pressure_scale": 0.0001923900323987751,
+        "force_fixed_magnetic_scale": 8.577270598362913e-05,
+        "field_max_abs_T": 3.3236139582909506e-06,
+        "current_max_abs_A_per_m2": 310.1897516996147,
+        "force_max_abs_Pa_per_m": 295.57657811913936,
+        "divergence_max_abs_per_m": 3.5373596989128706e-13
+      },
+      "route_A_B_difference": {
+        "field": 2.7185715393286995e-16,
+        "current": 3.32905294040488e-14,
+        "gradp": 1.0741264995919157e-13,
+        "force": 2.6136202177259345e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 3.152427400121712e-16,
+        "position_backward_error_rms_m": 1.3689100104974306e-16,
+        "inverse_jacobian_identity_max_abs": 3.0730973321624333e-13,
+        "s_native_minus_reference_max_abs": 3.5756382263246733e-06,
+        "s_native_minus_reference_rms": 9.074628166484018e-07
+      },
+      "samples_metadata": {
+        "full_sample_count": 96,
+        "retained_sample_count": 96,
+        "selection": "uniform_index_spacing_with_endpoints"
+      },
+      "legacy_sample_reproduction": null
+    },
+    {
+      "grid_id": "base_8x32x32",
+      "nradial": 8,
+      "ntheta": 32,
+      "nphi_one_period": 32,
+      "theta_shift_fraction": 0.0,
+      "phi_shift_fraction": 0.0,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 232.74229521400412,
+      "samples_artifact": null,
+      "sample_count": 8192,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.2671040042701902,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 4.156519583667889e-16,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0018169809793963656,
+      "native_jacobian_max_abs_m3": 0.020347906053368805,
+      "native_jacobian_condition_max": 115.92856384436412,
+      "route_A": {
+        "field_relative_l2": 8.09515522327101e-06,
+        "current_relative_l2": 0.005495991708236554,
+        "gradp_relative_l2": 3.986162849257653e-06,
+        "force_pressure_scale": 0.05822078336212318,
+        "force_fixed_magnetic_scale": 0.025945362363010562,
+        "field_max_abs_T": 6.646293151735822e-05,
+        "current_max_abs_A_per_m2": 179133.2979978382,
+        "force_max_abs_Pa_per_m": 156808.17099791102,
+        "divergence_max_abs_per_m": 4.412466790874262e-13
+      },
+      "route_B": {
+        "field_relative_l2": 8.095155223271092e-06,
+        "current_relative_l2": 0.005495991708236626,
+        "gradp_relative_l2": 3.986162847907558e-06,
+        "force_pressure_scale": 0.05822078336212406,
+        "force_fixed_magnetic_scale": 0.025945362363010954,
+        "field_max_abs_T": 6.646293151747211e-05,
+        "current_max_abs_A_per_m2": 179133.29799778078,
+        "force_max_abs_Pa_per_m": 156808.1709979103,
+        "divergence_max_abs_per_m": 4.412466790874262e-13
+      },
+      "route_A_B_difference": {
+        "field": 4.0757314991998595e-16,
+        "current": 4.9920189140657195e-14,
+        "gradp": 1.0048254734805624e-13,
+        "force": 3.917970098168745e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 7.529898907871222e-16,
+        "position_backward_error_rms_m": 1.68016959513698e-16,
+        "inverse_jacobian_identity_max_abs": 5.069278330438465e-13,
+        "s_native_minus_reference_max_abs": 3.974627415859189e-06,
+        "s_native_minus_reference_rms": 8.593521955085342e-07
+      }
+    },
+    {
+      "grid_id": "base_shifted",
+      "nradial": 8,
+      "ntheta": 32,
+      "nphi_one_period": 32,
+      "theta_shift_fraction": 0.173,
+      "phi_shift_fraction": 0.371,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 139.04697678799857,
+      "samples_artifact": null,
+      "sample_count": 8192,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.2671040042701901,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 0.0,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0018171372003949484,
+      "native_jacobian_max_abs_m3": 0.020321101276274935,
+      "native_jacobian_condition_max": 115.4575025474977,
+      "route_A": {
+        "field_relative_l2": 8.095155182942803e-06,
+        "current_relative_l2": 0.005495991708917882,
+        "gradp_relative_l2": 3.9861615568724125e-06,
+        "force_pressure_scale": 0.058220783371066454,
+        "force_fixed_magnetic_scale": 0.02594536236699602,
+        "field_max_abs_T": 6.657561406248839e-05,
+        "current_max_abs_A_per_m2": 177497.8312152314,
+        "force_max_abs_Pa_per_m": 159558.15062208864,
+        "divergence_max_abs_per_m": 4.2882511836934436e-13
+      },
+      "route_B": {
+        "field_relative_l2": 8.095155182942468e-06,
+        "current_relative_l2": 0.005495991708917875,
+        "gradp_relative_l2": 3.986161556981147e-06,
+        "force_pressure_scale": 0.058220783371066426,
+        "force_fixed_magnetic_scale": 0.025945362366996013,
+        "field_max_abs_T": 6.657561406248839e-05,
+        "current_max_abs_A_per_m2": 177497.83121523063,
+        "force_max_abs_Pa_per_m": 159558.1506220887,
+        "divergence_max_abs_per_m": 4.2882511836934436e-13
+      },
+      "route_A_B_difference": {
+        "field": 4.793747995403021e-16,
+        "current": 6.075810460152391e-14,
+        "gradp": 1.0192478388455347e-13,
+        "force": 4.5162649064418253e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 7.043575467574348e-16,
+        "position_backward_error_rms_m": 1.682926610381198e-16,
+        "inverse_jacobian_identity_max_abs": 5.044853423896711e-13,
+        "s_native_minus_reference_max_abs": 3.923365269165036e-06,
+        "s_native_minus_reference_rms": 8.593521933801327e-07
+      }
+    },
+    {
+      "grid_id": "radial_16x32x32",
+      "nradial": 16,
+      "ntheta": 32,
+      "nphi_one_period": 32,
+      "theta_shift_fraction": 0.0,
+      "phi_shift_fraction": 0.0,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 286.91902340899105,
+      "samples_artifact": null,
+      "sample_count": 16384,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.2671040042701902,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 4.156519583667889e-16,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0009614122721007002,
+      "native_jacobian_max_abs_m3": 0.020583938291478227,
+      "native_jacobian_condition_max": 222.107813296012,
+      "route_A": {
+        "field_relative_l2": 3.697406234487952e-05,
+        "current_relative_l2": 0.003246010499275485,
+        "gradp_relative_l2": 5.504888001539328e-06,
+        "force_pressure_scale": 0.03454740449095595,
+        "force_fixed_magnetic_scale": 0.015395617792434025,
+        "field_max_abs_T": 0.0005645980780900846,
+        "current_max_abs_A_per_m2": 147461.26132292463,
+        "force_max_abs_Pa_per_m": 132422.83757141978,
+        "divergence_max_abs_per_m": 4.615642212239899e-13
+      },
+      "route_B": {
+        "field_relative_l2": 3.697406234487778e-05,
+        "current_relative_l2": 0.0032460104992755195,
+        "gradp_relative_l2": 5.5048880017855566e-06,
+        "force_pressure_scale": 0.03454740449095622,
+        "force_fixed_magnetic_scale": 0.015395617792434145,
+        "field_max_abs_T": 0.0005645980780903189,
+        "current_max_abs_A_per_m2": 147461.26132293954,
+        "force_max_abs_Pa_per_m": 132422.83757141998,
+        "divergence_max_abs_per_m": 4.615642212239899e-13
+      },
+      "route_A_B_difference": {
+        "field": 4.1288373370461687e-16,
+        "current": 5.218602739636537e-14,
+        "gradp": 1.0299600459035084e-13,
+        "force": 4.2346146831412063e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 6.497413668604471e-16,
+        "position_backward_error_rms_m": 1.6320557423884606e-16,
+        "inverse_jacobian_identity_max_abs": 5.089262344881718e-13,
+        "s_native_minus_reference_max_abs": 3.992966892851779e-06,
+        "s_native_minus_reference_rms": 8.857455213963419e-07
+      }
+    },
+    {
+      "grid_id": "theta_64",
+      "nradial": 8,
+      "ntheta": 64,
+      "nphi_one_period": 32,
+      "theta_shift_fraction": 0.0,
+      "phi_shift_fraction": 0.0,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 301.15855639701476,
+      "samples_artifact": null,
+      "sample_count": 16384,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.26710400427019015,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 2.0782597918339444e-16,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0018169809793963656,
+      "native_jacobian_max_abs_m3": 0.020347906053368805,
+      "native_jacobian_condition_max": 115.92856384436412,
+      "route_A": {
+        "field_relative_l2": 8.095155147038183e-06,
+        "current_relative_l2": 0.005495991709286714,
+        "gradp_relative_l2": 3.986160430666823e-06,
+        "force_pressure_scale": 0.0582207833789519,
+        "force_fixed_magnetic_scale": 0.02594536237051007,
+        "field_max_abs_T": 6.646293151735822e-05,
+        "current_max_abs_A_per_m2": 179133.2979978382,
+        "force_max_abs_Pa_per_m": 159691.64384742486,
+        "divergence_max_abs_per_m": 4.412466790874262e-13
+      },
+      "route_B": {
+        "field_relative_l2": 8.095155147036289e-06,
+        "current_relative_l2": 0.005495991709286781,
+        "gradp_relative_l2": 3.986160429624691e-06,
+        "force_pressure_scale": 0.05822078337895265,
+        "force_fixed_magnetic_scale": 0.025945362370510403,
+        "field_max_abs_T": 6.646293151747211e-05,
+        "current_max_abs_A_per_m2": 179133.29799778078,
+        "force_max_abs_Pa_per_m": 159691.6438474194,
+        "divergence_max_abs_per_m": 4.412466790874262e-13
+      },
+      "route_A_B_difference": {
+        "field": 4.0751847977860603e-16,
+        "current": 4.933092658230307e-14,
+        "gradp": 1.000522766772009e-13,
+        "force": 3.9575838930126343e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 7.529898907871222e-16,
+        "position_backward_error_rms_m": 1.6863186569081575e-16,
+        "inverse_jacobian_identity_max_abs": 5.6710192097853e-13,
+        "s_native_minus_reference_max_abs": 3.974627415859189e-06,
+        "s_native_minus_reference_rms": 8.59352191575183e-07
+      }
+    },
+    {
+      "grid_id": "phi_64",
+      "nradial": 8,
+      "ntheta": 32,
+      "nphi_one_period": 64,
+      "theta_shift_fraction": 0.0,
+      "phi_shift_fraction": 0.0,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 305.2234682419803,
+      "samples_artifact": null,
+      "sample_count": 16384,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.26710400427019015,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 2.0782597918339444e-16,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0018169809793963656,
+      "native_jacobian_max_abs_m3": 0.020347906053368805,
+      "native_jacobian_condition_max": 115.92856384436412,
+      "route_A": {
+        "field_relative_l2": 8.095155223575714e-06,
+        "current_relative_l2": 0.005495991708312292,
+        "gradp_relative_l2": 3.986162850492419e-06,
+        "force_pressure_scale": 0.05822078336215598,
+        "force_fixed_magnetic_scale": 0.025945362363025182,
+        "field_max_abs_T": 6.646293151735822e-05,
+        "current_max_abs_A_per_m2": 179133.2979978382,
+        "force_max_abs_Pa_per_m": 158175.10546563898,
+        "divergence_max_abs_per_m": 4.412466790874262e-13
+      },
+      "route_B": {
+        "field_relative_l2": 8.09515522357641e-06,
+        "current_relative_l2": 0.005495991708312356,
+        "gradp_relative_l2": 3.986162849708667e-06,
+        "force_pressure_scale": 0.05822078336215676,
+        "force_fixed_magnetic_scale": 0.025945362363025533,
+        "field_max_abs_T": 6.646293151747211e-05,
+        "current_max_abs_A_per_m2": 179133.29799778078,
+        "force_max_abs_Pa_per_m": 158175.10546563676,
+        "divergence_max_abs_per_m": 4.5191902656041907e-13
+      },
+      "route_A_B_difference": {
+        "field": 4.204968488172653e-16,
+        "current": 5.01178041177211e-14,
+        "gradp": 1.0274072920225385e-13,
+        "force": 4.023425768249458e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 7.529898907871222e-16,
+        "position_backward_error_rms_m": 1.6987015370554028e-16,
+        "inverse_jacobian_identity_max_abs": 5.292433158388121e-13,
+        "s_native_minus_reference_max_abs": 3.974627415859189e-06,
+        "s_native_minus_reference_rms": 8.593521955029547e-07
+      }
+    },
+    {
+      "grid_id": "full_16x64x64",
+      "nradial": 16,
+      "ntheta": 64,
+      "nphi_one_period": 64,
+      "theta_shift_fraction": 0.0,
+      "phi_shift_fraction": 0.0,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 1144.9501895419962,
+      "samples_artifact": {
+        "path": "grid_checkpoints/full_16x64x64_samples.npz",
+        "sha256": "a2932e9151e3ae1a4cad5c0a14749b370e56f1d8debae8458f03fd418f103d96"
+      },
+      "sample_count": 65536,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.26710400427019,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 4.156519583667889e-16,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0009614122721007002,
+      "native_jacobian_max_abs_m3": 0.020583938291478227,
+      "native_jacobian_condition_max": 222.107813296012,
+      "route_A": {
+        "field_relative_l2": 3.6974062328108e-05,
+        "current_relative_l2": 0.003246010522801026,
+        "gradp_relative_l2": 5.5048862638403425e-06,
+        "force_pressure_scale": 0.03454740473025201,
+        "force_fixed_magnetic_scale": 0.01539561789907332,
+        "field_max_abs_T": 0.0005678354637872685,
+        "current_max_abs_A_per_m2": 148765.68831431013,
+        "force_max_abs_Pa_per_m": 132422.83757141978,
+        "divergence_max_abs_per_m": 5.385191439980408e-13
+      },
+      "route_B": {
+        "field_relative_l2": 3.697406232810845e-05,
+        "current_relative_l2": 0.0032460105228010626,
+        "gradp_relative_l2": 5.504886264070301e-06,
+        "force_pressure_scale": 0.03454740473025238,
+        "force_fixed_magnetic_scale": 0.015395617899073486,
+        "field_max_abs_T": 0.0005678354637874157,
+        "current_max_abs_A_per_m2": 148765.68831430853,
+        "force_max_abs_Pa_per_m": 132422.83757141998,
+        "divergence_max_abs_per_m": 5.385191439980408e-13
+      },
+      "route_A_B_difference": {
+        "field": 4.2935223476529417e-16,
+        "current": 5.3101168280741176e-14,
+        "gradp": 1.0153485563643257e-13,
+        "force": 4.257274900878838e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 6.888752704931532e-16,
+        "position_backward_error_rms_m": 1.6862285760227697e-16,
+        "inverse_jacobian_identity_max_abs": 5.418998583195389e-13,
+        "s_native_minus_reference_max_abs": 3.992966892851779e-06,
+        "s_native_minus_reference_rms": 8.857455162963919e-07
+      },
+      "samples_metadata": {
+        "full_sample_count": 65536,
+        "retained_sample_count": 16384,
+        "selection": "uniform_index_spacing_with_endpoints"
+      }
+    },
+    {
+      "grid_id": "full_shifted",
+      "nradial": 16,
+      "ntheta": 64,
+      "nphi_one_period": 64,
+      "theta_shift_fraction": 0.173,
+      "phi_shift_fraction": 0.371,
+      "radial_rule": "gauss",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 1172.8750418130076,
+      "samples_artifact": null,
+      "sample_count": 65536,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.2671040042701902,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 4.156519583667889e-16,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0009614216102028975,
+      "native_jacobian_max_abs_m3": 0.020577032218451946,
+      "native_jacobian_condition_max": 221.8799701628496,
+      "route_A": {
+        "field_relative_l2": 3.697406232810652e-05,
+        "current_relative_l2": 0.0032460105228010907,
+        "gradp_relative_l2": 5.504886264226971e-06,
+        "force_pressure_scale": 0.034547404730252675,
+        "force_fixed_magnetic_scale": 0.015395617899073611,
+        "field_max_abs_T": 0.0005675199444376336,
+        "current_max_abs_A_per_m2": 149033.8899547644,
+        "force_max_abs_Pa_per_m": 132560.5564591503,
+        "divergence_max_abs_per_m": 4.852513624922013e-13
+      },
+      "route_B": {
+        "field_relative_l2": 3.6974062328108036e-05,
+        "current_relative_l2": 0.003246010522801042,
+        "gradp_relative_l2": 5.5048862642036154e-06,
+        "force_pressure_scale": 0.03454740473025217,
+        "force_fixed_magnetic_scale": 0.015395617899073384,
+        "field_max_abs_T": 0.0005675199444377612,
+        "current_max_abs_A_per_m2": 149033.88995484833,
+        "force_max_abs_Pa_per_m": 132560.55645909233,
+        "divergence_max_abs_per_m": 5.08203086885717e-13
+      },
+      "route_A_B_difference": {
+        "field": 4.882682703842022e-16,
+        "current": 5.949291645546891e-14,
+        "gradp": 1.0218017728597125e-13,
+        "force": 4.615207354564892e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 7.468261590855957e-16,
+        "position_backward_error_rms_m": 1.7408970412008033e-16,
+        "inverse_jacobian_identity_max_abs": 6.197264923457624e-13,
+        "s_native_minus_reference_max_abs": 3.9802646483177995e-06,
+        "s_native_minus_reference_rms": 8.85745516278029e-07
+      }
+    },
+    {
+      "grid_id": "full_midpoint",
+      "nradial": 16,
+      "ntheta": 64,
+      "nphi_one_period": 64,
+      "theta_shift_fraction": 0.0,
+      "phi_shift_fraction": 0.0,
+      "radial_rule": "midpoint",
+      "radial_cells": null,
+      "radial_order": null,
+      "sampling_score_seconds": 1178.4874496549892,
+      "samples_artifact": null,
+      "sample_count": 65536,
+      "sample_measure": "full_torus_physical_volume",
+      "physical_volume_m3": 0.26710400427019,
+      "exact_volume_m3": 0.2671040042701901,
+      "volume_relative_error": 4.156519583667889e-16,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.002250688548144372,
+      "native_jacobian_max_abs_m3": 0.020163398259504913,
+      "native_jacobian_condition_max": 92.87773019340382,
+      "route_A": {
+        "field_relative_l2": 1.4846773314607531e-05,
+        "current_relative_l2": 0.0024024413630852814,
+        "gradp_relative_l2": 4.137818226667659e-06,
+        "force_pressure_scale": 0.025719304997496688,
+        "force_fixed_magnetic_scale": 0.011461353519711262,
+        "field_max_abs_T": 0.00014478073148178642,
+        "current_max_abs_A_per_m2": 82758.70185573144,
+        "force_max_abs_Pa_per_m": 78554.9537390446,
+        "divergence_max_abs_per_m": 4.816863765765445e-13
+      },
+      "route_B": {
+        "field_relative_l2": 1.4846773314607248e-05,
+        "current_relative_l2": 0.0024024413630853044,
+        "gradp_relative_l2": 4.137818226576786e-06,
+        "force_pressure_scale": 0.02571930499749684,
+        "force_fixed_magnetic_scale": 0.011461353519711328,
+        "field_max_abs_T": 0.00014478073148151355,
+        "current_max_abs_A_per_m2": 82758.70185573302,
+        "force_max_abs_Pa_per_m": 78554.95373888685,
+        "divergence_max_abs_per_m": 4.816863765765445e-13
+      },
+      "route_A_B_difference": {
+        "field": 3.913800303897482e-16,
+        "current": 5.0770686782753756e-14,
+        "gradp": 1.0250854009867342e-13,
+        "force": 4.0320383569405094e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 7.221785298249066e-16,
+        "position_backward_error_rms_m": 1.6814386121188863e-16,
+        "inverse_jacobian_identity_max_abs": 5.53335155473178e-13,
+        "s_native_minus_reference_max_abs": 3.992884791581552e-06,
+        "s_native_minus_reference_rms": 8.669809443083316e-07
+      }
+    },
+    {
+      "grid_id": "target_near_axis",
+      "status": "measured",
+      "native_s_targets": [
+        1e-08,
+        1e-06,
+        0.0001,
+        0.01
+      ],
+      "native_radial_mesh_points": 129,
+      "n_theta": 8,
+      "n_phi_one_period": 8,
+      "sampling_score_seconds": 4.406828811013838,
+      "samples_artifact": {
+        "path": "grid_checkpoints/target_near_axis_samples.npz",
+        "sha256": "871a4723655fcd661ee12314128ed47865dc7486baf2f4a0b52489453a2010ac"
+      },
+      "sample_count": 256,
+      "sample_measure": "targeted_equal_weight_point_diagnostic",
+      "physical_volume_m3": null,
+      "exact_volume_m3": null,
+      "volume_relative_error": null,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 1.3531195159416592e-06,
+      "native_jacobian_max_abs_m3": 0.0013998152795720814,
+      "native_jacobian_condition_max": 160011.38780969474,
+      "route_A": {
+        "field_relative_l2": 6.694237894991863e-05,
+        "current_relative_l2": 0.013806256937897984,
+        "gradp_relative_l2": 0.00021391791527663464,
+        "force_pressure_scale": 2.03211629932686,
+        "force_fixed_magnetic_scale": 0.06368342919271368,
+        "field_max_abs_T": 0.0002484786255324273,
+        "current_max_abs_A_per_m2": 177911.02229012453,
+        "force_max_abs_Pa_per_m": 166466.31451956235,
+        "divergence_max_abs_per_m": 3.930883396563445e-14
+      },
+      "route_B": {
+        "field_relative_l2": 6.694237894993579e-05,
+        "current_relative_l2": 0.013806256937906772,
+        "gradp_relative_l2": 0.00021391791528189367,
+        "force_pressure_scale": 2.0321162993282265,
+        "force_fixed_magnetic_scale": 0.06368342919275662,
+        "field_max_abs_T": 0.0002484786255327565,
+        "current_max_abs_A_per_m2": 177911.02229009778,
+        "force_max_abs_Pa_per_m": 166466.31451953776,
+        "divergence_max_abs_per_m": 3.072889165345316e-14
+      },
+      "route_A_B_difference": {
+        "field": 4.037108796447218e-16,
+        "current": 3.824259396700977e-12,
+        "gradp": 6.190959588748874e-13,
+        "force": 5.704497736196733e-10
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 3.8532307004629057e-14,
+        "position_backward_error_rms_m": 7.813786302132768e-15,
+        "inverse_jacobian_identity_max_abs": 3.978401941218124e-09,
+        "s_native_minus_reference_max_abs": 4.947265813282781e-06,
+        "s_native_minus_reference_rms": 1.0711543752534807e-06
+      },
+      "samples_metadata": {
+        "full_sample_count": 256,
+        "retained_sample_count": 256,
+        "selection": "uniform_index_spacing_with_endpoints"
+      }
+    },
+    {
+      "grid_id": "target_near_edge",
+      "status": "measured",
+      "native_s_targets": [
+        0.95,
+        0.99,
+        0.9999,
+        0.99999999
+      ],
+      "native_radial_mesh_points": 129,
+      "n_theta": 8,
+      "n_phi_one_period": 8,
+      "sampling_score_seconds": 4.256216624984518,
+      "samples_artifact": {
+        "path": "grid_checkpoints/target_near_edge_samples.npz",
+        "sha256": "daa63ffab5775e4b1fce595dd3119e694280d8db56441ec25e53d70c6efed461"
+      },
+      "sample_count": 256,
+      "sample_measure": "targeted_equal_weight_point_diagnostic",
+      "physical_volume_m3": null,
+      "exact_volume_m3": null,
+      "volume_relative_error": null,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.008758714132077653,
+      "native_jacobian_max_abs_m3": 0.020669973900451052,
+      "native_jacobian_condition_max": 18.8322553255367,
+      "route_A": {
+        "field_relative_l2": 9.581785871074577e-07,
+        "current_relative_l2": 2.5059160519052147e-05,
+        "gradp_relative_l2": 2.3690355335466528e-06,
+        "force_pressure_scale": 0.00021819868115751872,
+        "force_fixed_magnetic_scale": 0.0001362542735761738,
+        "field_max_abs_T": 3.529137064369284e-06,
+        "current_max_abs_A_per_m2": 534.6432072614406,
+        "force_max_abs_Pa_per_m": 617.3977464064545,
+        "divergence_max_abs_per_m": 4.988019020854594e-13
+      },
+      "route_B": {
+        "field_relative_l2": 9.581785870705453e-07,
+        "current_relative_l2": 2.5059160522585972e-05,
+        "gradp_relative_l2": 2.3690355272870136e-06,
+        "force_pressure_scale": 0.00021819868119190308,
+        "force_fixed_magnetic_scale": 0.00013625427359764515,
+        "field_max_abs_T": 3.529137064369284e-06,
+        "current_max_abs_A_per_m2": 534.6432072614406,
+        "force_max_abs_Pa_per_m": 617.3977464043315,
+        "divergence_max_abs_per_m": 4.985259709384959e-13
+      },
+      "route_A_B_difference": {
+        "field": 3.3832361740057713e-16,
+        "current": 6.118988166266251e-14,
+        "gradp": 8.22636502937526e-14,
+        "force": 4.1050561166330406e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 4.988770360153297e-16,
+        "position_backward_error_rms_m": 1.6204846646075062e-16,
+        "inverse_jacobian_identity_max_abs": 4.565237077258644e-13,
+        "s_native_minus_reference_max_abs": 5.657500455891196e-07,
+        "s_native_minus_reference_rms": 8.497935860797792e-08
+      },
+      "samples_metadata": {
+        "full_sample_count": 256,
+        "retained_sample_count": 256,
+        "selection": "uniform_index_spacing_with_endpoints"
+      }
+    },
+    {
+      "grid_id": "target_native_knots_and_cell_interiors",
+      "status": "measured",
+      "native_s_targets": [
+        0.00390625,
+        0.007812421875,
+        0.007812578125,
+        0.01171875,
+        0.499999921875,
+        0.500000078125,
+        0.50390625,
+        0.992187421875,
+        0.992187578125,
+        0.99609375
+      ],
+      "native_radial_mesh_points": 129,
+      "n_theta": 8,
+      "n_phi_one_period": 8,
+      "sampling_score_seconds": 164.26317137299338,
+      "samples_artifact": {
+        "path": "grid_checkpoints/target_native_knots_and_cell_interiors_samples.npz",
+        "sha256": "7e54739fe481f6860b07f9d4c35ce9f62c00476a8db3e5854b5628db9b73223d"
+      },
+      "sample_count": 640,
+      "sample_measure": "targeted_equal_weight_point_diagnostic",
+      "physical_volume_m3": null,
+      "exact_volume_m3": null,
+      "volume_relative_error": null,
+      "angular_measure": "one field period with exact NFP replication to full torus",
+      "reference_jacobian_orientation_consistent": true,
+      "reference_jacobian_sign": -1,
+      "native_jacobian_min_abs_m3": 0.0008283372420463887,
+      "native_jacobian_max_abs_m3": 0.020606549609061584,
+      "native_jacobian_condition_max": 258.30609363695027,
+      "route_A": {
+        "field_relative_l2": 0.00014679947571012396,
+        "current_relative_l2": 0.01385364912031858,
+        "gradp_relative_l2": 2.1438401047433094e-05,
+        "force_pressure_scale": 0.15527158239296304,
+        "force_fixed_magnetic_scale": 0.06553344948043303,
+        "field_max_abs_T": 0.00044103085958850386,
+        "current_max_abs_A_per_m2": 184445.38738991055,
+        "force_max_abs_Pa_per_m": 172564.36642025108,
+        "divergence_max_abs_per_m": 4.3903645841991516e-13
+      },
+      "route_B": {
+        "field_relative_l2": 0.0001467994757101343,
+        "current_relative_l2": 0.013853649120319047,
+        "gradp_relative_l2": 2.1438401048552614e-05,
+        "force_pressure_scale": 0.15527158239296845,
+        "force_fixed_magnetic_scale": 0.06553344948043531,
+        "field_max_abs_T": 0.0004410308595885098,
+        "current_max_abs_A_per_m2": 184445.38738991055,
+        "force_max_abs_Pa_per_m": 172564.36642025135,
+        "divergence_max_abs_per_m": 4.3903645841991516e-13
+      },
+      "route_A_B_difference": {
+        "field": 3.4633692591615765e-16,
+        "current": 4.7994923991447084e-14,
+        "gradp": 9.540854991581686e-14,
+        "force": 4.46510345887938e-13
+      },
+      "coordinate_inversion": {
+        "position_backward_error_max_m": 4.972820174300706e-16,
+        "position_backward_error_rms_m": 1.4223047165887463e-16,
+        "inverse_jacobian_identity_max_abs": 4.2521541843143495e-13,
+        "s_native_minus_reference_max_abs": 4.951015224663111e-06,
+        "s_native_minus_reference_rms": 1.2205621578031245e-06
+      },
+      "samples_metadata": {
+        "full_sample_count": 640,
+        "retained_sample_count": 640,
+        "selection": "uniform_index_spacing_with_endpoints"
+      }
+    }
+  ],
+  "targets": {
+    "field_relative_l2": 1e-05,
+    "current_relative_l2": 0.001,
+    "gradp_relative_l2": 0.001,
+    "force_pressure_scale": 0.001
+  },
+  "fine_grid_score_spread": {
+    "field_relative_l2": 2.212728901350047e-05,
+    "current_relative_l2": 0.0008435691597158093,
+    "gradp_relative_l2": 1.367068037559312e-06,
+    "force_pressure_scale": 0.008828099732755987,
+    "previous_radial_level_change": null
+  },
+  "grid_measurement_resolved": false,
+  "targeted_sampling_complete": true,
+  "targeted_route_agreement": true,
+  "targeted_pointwise_thresholds_met": false,
+  "measurement_resolved": false,
+  "pointwise_thresholds_met": false,
+  "representation_resolved": true,
+  "root_certified": false,
+  "accepted": false,
+  "angular_measure": "one physical field period, replicated by NFP to the full torus",
+  "reference_oracle": "Landreman supplement integer Cartesian equations; NumPy complex-step derivatives",
+  "route_A": "VMEX VmecInteriorField Cartesian B, gradB, and flux-coordinate API",
+  "route_B": "same VMEX native spectral representation through its forward flux chart and chain rule",
+  "uncertainty_note": "Grid/shift spread is an empirical measurement estimate, not a rigorous bound.",
+  "elapsed_seconds": 5058.131975270022,
+  "artifacts": {
+    "input_copy": {
+      "path": "input.indata",
+      "sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab"
+    },
+    "spectral_state": {
+      "path": "spectral_state.npz",
+      "sha256": "34a5d0fc049d5bfa20bcb696a95af86be078794b316c6c919b48f2e46e0972b5"
+    },
+    "finest_samples": {
+      "path": "grid_checkpoints/full_16x64x64_samples.npz",
+      "sha256": "a2932e9151e3ae1a4cad5c0a14749b370e56f1d8debae8458f03fd418f103d96"
+    },
+    "targeted_samples": {
+      "near_axis": {
+        "path": "grid_checkpoints/target_near_axis_samples.npz",
+        "sha256": "871a4723655fcd661ee12314128ed47865dc7486baf2f4a0b52489453a2010ac"
+      },
+      "near_edge": {
+        "path": "grid_checkpoints/target_near_edge_samples.npz",
+        "sha256": "daa63ffab5775e4b1fce595dd3119e694280d8db56441ec25e53d70c6efed461"
+      },
+      "native_knots_and_cell_interiors": {
+        "path": "grid_checkpoints/target_native_knots_and_cell_interiors_samples.npz",
+        "sha256": "7e54739fe481f6860b07f9d4c35ce9f62c00476a8db3e5854b5628db9b73223d"
+      }
+    }
+  },
+  "completed_utc": "2026-09-25T09:22:23.302261+00:00"
+}
