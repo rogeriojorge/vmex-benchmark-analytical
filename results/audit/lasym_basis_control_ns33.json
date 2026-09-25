@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "evidence": "lasym_basis_control_solver_state",
+  "symmetric_blocks": {
+    "rmnc": {
+      "max_abs_difference": 2.886579864025407e-15,
+      "relative_l2": 7.028763228707831e-16
+    },
+    "zmns": {
+      "max_abs_difference": 4.657732532997727e-16,
+      "relative_l2": 2.2645743158897326e-15
+    },
+    "lmns": {
+      "max_abs_difference": 8.77371634545876e-14,
+      "relative_l2": 5.813617036387911e-12
+    }
+  },
+  "asymmetric_partner_max_abs": {
+    "rmns": 1.7007494798000613e-16,
+    "zmnc": 2.0686860680435992e-16,
+    "lmnc": 6.787107886502058e-15
+  },
+  "runs": {
+    "lasym_false": {
+      "run_id": "lasym-control-integer_axisymmetric_current-ns33-20260925",
+      "iterations": 400,
+      "converged": true,
+      "fsq": [
+        9.775970888851292e-13,
+        4.600968402421441e-13,
+        1.1715946372484365e-13
+      ],
+      "field_path": "native_clebsch_cartesian",
+      "native_score": {
+        "field_relative_l2": 5.712051142259674e-05,
+        "current_relative_l2": 0.02563590965448963,
+        "force_pressure_scale": 0.2866402697172153
+      }
+    },
+    "lasym_true": {
+      "run_id": "lasym-control-integer_axisymmetric_full_basis_current-ns33-20260925",
+      "iterations": 400,
+      "converged": true,
+      "fsq": [
+        9.775970335349292e-13,
+        4.600967365426305e-13,
+        1.1715946239113467e-13
+      ],
+      "field_path": "continuous_fitted_state_lasym",
+      "native_score": {
+        "field_relative_l2": 3.751767246862985e-05,
+        "current_relative_l2": 0.001263730760294811,
+        "force_pressure_scale": 0.011639917663866396
+      }
+    }
+  },
+  "wout_sha256": {
+    "lasym_false": "257b024029e2558c6ee3e152d4ed272168db5514e29b9c0f2544fe434ccaaffa",
+    "lasym_true": "18404cd41d70bdd513d18b1ce3d7f6490bef661b2d231001f2584b78de776022"
+  }
+}
