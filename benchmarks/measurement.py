@@ -16,6 +16,106 @@ TARGETS = {
     "gradp_relative_l2": 1e-3,
     "force_pressure_scale": 1e-3,
 }
+DEFAULT_GRID_SHIFT = (0.173, 0.371)
+MAX_SAVED_SAMPLES = 16_384
+
+
+def deterministic_sample_indices(count: int, maximum: int = MAX_SAVED_SAMPLES) -> np.ndarray:
+    """Select a bounded, endpoint-inclusive sample independent of chunking."""
+    if count < 0 or maximum < 1:
+        raise ValueError("count must be nonnegative and maximum must be positive")
+    retained = min(count, maximum)
+    if retained == count:
+        return np.arange(count, dtype=np.int64)
+    return np.linspace(0, count-1, retained, dtype=np.int64)
+
+
+def composite_spread(rows: list[dict], *, shift=DEFAULT_GRID_SHIFT) -> tuple[dict | None, bool]:
+    """Certify radial score stability over native uniform-s cells."""
+    required = {
+        ("cell_gauss", 0.0, 0.0),
+        ("cell_gauss", float(shift[0]), float(shift[1])),
+        ("cell_midpoint", 0.0, 0.0),
+    }
+    levels = {}
+    for row in rows:
+        if (row.get("sample_measure") == "full_torus_physical_volume" and
+                row.get("radial_rule") in {"cell_gauss", "cell_midpoint"}):
+            levels.setdefault(row.get("radial_order"), []).append(row)
+    fine_rows = {}
+    for order in (2, 4):
+        candidates = levels.get(order, [])
+        signatures = {(row["radial_rule"], row["theta_shift_fraction"],
+                       row["phi_shift_fraction"]) for row in candidates}
+        if not required <= signatures:
+            return None, False
+        fine_rows[order] = [next(row for row in candidates if
+                         (row["radial_rule"], row["theta_shift_fraction"],
+                          row["phi_shift_fraction"]) == signature)
+                            for signature in required]
+
+    resolved = True
+    by_order = {}
+    for order, order_rows in fine_rows.items():
+        order_spread = {}
+        for metric, limit in TARGETS.items():
+            values = [row["route_A"][metric] for row in order_rows]
+            order_spread[metric] = max(values)-min(values)
+            if order_spread[metric] > 0.1*limit:
+                resolved = False
+        order_spread["max_volume_relative_error"] = max(
+            row["volume_relative_error"] for row in order_rows)
+        if order_spread["max_volume_relative_error"] > 1e-10:
+            resolved = False
+        order_spread["max_route_A_B_difference"] = {
+            metric: max(row["route_A_B_difference"][metric] for row in order_rows)
+            for metric in TARGETS
+        }
+        if any(order_spread["max_route_A_B_difference"][metric] > 0.1*limit
+               for metric, limit in TARGETS.items()):
+            resolved = False
+        by_order[str(order)] = order_spread
+
+    coarse = next(row for row in fine_rows[2]
+                  if row["radial_rule"] == "cell_gauss" and
+                  row["theta_shift_fraction"] == 0.0 and
+                  row["phi_shift_fraction"] == 0.0)
+    fine = next(row for row in fine_rows[4]
+                if row["radial_rule"] == "cell_gauss" and
+                row["theta_shift_fraction"] == 0.0 and
+                row["phi_shift_fraction"] == 0.0)
+    level_change = {}
+    for metric, limit in TARGETS.items():
+        level_change[metric] = abs(fine["route_A"][metric]-coarse["route_A"][metric])
+        if level_change[metric] > 0.1*limit:
+            resolved = False
+    return {
+        "radial_partition": "uniform-s cells aligned with native spline knots",
+        "native_cell_count": coarse.get("radial_cells"),
+        "by_order": by_order,
+        "order2_to_order4_gauss_change": level_change,
+    }, resolved
+
+
+def native_knot_crossings(s_reference: np.ndarray, s_native: np.ndarray,
+                          native_knots: np.ndarray) -> np.ndarray:
+    """Interpolate actual native-knot crossings along one sampled physical ray."""
+    reference = np.asarray(s_reference, dtype=float)
+    native = np.asarray(s_native, dtype=float)
+    knots = np.asarray(native_knots, dtype=float)
+    if (reference.ndim != 1 or reference.shape != native.shape or len(reference) < 2 or
+            not np.isfinite(reference).all() or not np.isfinite(native).all() or
+            not np.isfinite(knots).all()):
+        raise ValueError("reference/native labels must be equal-length finite vectors")
+    order = np.argsort(native, kind="stable")
+    native, reference = native[order], reference[order]
+    if np.any(np.diff(native) <= 0):
+        raise ValueError("native labels along a ray must be strictly increasing")
+    if np.any(np.diff(reference) <= 0):
+        raise ValueError("reference labels along a ray must be strictly increasing")
+    if np.any(knots < native[0]) or np.any(knots > native[-1]):
+        raise ValueError("every requested knot must be bracketed by the sampled ray")
+    return np.interp(knots, native, reference)
 
 
 def native_radial_probes(ns: int) -> dict[str, list[float]]:
@@ -192,6 +292,46 @@ def integer_exact_fields(case: Case, xyz: np.ndarray, *, step: float = 1e-30):
 def _weighted_rms(values: np.ndarray, weights: np.ndarray) -> float:
     values = np.asarray(values, dtype=float)
     return float(np.sqrt(np.sum(weights*np.sum(values*values, axis=-1))/np.sum(weights)))
+
+
+def weighted_square_sum(values: np.ndarray, weights: np.ndarray) -> float:
+    """Chunk-reducible weighted squared norm for streamed field statistics."""
+    values = np.asarray(values, dtype=float)
+    weights = np.asarray(weights, dtype=float)
+    if (values.ndim < 2 or weights.shape != (values.shape[0],) or
+            not np.isfinite(values).all() or not np.isfinite(weights).all() or
+            np.any(weights < 0)):
+        raise ValueError("values and nonnegative finite sample weights have incompatible shapes")
+    return float(np.sum(weights*np.sum(values*values, axis=tuple(range(1, values.ndim)))))
+
+
+def decompose_physical_force_error(
+    B: np.ndarray, J: np.ndarray, gradp: np.ndarray,
+    B_reference: np.ndarray, J_reference: np.ndarray, gradp_reference: np.ndarray,
+) -> dict[str, np.ndarray]:
+    """Split force error into exact bilinear field/current/profile terms."""
+    arrays = [np.asarray(value, dtype=float) for value in
+              (B, J, gradp, B_reference, J_reference, gradp_reference)]
+    if (any(value.ndim != 2 or value.shape[1] != 3 for value in arrays) or
+            any(value.shape != arrays[0].shape for value in arrays) or
+            not all(np.isfinite(value).all() for value in arrays)):
+        raise ValueError("physical field inputs must be finite arrays with shape (N, 3)")
+    B, J, gradp, B_reference, J_reference, gradp_reference = arrays
+    dB, dJ, dgradp = B-B_reference, J-J_reference, gradp-gradp_reference
+    terms = {
+        "dJ_cross_B_reference": np.cross(dJ, B_reference),
+        "J_reference_cross_dB": np.cross(J_reference, dB),
+        "dJ_cross_dB": np.cross(dJ, dB),
+        "minus_dgradp": -dgradp,
+    }
+    total_error = (np.cross(J, B)-gradp)-(
+        np.cross(J_reference, B_reference)-gradp_reference)
+    return {
+        "dB": dB, "dJ": dJ, "dgradp": dgradp,
+        **terms,
+        "total_force_error": total_error,
+        "identity_defect": total_error-sum(terms.values()),
+    }
 
 
 def score_fields(

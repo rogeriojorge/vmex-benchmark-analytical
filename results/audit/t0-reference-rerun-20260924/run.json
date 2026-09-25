@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "status": "completed_reference_only_rerun",
+  "vmex_executed": false,
+  "commands": [
+    "python -m pytest -q",
+    "python benchmarks/verify_reference.py",
+    "python benchmarks/reference_derivatives.py"
+  ],
+  "runtime": {
+    "python": "3.12.9 (main, Feb  8 2025, 10:24:47) [Clang 15.0.0 (clang-1500.3.9.4)]",
+    "platform": "macOS-14.4.1-arm64-arm-64bit",
+    "versions": {
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "jax": "0.11.2",
+      "jaxlib": "0.11.2"
+    }
+  },
+  "artifacts_sha256": {
+    "derivatives.json": "8f3dcd350521416e17409e29100169bafae9869aa146b46c3b61bd217ca956c3",
+    "identities.json": "8daf1625dcca65ed87c803bfbb1a58c113f6009be31be4bedd945c8b00b648dc"
+  }
+}

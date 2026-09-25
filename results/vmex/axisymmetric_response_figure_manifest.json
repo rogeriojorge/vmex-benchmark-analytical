@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "evidence": "saved_axisymmetric_response_comparison",
+  "status": "diagnostic_unresolved_branch_response",
+  "source_report": "results/vmex/response_runs/axisym-root-response-20260924T232219.753772Z/response.json",
+  "source_report_sha256": "4151a9a9c8ff25ad6d349f457eeeebc4d260a8f294a849bbddb64b49a2c7150a",
+  "plot_script": "benchmarks/plot_axisymmetric_response.py",
+  "plot_script_sha256": "3f253efe66ceb2b976bc7180dad0af3cfaebcc2425e4a201ca1ac8b9392ef72b",
+  "figure": "figures/vmex_axisymmetric_response_consistency.png",
+  "figure_sha256": "fe6e9261f95813bd270dbde6904f282f65a6c93f1e28db41d2826bc995bb3df2",
+  "ns": 65,
+  "metric": "B centered-FD minus VMEX residual-level JVP L2, divided by B*/L* per parameter unit",
+  "series": [
+    "frozen_linear_path",
+    "independently_reconverged_roots"
+  ]
+}

@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -10,9 +11,13 @@ sys.path.insert(0, str(ROOT / "benchmarks"))
 
 from evidence import (  # noqa: E402
     acceptance_state,
+    checkpoint_grid,
     desc_native_flux_label,
     failure_record,
+    interruption_receipt,
+    normalize_solver_report,
     reserve_run_directory,
+    source_metadata,
     single_source,
     validate_point_cloud,
     write_json,
@@ -27,6 +32,95 @@ def test_run_directory_is_never_reused(tmp_path):
     assert path.is_dir()
     with pytest.raises(FileExistsError):
         reserve_run_directory(tmp_path, "case-001")
+
+
+def test_legacy_and_schema2_solver_reports_normalize_without_losing_effective_settings():
+    legacy = normalize_solver_report({
+        "schema": 1, "vmex_commit": "historical-pin", "vmex_version": "0.8.0",
+        "converged": True, "ns_override": 129, "niter_limit": 3000,
+        "ftol": 1e-10, "tcon0_requested": 0.0, "tcon0_effective": 0.0,
+        "iterations": 41, "seed_sha256": "a"*64,
+    })
+    assert legacy["source_commit"] == "historical-pin"
+    assert legacy["status"] == "solver_converged"
+    assert legacy["controls"]["effective"]["tcon0_effective"] == 0.0
+    assert legacy["artifacts_sha256"]["seed_sha256"] == "a"*64
+    capped = normalize_solver_report({
+        "schema": 1, "vmex_commit": "historical-pin", "converged": False,
+        "iterations": 3000, "niter_limit": 3000,
+    })
+    assert capped["status"] == "solver_capped"
+    failed = normalize_solver_report({"schema": 1, "status": "failed", "converged": None})
+    assert failed["status"] == "solver_failed"
+
+    current = normalize_solver_report({
+        "schema": 2, "status": "solver_capped", "solver_converged": False,
+        "source": {"commit": "current-pin", "version": "0.9.0"},
+        "controls": {"requested": {"ns": 129},
+                     "effective": {"ns_array": [33, 65, 129], "tcon0": 0.0}},
+        "artifacts": {"wout": {"path": "wout.nc", "sha256": "b"*64}},
+        "iterations": 3000,
+    })
+    assert current["source_commit"] == "current-pin"
+    assert current["status"] == "solver_capped"
+    assert current["solver_converged"] is False
+    assert current["controls"]["effective"]["ns_array"] == [33, 65, 129]
+    assert current["artifacts_sha256"]["wout"] == "b"*64
+
+    with pytest.raises(ValueError, match="contradicts"):
+        normalize_solver_report({
+            "schema": 2, "status": "solver_capped", "solver_converged": True,
+            "source": {"commit": "pin"}, "controls": {"requested": {}, "effective": {}},
+        })
+    with pytest.raises(ValueError, match="unsupported"):
+        normalize_solver_report({"schema": 3})
+
+
+def test_grid_checkpoints_are_immutable_and_interruption_receipt_is_complete(tmp_path):
+    record = {"grid_id": "cell2-gauss", "score": 0.25}
+    checkpoint = checkpoint_grid(tmp_path, record["grid_id"], record)
+    record_path = tmp_path/"grid_checkpoints"/checkpoint["path"]
+    saved_bytes = record_path.read_bytes()
+    saved_sha = checkpoint["sha256"]
+    assert checkpoint["sha256"]
+    with pytest.raises(FileExistsError):
+        checkpoint_grid(tmp_path, record["grid_id"], {**record, "score": 99})
+    with pytest.raises(KeyboardInterrupt):
+        try:
+            raise KeyboardInterrupt("user interrupt")
+        except KeyboardInterrupt as exc:
+            receipt = interruption_receipt(
+                tmp_path, run_id="unique-run", completed_grids=[record["grid_id"]],
+                error=exc,
+            )
+            raise
+    assert receipt == json.loads((tmp_path/"interruption.json").read_text())
+    assert receipt["status"] == "interrupted"
+    assert receipt["completed_grids"] == [record["grid_id"]]
+    assert record_path.read_bytes() == saved_bytes
+    assert hashlib.sha256(saved_bytes).hexdigest() == saved_sha
+    assert json.loads(saved_bytes) == record
+
+
+def test_source_metadata_distinguishes_checkout_version_from_installed_distribution(tmp_path):
+    import subprocess
+
+    repo = tmp_path/"source"
+    (repo/"package").mkdir(parents=True)
+    (repo/"package"/"__init__.py").write_text("", encoding="utf-8")
+    (repo/"pyproject.toml").write_text(
+        '[project]\nname = "example"\nversion = "1.2.3"\n', encoding="utf-8")
+    subprocess.run(["git", "init", "-q", str(repo)], check=True)
+    subprocess.run(["git", "-C", str(repo), "add", "pyproject.toml", "package"], check=True)
+    subprocess.run([
+        "git", "-C", str(repo), "-c", "user.name=Test", "-c",
+        "user.email=test@example.invalid", "commit", "-qm", "source fixture",
+    ], check=True)
+    actual = source_metadata(repo/"package"/"__init__.py", "example/source", "0.9.1")
+    assert actual["version"] == "1.2.3"
+    assert actual["distribution_version"] == "0.9.1"
+    assert actual["version_source"] == "checkout_pyproject"
+    assert actual["tracked_tree_clean"] is True
 
 
 def test_failed_record_keeps_missing_memory_unknown_and_valid_json(tmp_path):

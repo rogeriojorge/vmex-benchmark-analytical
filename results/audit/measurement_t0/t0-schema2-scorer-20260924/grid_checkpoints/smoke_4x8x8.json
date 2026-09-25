@@ -1,0 +1,59 @@
+{
+  "grid_id": "smoke_4x8x8",
+  "nradial": 4,
+  "ntheta": 8,
+  "nphi_one_period": 8,
+  "theta_shift_fraction": 0.0,
+  "phi_shift_fraction": 0.0,
+  "radial_rule": "gauss",
+  "radial_cells": null,
+  "radial_order": null,
+  "sampling_score_seconds": 1.4926656250609085,
+  "samples_artifact": null,
+  "sample_count": 256,
+  "sample_measure": "full_torus_physical_volume",
+  "physical_volume_m3": 0.2671040807490953,
+  "exact_volume_m3": 0.2671040042701901,
+  "volume_relative_error": 2.863263147916915e-07,
+  "angular_measure": "one field period with exact NFP replication to full torus",
+  "reference_jacobian_orientation_consistent": true,
+  "reference_jacobian_sign": -1,
+  "native_jacobian_min_abs_m3": 0.0032581561424400588,
+  "native_jacobian_max_abs_m3": 0.017346078113974598,
+  "native_jacobian_condition_max": 63.07072929820548,
+  "route_A": {
+    "field_relative_l2": 0.029627645959073027,
+    "current_relative_l2": 0.6439538346160284,
+    "gradp_relative_l2": 0.04965210677496723,
+    "force_pressure_scale": 7.8167603853273055,
+    "force_fixed_magnetic_scale": 3.4843854805892245,
+    "field_max_abs_T": 0.24778498383195893,
+    "current_max_abs_A_per_m2": 24782716.815631203,
+    "force_max_abs_Pa_per_m": 30116622.654546842,
+    "divergence_max_abs_per_m": 8.404388296412435e-14
+  },
+  "route_B": {
+    "field_relative_l2": 0.029627645959073027,
+    "current_relative_l2": 0.6439538346160291,
+    "gradp_relative_l2": 0.049652106774970756,
+    "force_pressure_scale": 7.816760385327314,
+    "force_fixed_magnetic_scale": 3.4843854805892294,
+    "field_max_abs_T": 0.2477849838319589,
+    "current_max_abs_A_per_m2": 24782716.815631207,
+    "force_max_abs_Pa_per_m": 30116622.654546816,
+    "divergence_max_abs_per_m": 8.404388296412435e-14
+  },
+  "route_A_B_difference": {
+    "field": 4.1867243531285954e-16,
+    "current": 1.213376986684204e-14,
+    "gradp": 2.6300900961040575e-14,
+    "force": 1.454353796917377e-13
+  },
+  "coordinate_inversion": {
+    "position_backward_error_max_m": 7.195067539997724e-16,
+    "position_backward_error_rms_m": 2.0209636585871349e-16,
+    "inverse_jacobian_identity_max_abs": 8.004708007547379e-14,
+    "s_native_minus_reference_max_abs": 0.047447267835515006,
+    "s_native_minus_reference_rms": 0.005714721373089322
+  }
+}

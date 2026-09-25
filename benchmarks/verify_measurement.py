@@ -34,19 +34,24 @@ from vmex.core.wout import read_wout
 
 from analytic import ROOT, cases
 from build_inputs import FIELD_T, LENGTH_M, MU0
-from evidence import acceptance_state, reserve_run_directory, sha256_file, source_metadata, write_json
+from evidence import (
+    acceptance_state, checkpoint_grid, interruption_receipt, normalize_solver_report,
+    parent_comparison_rows as _parent_comparison_rows,
+    reserve_run_directory, sha256_file, source_metadata, write_json,
+)
 from measurement import (
-    TARGETS,
+    TARGETS, composite_spread as _composite_spread,
+    DEFAULT_GRID_SHIFT, deterministic_sample_indices,
     exact_volume_m3,
     integer_exact_fields,
     native_radial_probes,
     reference_grid,
-    score_fields,
+    weighted_square_sum,
 )
 
 
 PINNED_VMEX = "b5f5267efc0795c4a49a224e321e9b370975c14c"
-SHIFTED = (0.173, 0.371)
+SHIFTED = DEFAULT_GRID_SHIFT
 FULL_GRIDS = [
     ("legacy96", 3, 8, 4, 0.0, 0.0, "gauss"),
     ("base_8x32x32", 8, 32, 32, 0.0, 0.0, "gauss"),
@@ -191,83 +196,169 @@ def _make_evaluators(field, inp):
 
 
 def _evaluate_grid(field, inp, case, grid, evaluators, chunk_size, keep_arrays=False):
+    """Evaluate in bounded chunks and retain only sufficient statistics by default."""
     xyz = np.asarray(grid["xyz"], dtype=float)
     weights = np.asarray(grid["weights"], dtype=float)
     s_reference = np.asarray(grid["s_reference"], dtype=float)
     count = len(xyz)
-    A_B, A_gradB, A_coord, A_coord_jac, A_dpds = [], [], [], [], []
-    B_position, B_field, B_gradB, B_chart_jac, B_dpds = [], [], [], [], []
+    sums = {}
+    maxima = {}
+    weight_sum = 0.0
+    s_label_square_sum = 0.0
+    position_error_square_sum = 0.0
+    inverse_identity_max = 0.0
+    jacobian_abs_min = np.inf
+    jacobian_abs_max = 0.0
+    jacobian_condition_max = 0.0
+    jacobian_sign = None
+    position_backward_max = 0.0
+    label_difference_max = 0.0
+    jacobian_orientation_consistent = True
+    samples = {} if keep_arrays else None
+    sample_indices = deterministic_sample_indices(count) if keep_arrays else None
+
+    def add_norm(name, values, sample_weights):
+        sums[name] = sums.get(name, 0.0) + weighted_square_sum(values, sample_weights)
+
+    def add_max(name, values):
+        maximum = float(np.max(values))
+        maxima[name] = max(maxima.get(name, -np.inf), maximum)
+
+    def score_summary(prefix, force_key, grad_key):
+        fixed_scale = FIELD_T**2/(MU0*LENGTH_M)
+        return {
+            "field_relative_l2": float(np.sqrt(sums[f"{prefix}_field_error"] /
+                                                sums[f"{prefix}_field_reference"])),
+            "current_relative_l2": float(np.sqrt(sums[f"{prefix}_current_error"] /
+                                                  sums[f"{prefix}_current_reference"])),
+            "gradp_relative_l2": float(np.sqrt(sums[f"{prefix}_gradp_error"] /
+                                                sums[f"{prefix}_gradp_reference"])),
+            "force_pressure_scale": float(np.sqrt(sums[force_key]/sums[grad_key])),
+            "force_fixed_magnetic_scale": float(np.sqrt(sums[force_key]/weight_sum)/fixed_scale),
+            "field_max_abs_T": maxima[f"{prefix}_field_max"],
+            "current_max_abs_A_per_m2": maxima[f"{prefix}_current_max"],
+            "force_max_abs_Pa_per_m": maxima[f"{prefix}_force_max"],
+            "divergence_max_abs_per_m": maxima[f"{prefix}_divergence_max"],
+        }
 
     for first in range(0, count, chunk_size):
         last = min(first+chunk_size, count)
+        chunk_weights = weights[first:last]
         points = jnp.asarray(xyz[first:last])
+        s_ref = s_reference[first:last]
         coords = np.asarray(field.flux_coordinates(points))
-        A_coord.append(coords)
         rho = np.sqrt(coords[:, 0])
         q_native = jnp.asarray(np.column_stack((rho, coords[:, 1], coords[:, 2])))
-        position = evaluators["position"](q_native)
-        B_position.append(np.asarray(position))
-        # Seed the native Cartesian API with the coordinates just recovered.
-        # Its values are evaluated at the forward-reconstructed positions;
-        # their backward error from the quadrature points is recorded below.
+        position = np.asarray(evaluators["position"](q_native))
         field.set_points_flux(jnp.asarray(coords))
-        A_B.append(np.asarray(field.B()))
-        A_gradB.append(np.asarray(field.gradB()))
-        A_coord_jac.append(np.asarray(evaluators["coordinate_jacobian"](
-            position, q_native)))
-        A_dpds.append(np.asarray(evaluators["dpds"](jnp.asarray(coords[:, 0]))))
-        B_field.append(np.asarray(evaluators["field"](q_native)))
-        B_gradB.append(np.asarray(evaluators["gradB"](q_native)))
-        B_chart_jac.append(np.asarray(evaluators["chart_jacobian"](q_native)))
-        B_dpds.append(np.asarray(evaluators["dpds"](jnp.asarray(coords[:, 0]))))
+        A_B = np.asarray(field.B())
+        A_gradB = np.asarray(field.gradB())
+        A_coord_jac = np.asarray(evaluators["coordinate_jacobian"](position, q_native))
+        A_dpds = np.asarray(evaluators["dpds"](jnp.asarray(coords[:, 0])))
+        B_field = np.asarray(evaluators["field"](q_native))
+        B_gradB = np.asarray(evaluators["gradB"](q_native))
+        B_chart_jac = np.asarray(evaluators["chart_jacobian"](q_native))
+        B_dpds = np.asarray(evaluators["dpds"](jnp.asarray(coords[:, 0])))
 
-    A_B = np.concatenate(A_B)
-    A_gradB = np.concatenate(A_gradB)
-    A_coord = np.concatenate(A_coord)
-    A_coord_jac = np.concatenate(A_coord_jac)
-    A_dpds = np.concatenate(A_dpds)
-    B_position = np.concatenate(B_position)
-    B_field = np.concatenate(B_field)
-    B_gradB = np.concatenate(B_gradB)
-    B_chart_jac = np.concatenate(B_chart_jac)
-    B_dpds = np.concatenate(B_dpds)
+        A_J = _curl(A_gradB)/MU0
+        A_gradp = A_dpds[:, None]*A_coord_jac[:, 0, :]
+        q_gradient = np.zeros((len(coords), 3), dtype=float)
+        q_gradient[:, 0] = 2*rho*B_dpds
+        B_gradp = np.linalg.solve(
+            B_chart_jac.swapaxes(1, 2), q_gradient[..., None])[..., 0]
+        B_J = _curl(B_gradB)/MU0
 
-    A_J = _curl(A_gradB)/MU0
-    A_gradp = A_dpds[:, None]*A_coord_jac[:, 0, :]
-    rho = np.sqrt(A_coord[:, 0])
-    q_gradient = np.zeros((count, 3), dtype=float)
-    q_gradient[:, 0] = 2*rho*B_dpds
-    B_gradp = np.linalg.solve(
-        B_chart_jac.swapaxes(1, 2), q_gradient[..., None])[..., 0]
-    B_J = _curl(B_gradB)/MU0
+        D_x_rho = A_coord_jac.copy()
+        D_x_rho[:, 0, :] /= 2*rho[:, None]
+        identity_error = np.einsum("nij,njk->nik", B_chart_jac, D_x_rho)-np.eye(3)[None, :, :]
+        forward_error = position-xyz[first:last]
+        position_backward_max = max(position_backward_max, float(np.max(np.linalg.norm(forward_error, axis=-1))))
+        label_difference_max = max(label_difference_max, float(np.max(np.abs(coords[:, 0]-s_ref))))
+        exact_A_values = integer_exact_fields(case, xyz[first:last]/LENGTH_M)
+        exact_A = {
+            "B": FIELD_T*exact_A_values[0],
+            "J": FIELD_T/(MU0*LENGTH_M)*exact_A_values[1],
+            "gradp": FIELD_T**2/(MU0*LENGTH_M)*exact_A_values[2],
+        }
+        exact_B_values = integer_exact_fields(case, position/LENGTH_M)
+        exact_B = {
+            "B": FIELD_T*exact_B_values[0],
+            "J": FIELD_T/(MU0*LENGTH_M)*exact_B_values[1],
+            "gradp": FIELD_T**2/(MU0*LENGTH_M)*exact_B_values[2],
+        }
+        pressure_scale = exact_A["gradp"]
+        route_values = {
+            "A": (A_B, A_J, A_gradp, A_gradB, exact_A),
+            "B": (B_field, B_J, B_gradp, B_gradB, exact_B),
+        }
+        for label, (B, J, gradp, gradB, exact) in route_values.items():
+            prefix = f"route_{label}"
+            force = np.cross(J, B)-gradp
+            for metric, actual, expected in (
+                ("field", B, exact["B"]),
+                ("current", J, exact["J"]),
+                ("gradp", gradp, exact["gradp"]),
+            ):
+                add_norm(f"{prefix}_{metric}_error", actual-expected, chunk_weights)
+                add_norm(f"{prefix}_{metric}_reference", expected, chunk_weights)
+                add_max(f"{prefix}_{metric}_max", np.linalg.norm(actual-expected, axis=-1))
+            add_norm(f"{prefix}_force_error", force, chunk_weights)
+            add_max(f"{prefix}_force_max", np.linalg.norm(force, axis=-1))
+            add_max(f"{prefix}_divergence_max", np.abs(np.trace(gradB, axis1=1, axis2=2)))
 
-    # Independently check the flux-coordinate inverse derivative using a
-    # stable solve for the forward-chart Jacobian, not a stored inverse.
-    D_x_rho = A_coord_jac.copy()
-    D_x_rho[:, 0, :] /= 2*rho[:, None]
-    inverse_identity = np.einsum("nij,njk->nik", B_chart_jac, D_x_rho)
-    identity_error = inverse_identity-np.eye(3)[None, :, :]
-    forward_error = B_position-xyz
+        for name, difference, actual in (
+            ("field", A_B-B_field, A_B),
+            ("current", A_J-B_J, A_J),
+            ("gradp", A_gradp-B_gradp, A_gradp),
+        ):
+            add_norm(f"route_difference_{name}_error", difference, chunk_weights)
+            add_norm(f"route_difference_{name}_reference", actual, chunk_weights)
+        force_A = np.cross(A_J, A_B)-A_gradp
+        force_B = np.cross(B_J, B_field)-B_gradp
+        add_norm("route_difference_force_error", force_A-force_B, chunk_weights)
+        add_norm("route_difference_force_reference", pressure_scale, chunk_weights)
 
-    exact_A_values = integer_exact_fields(case, xyz/LENGTH_M)
-    exact_A = {"B": exact_A_values[0], "J": exact_A_values[1],
-               "gradp": exact_A_values[2]}
-    exact_B_values = integer_exact_fields(case, B_position/LENGTH_M)
-    exact_B = {"B": exact_B_values[0], "J": exact_B_values[1],
-               "gradp": exact_B_values[2]}
-    numerical_A = {"B": A_B, "J": A_J, "gradp": A_gradp, "gradB": A_gradB}
-    numerical_B = {"B": B_field, "J": B_J, "gradp": B_gradp, "gradB": B_gradB}
-    force_A = np.cross(A_J, A_B)-A_gradp
-    force_B = np.cross(B_J, B_field)-B_gradp
-    pressure_scale = FIELD_T**2/(MU0*LENGTH_M)*exact_A_values[2]
-    scores_A = score_fields(numerical_A, exact_A, weights,
-                            field_t=FIELD_T, length_m=LENGTH_M, mu0=MU0)
-    scores_B = score_fields(numerical_B, exact_B, weights,
-                            field_t=FIELD_T, length_m=LENGTH_M, mu0=MU0)
+        weight_sum += float(np.sum(chunk_weights))
+        position_error_square_sum += float(np.sum(
+            chunk_weights*np.sum(forward_error*forward_error, axis=-1)))
+        s_delta = coords[:, 0]-s_ref
+        s_label_square_sum += float(np.sum(s_delta*s_delta))
+        inverse_identity_max = max(inverse_identity_max, float(np.max(np.abs(identity_error))))
+        det = np.linalg.det(B_chart_jac)
+        det_signs = np.sign(det)
+        if jacobian_sign is None:
+            jacobian_sign = int(det_signs[0])
+        jacobian_orientation_consistent &= bool(np.all(det_signs == jacobian_sign))
+        jacobian_abs_min = min(jacobian_abs_min, float(np.min(np.abs(det))))
+        jacobian_abs_max = max(jacobian_abs_max, float(np.max(np.abs(det))))
+        jacobian_condition_max = max(jacobian_condition_max,
+                                     float(np.max(np.linalg.cond(B_chart_jac))))
+
+        if keep_arrays:
+            retained = sample_indices[(sample_indices >= first) & (sample_indices < last)]-first
+            chunk_samples = {
+                "xyz": xyz[first:last], "weights": chunk_weights,
+                "s_reference": s_ref, "B_route_A": A_B, "J_route_A": A_J,
+                "gradp_route_A": A_gradp, "s_native": coords[:, 0],
+                "B_route_B": B_field, "J_route_B": B_J,
+                "gradp_route_B": B_gradp,
+                "B_exact_route_A": exact_A["B"], "J_exact_route_A": exact_A["J"],
+                "gradp_exact_route_A": exact_A["gradp"],
+            }
+            for name, values in chunk_samples.items():
+                samples.setdefault(name, []).append(values[retained])
+
+    if weight_sum <= 0:
+        raise ValueError("grid must have positive total weight")
+    scores_A = score_summary("route_A", "route_A_force_error", "route_A_gradp_reference")
+    scores_B = score_summary("route_B", "route_B_force_error", "route_B_gradp_reference")
+    route_difference = {
+        metric: float(np.sqrt(sums[f"route_difference_{metric}_error"] /
+                              sums[f"route_difference_{metric}_reference"]))
+        for metric in ("field", "current", "gradp", "force")
+    }
     volume_quadrature = bool(grid.get("volume_quadrature", True))
-    weight_sum = float(np.sum(weights))
     expected_volume = exact_volume_m3(case, LENGTH_M) if volume_quadrature else None
-    det = np.linalg.det(B_chart_jac)
     result = {
         "sample_count": count,
         "sample_measure": ("full_torus_physical_volume" if volume_quadrature
@@ -277,52 +368,33 @@ def _evaluate_grid(field, inp, case, grid, evaluators, chunk_size, keep_arrays=F
         "volume_relative_error": (
             abs(weight_sum-expected_volume)/expected_volume if volume_quadrature else None
         ),
-        "angular_measure": "one_field_period with exact NFP replication to full torus",
-        "reference_jacobian_orientation_consistent": bool(np.all(np.sign(det) == np.sign(det[0]))),
-        "reference_jacobian_sign": int(np.sign(det[0])),
-        "native_jacobian_min_abs_m3": float(np.min(np.abs(det))),
-        "native_jacobian_max_abs_m3": float(np.max(np.abs(det))),
-        "native_jacobian_condition_max": float(np.max(np.linalg.cond(B_chart_jac))),
+        "angular_measure": "one field period with exact NFP replication to full torus",
+        "reference_jacobian_orientation_consistent": jacobian_orientation_consistent,
+        "reference_jacobian_sign": jacobian_sign,
+        "native_jacobian_min_abs_m3": jacobian_abs_min,
+        "native_jacobian_max_abs_m3": jacobian_abs_max,
+        "native_jacobian_condition_max": jacobian_condition_max,
         "route_A": scores_A,
         "route_B": scores_B,
-        "route_A_B_difference": {
-            "field_relative_l2": float(np.sqrt(np.sum(weights*np.sum((A_B-B_field)**2, axis=-1))
-                                                   / np.sum(weights*np.sum(A_B*A_B, axis=-1)))),
-            "current_relative_l2": float(np.sqrt(np.sum(weights*np.sum((A_J-B_J)**2, axis=-1))
-                                                     / np.sum(weights*np.sum(A_J*A_J, axis=-1)))),
-            "gradp_relative_l2": float(np.sqrt(np.sum(weights*np.sum((A_gradp-B_gradp)**2, axis=-1))
-                                                   / np.sum(weights*np.sum(A_gradp*A_gradp, axis=-1)))),
-            "force_pressure_scale": float(np.sqrt(np.sum(weights*np.sum((
-                force_A-force_B)**2, axis=-1))
-                / np.sum(weights*np.sum(pressure_scale*pressure_scale, axis=-1)))),
-        },
+        "route_A_B_difference": route_difference,
         "coordinate_inversion": {
-            "position_backward_error_max_m": float(np.max(np.linalg.norm(forward_error, axis=-1))),
-            "position_backward_error_rms_m": float(np.sqrt(np.sum(
-                weights*np.sum(forward_error*forward_error, axis=-1))/weight_sum)),
-            "inverse_jacobian_identity_max_abs": float(np.max(np.abs(identity_error))),
-            "s_native_minus_reference_max_abs": float(np.max(np.abs(A_coord[:, 0]-s_reference))),
-            "s_native_minus_reference_rms": float(np.sqrt(np.mean((A_coord[:, 0]-s_reference)**2))),
+            "position_backward_error_max_m": position_backward_max,
+            "position_backward_error_rms_m": float(np.sqrt(position_error_square_sum/weight_sum)),
+            "inverse_jacobian_identity_max_abs": inverse_identity_max,
+            "s_native_minus_reference_max_abs": label_difference_max,
+            "s_native_minus_reference_rms": float(np.sqrt(s_label_square_sum/count)),
         },
     }
     if keep_arrays:
-        result["samples"] = {
-            "xyz": xyz,
-            "weights": weights,
-            "s_reference": s_reference,
-            "B_route_A": A_B,
-            "J_route_A": A_J,
-            "gradp_route_A": A_gradp,
-            "s_native": A_coord[:, 0],
-            "B_route_B": B_field,
-            "J_route_B": B_J,
-            "gradp_route_B": B_gradp,
-            "B_exact_route_A": FIELD_T*exact_A_values[0],
-            "J_exact_route_A": FIELD_T/(MU0*LENGTH_M)*exact_A_values[1],
-            "gradp_exact_route_A": FIELD_T**2/(MU0*LENGTH_M)*exact_A_values[2],
-        }
+        result["samples"] = {name: np.concatenate(chunks, axis=0)
+                             for name, chunks in samples.items()}
         if "s_native_target" in grid:
-            result["samples"]["s_native_target"] = np.asarray(grid["s_native_target"])
+            result["samples"]["s_native_target"] = np.asarray(grid["s_native_target"])[sample_indices]
+        result["samples_metadata"] = {
+            "full_sample_count": count,
+            "retained_sample_count": int(len(sample_indices)),
+            "selection": "uniform_index_spacing_with_endpoints",
+        }
     return result
 
 
@@ -351,6 +423,15 @@ def _legacy_comparison(grid, result, legacy_path):
         "new_full_torus_volume_m3": float(np.sum(arrays["weights"])),
         "legacy_sample_sha256": sha256_file(legacy_path),
     }
+
+
+def _write_npz_checkpoint(path: Path, arrays: dict[str, np.ndarray]) -> dict:
+    """Write a sample artifact once, returning a path/hash receipt."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("xb") as output:
+        np.savez_compressed(output, **arrays)
+    return {"path": path.relative_to(path.parents[1]).as_posix(),
+            "sha256": sha256_file(path)}
 
 
 def _fine_spread(rows):
@@ -420,103 +501,8 @@ def _fine_spread(rows):
     return spread, resolved
 
 
-def _composite_spread(rows):
-    """Certify radial score stability using the native uniform-s cell partition."""
-    required = {
-        ("cell_gauss", 0.0, 0.0),
-        ("cell_gauss", SHIFTED[0], SHIFTED[1]),
-        ("cell_midpoint", 0.0, 0.0),
-    }
-    levels = {}
-    for row in rows:
-        if (row.get("sample_measure") == "full_torus_physical_volume" and
-                row.get("radial_rule") in {"cell_gauss", "cell_midpoint"}):
-            levels.setdefault(row.get("radial_order"), []).append(row)
-    fine_rows = {}
-    for order in (2, 4):
-        candidates = levels.get(order, [])
-        signatures = {(row["radial_rule"], row["theta_shift_fraction"],
-                       row["phi_shift_fraction"]) for row in candidates}
-        if not required <= signatures:
-            return None, False
-        fine_rows[order] = [next(row for row in candidates if
-                         (row["radial_rule"], row["theta_shift_fraction"],
-                          row["phi_shift_fraction"]) == signature)
-                            for signature in required]
-
-    resolved = True
-    by_order = {}
-    for order, order_rows in fine_rows.items():
-        order_spread = {}
-        for metric, limit in TARGETS.items():
-            values = [row["route_A"][metric] for row in order_rows]
-            order_spread[metric] = max(values)-min(values)
-            if order_spread[metric] > 0.1*limit:
-                resolved = False
-        order_spread["max_volume_relative_error"] = max(
-            row["volume_relative_error"] for row in order_rows)
-        if order_spread["max_volume_relative_error"] > 1e-10:
-            resolved = False
-        order_spread["max_route_A_B_difference"] = {
-            metric: max(row["route_A_B_difference"][metric] for row in order_rows)
-            for metric in TARGETS
-        }
-        if any(order_spread["max_route_A_B_difference"][metric] > 0.1*limit
-               for metric, limit in TARGETS.items()):
-            resolved = False
-        by_order[str(order)] = order_spread
-
-    coarse = next(row for row in fine_rows[2]
-                  if row["radial_rule"] == "cell_gauss" and
-                  row["theta_shift_fraction"] == 0.0 and
-                  row["phi_shift_fraction"] == 0.0)
-    fine = next(row for row in fine_rows[4]
-                if row["radial_rule"] == "cell_gauss" and
-                row["theta_shift_fraction"] == 0.0 and
-                row["phi_shift_fraction"] == 0.0)
-    level_change = {}
-    for metric, limit in TARGETS.items():
-        level_change[metric] = abs(fine["route_A"][metric]-coarse["route_A"][metric])
-        if level_change[metric] > 0.1*limit:
-            resolved = False
-    return {
-        "radial_partition": "uniform-s cells aligned with native spline knots",
-        "native_cell_count": coarse.get("radial_cells"),
-        "by_order": by_order,
-        "order2_to_order4_gauss_change": level_change,
-    }, resolved
 
 
-def _parent_comparison_rows(output_parent, parent_report, expected):
-    """Load and validate immutable refinement ancestry for a child profile."""
-    chain = []
-    seen = set()
-    report = parent_report
-    while True:
-        run_id = report.get("run_id")
-        identity = (
-            report.get("vmex_source", {}).get("commit"),
-            report.get("case"),
-            report.get("state_source_sha256"),
-            report.get("input_sha256"),
-        )
-        if run_id in seen or identity != expected:
-            raise SystemExit("parent comparison ancestry is cyclic or belongs to another state")
-        seen.add(run_id)
-        if report.get("status") not in {"measurement_diagnostic", "measurement_resolved"}:
-            raise SystemExit("parent comparison ancestry contains an incomplete measurement")
-        chain.append(report.get("rows", []))
-        link = report.get("comparison_parent")
-        if not link:
-            break
-        ancestor_path = output_parent/link["run_id"]/"measurement.json"
-        if not ancestor_path.is_file() or sha256_file(ancestor_path) != link.get("report_sha256"):
-            raise SystemExit("parent comparison ancestry report hash does not match")
-        ancestor = json.loads(ancestor_path.read_text(encoding="utf-8"))
-        if ancestor.get("run_id") != link["run_id"]:
-            raise SystemExit("parent comparison ancestry run id does not match")
-        report = ancestor
-    return [row for rows in reversed(chain) for row in rows]
 
 
 def main(argv=None):
@@ -550,19 +536,15 @@ def main(argv=None):
     solver_report = None
     if source_report is not None and source_report.is_file():
         solver_report = json.loads(source_report.read_text(encoding="utf-8"))
-    solver_keys = (
-        "vmex_commit", "vmex_version", "converged", "niter_limit", "iterations",
-        "ftol", "ns_override", "tcon0_requested", "tcon0_effective",
-        "initialization", "solve_seconds_including_first_compile", "peak_rss_mib",
-    )
-    solver_provenance = (None if solver_report is None else
-                         {key: solver_report[key] for key in solver_keys if key in solver_report})
+    normalized_solver_report = (None if solver_report is None else
+                                normalize_solver_report(solver_report))
+    solver_provenance = normalized_solver_report
     solver_source_matches = (
-        solver_report is not None and
-        solver_report.get("vmex_commit") == imported_source.get("commit")
+        normalized_solver_report is not None and
+        normalized_solver_report.get("source_commit") == imported_source.get("commit")
     )
     solver_converged = (
-        bool(solver_report.get("converged")) if solver_source_matches else None
+        normalized_solver_report.get("solver_converged") if solver_source_matches else None
     )
     runtime = {
         "python_version": platform.python_version(),
@@ -577,6 +559,7 @@ def main(argv=None):
     benchmark_files = (
         Path(__file__),
         Path(__file__).with_name("measurement.py"),
+        Path(__file__).with_name("evidence.py"),
         Path(__file__).with_name("analytic.py"),
         Path(__file__).with_name("build_inputs.py"),
         input_path.parent/"manifest.json",
@@ -676,8 +659,21 @@ def main(argv=None):
     (state_path).chmod(0o444)
     measurement_start = perf_counter()
     rows = []
-    finest_samples = None
-    targeted_samples = {}
+    completed_grid_ids = []
+    finest_sample_artifact = None
+    targeted_sample_artifacts = {}
+
+    def persist_completed_grid(row):
+        receipt = checkpoint_grid(out, row["grid_id"], row)
+        completed_grid_ids.append(row["grid_id"])
+        running.update(
+            status="running",
+            completed_grids=list(completed_grid_ids),
+            latest_grid_checkpoint=receipt,
+            checkpoint_manifest_sha256=sha256_file(out/"grid_checkpoints"/"checkpoints.json"),
+        )
+        write_json(out/"measurement.json", running)
+
     try:
         for grid_spec in grids:
             grid_id, nr, nt, np_, theta_shift, phi_shift, radial_rule = grid_spec[:7]
@@ -693,15 +689,19 @@ def main(argv=None):
                                "radial_64x64x64", "radial_128x64x64", "cell4_gauss"}
             result = _evaluate_grid(field, inp, case, grid, evaluators, args.chunk_size,
                                     keep_arrays=keep)
+            sample_artifact = None
             if keep:
                 arrays = result.pop("samples")
+                sample_artifact = _write_npz_checkpoint(
+                    out/"grid_checkpoints"/f"{grid_id}_samples.npz", arrays)
                 if grid_id == "legacy96":
                     result["legacy_sample_reproduction"] = _legacy_comparison(
                         grid, {**result, "samples": arrays}, args.legacy_samples)
                 if grid_id in {"full_16x64x64", "radial_32x64x64", "radial_64x64x64",
                                "radial_128x64x64", "cell4_gauss"}:
-                    finest_samples = arrays
-            rows.append({
+                    finest_sample_artifact = sample_artifact
+                arrays = None
+            row = {
                 "grid_id": grid_id,
                 "nradial": nr,
                 "ntheta": nt,
@@ -712,8 +712,11 @@ def main(argv=None):
                 "radial_cells": radial_cells,
                 "radial_order": radial_order if radial_rule.startswith("cell_") else None,
                 "sampling_score_seconds": perf_counter()-sample_start,
+                "samples_artifact": sample_artifact,
                 **result,
-            })
+            }
+            rows.append(row)
+            persist_completed_grid(row)
             print(json.dumps({"grid_id": grid_id,
                               "route_A": result["route_A"],
                               "volume_relative_error": result["volume_relative_error"]}),
@@ -729,8 +732,11 @@ def main(argv=None):
                     result = _evaluate_grid(field, inp, case, target_grid, evaluators,
                                             args.chunk_size, keep_arrays=True)
                     arrays = result.pop("samples")
-                    targeted_samples[group_id] = arrays
-                    rows.append({
+                    sample_artifact = _write_npz_checkpoint(
+                        out/"grid_checkpoints"/f"{grid_id}_samples.npz", arrays)
+                    targeted_sample_artifacts[group_id] = sample_artifact
+                    arrays = None
+                    row = {
                         "grid_id": grid_id,
                         "status": "measured",
                         "native_s_targets": native_s,
@@ -738,8 +744,11 @@ def main(argv=None):
                         "n_theta": 8,
                         "n_phi_one_period": 8,
                         "sampling_score_seconds": perf_counter()-sample_start,
+                        "samples_artifact": sample_artifact,
                         **result,
-                    })
+                    }
+                    rows.append(row)
+                    persist_completed_grid(row)
                     print(json.dumps({"grid_id": grid_id,
                                       "route_A": result["route_A"],
                                       "route_A_B_difference": result["route_A_B_difference"]}),
@@ -753,6 +762,20 @@ def main(argv=None):
                         "failure": {"type": type(exc).__name__, "message": str(exc)},
                         "sampling_score_seconds": perf_counter()-sample_start,
                     })
+                    persist_completed_grid(rows[-1])
+    except KeyboardInterrupt as exc:
+        receipt = interruption_receipt(
+            out, run_id=run_id, completed_grids=completed_grid_ids, error=exc)
+        running.update(
+            status="measurement_interrupted",
+            interruption=receipt,
+            completed_grids=list(completed_grid_ids),
+            rows=rows,
+            host_peak_rss_mib=_rss_mib(),
+            completed_utc=datetime.now(timezone.utc).isoformat(),
+        )
+        write_json(out/"measurement.json", running)
+        raise
     except Exception as exc:
         running.update(
             status="measurement_failed",
@@ -793,23 +816,8 @@ def main(argv=None):
     )
     measurement_resolved = (grid_measurement_resolved and targeted_sampling_complete
                             and targeted_route_agreement)
-    if finest_samples is not None:
-        sample_path = out/"finest_samples.npz"
-        np.savez_compressed(sample_path, **finest_samples)
-        sample_artifact = {"path": sample_path.name, "sha256": sha256_file(sample_path)}
-    else:
-        sample_artifact = None
-    if targeted_samples:
-        target_path = out/"targeted_samples.npz"
-        packed = {
-            f"{group_id}__{name}": values
-            for group_id, arrays in targeted_samples.items()
-            for name, values in arrays.items()
-        }
-        np.savez_compressed(target_path, **packed)
-        target_artifact = {"path": target_path.name, "sha256": sha256_file(target_path)}
-    else:
-        target_artifact = None
+    sample_artifact = finest_sample_artifact
+    target_artifact = targeted_sample_artifacts or None
     volume_rows = [row for row in rows if row.get("sample_measure") == "full_torus_physical_volume"]
     best = (next(row for row in volume_rows if row["grid_id"] == "cell4_gauss")
             if args.profile == "composite" else max(volume_rows, key=lambda row: (row["nradial"], row["ntheta"],

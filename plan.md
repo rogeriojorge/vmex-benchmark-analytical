@@ -1,770 +1,671 @@
-# Analytical benchmarks for VMEX: revised implementation plan
+# VMEX analytical benchmarks: continuation after d5484d1
 
-> **Historical record:** The complete plan and append-only logbook as of reviewed commit `575f13f67b346118c3d7f05cc60cc6e29131359a` are preserved verbatim in [`docs/history/plan_through_575f13f.md`](docs/history/plan_through_575f13f.md). Revision 2 replaces the active plan while retaining that history; new entries below continue the record from the reviewed commit.
+**Owner:** `rogeriojorge`
+**Repository:** `https://github.com/rogeriojorge/vmex-benchmark-analytical`
+**Review date:** 2026-09-24
+**Reviewed main:** `d5484d1e7a15c9cf10599c2b0f05bdf69e22e861`
+**Preceding reviewed main:** `575f13f67b346118c3d7f05cc60cc6e29131359a`
 
-**Revision 2 - 2026-09-24**  
-**Owner:** `rogeriojorge`  
-**Existing public repository:** `https://github.com/rogeriojorge/vmex-benchmark-analytical`  
-**Reviewed benchmark commit:** `575f13f67b346118c3d7f05cc60cc6e29131359a`
+This is a continuation of the existing implementation, not a replacement project. It retains the analytical models, case matrix, useful measurements, code and historical logbook. It supersedes the immediate instruction to rerun the interrupted composite calculation unchanged. Read the preserved [review findings](docs/handoff/review-d5484d1/REVIEW_FINDINGS.md) and [pinned references](docs/handoff/review-d5484d1/REFERENCES.md) with this plan. The full continuation package is archived under `docs/handoff/review-d5484d1/`. Source labels S1-S12 and literature labels L1-L13 refer to that reference file.
 
-This is a continuation of the existing project, not a request to recreate it. The earlier analytical definitions, case files, useful scripts, raw arrays and logbook remain part of the project. This revision changes the priority order, measurement contracts and acceptance criteria in light of the recorded experiments and source review. It does not discard the broad benchmark scope.
+The review inspected current source and recorded evidence, but did not execute VMEX, DESC, GVEC, free-boundary or kinetic benchmarks. The six delivered review probes ran independently of those codes. Their outputs illustrate numerical mechanisms and contracts; they are not additional equilibrium results.
 
-The review used committed source, reports, PR metadata and primary literature. It did not rerun VMEX or DESC. Numerical solver results below are reported observations from the reviewed snapshot, not new measurements by the reviewer. Three standalone mathematical probes were run; they do not establish the errors of any saved equilibrium.
+## 1. Adoption, scientific mandate and operating rules
 
-## 1. Adoption, history and immediate instructions
+The active plan/logbook at `d5484d1e7a15c9cf10599c2b0f05bdf69e22e861` was archived byte-for-byte as [plan_through_d5484d1.md](docs/history/plan_through_d5484d1.md) before adopting this continuation. Its SHA-256 is `0b34804db8c0741f8f94b0e6e1af8616119fbe002cc8bc4330bea54f96fa8736`. The handoff source files and checksums are preserved under `docs/handoff/review-d5484d1/`. Keep this as the single active contract; preserve earlier plans through links rather than rewriting their history.
 
-Read `REVIEW_FINDINGS.md` and `REFERENCES.md` before implementing. Compare the current repository head with the reviewed commit. Preserve subsequent user work and record any intervening changes. Do not reset a working tree to this review snapshot.
+The benchmark has four scientific goals:
 
-Archive the previous plan, including its entire logbook, before installing this revision as the active `plan.md`. A suitable tracked location is `docs/history/plan_through_575f13f.md`, copied from that exact Git object. If the current plan has later logbook entries, preserve those too and carry their unresolved actions into the new current-status section. Avoid duplicate copies of source code or numerical result trees. Retain the historical plan link at the top of the new active plan.
+1. Establish when a solved numerical equilibrium, rather than an analytical projection or small discrete residual, recovers the exact B, J, pressure surfaces and force balance.
+2. Separate errors in analytical input conversion, finite representation, nonlinear recovery, output reconstruction, coordinate inversion and numerical measurement.
+3. Verify spatial derivatives and physical equilibrium sensitivities, including the effects of coordinate constraints, initialization, symmetry and current/transform closure.
+4. Use verified capabilities to study exact families and nearby equilibria, while demonstrating useful coverage of field, diagnostic, exterior, free-boundary and downstream interfaces.
 
-PR #1 is merged at the reviewed snapshot. Its description contains stale wording saying it is unmerged. Read actual GitHub state instead of repeating that sentence. The benchmark repository already exists; do not run repository-creation steps again.
+Do not change the global TCON0 default, rewrite the equilibrium solver, or add a general workflow framework as the first response to the current discrepancy. Prefer a small falsifiable experiment, then a narrow implementation correction. Negative results are publishable evidence when the question and numerical uncertainty are resolved; they are not passing capabilities.
 
-The next implementation block has five deliverables:
+All new Git writes, pushes, comments and PRs must use the authenticated `rogeriojorge` account. Verify `gh api user --jq .login`, configure author and committer only in the project/worktree, and use the verified owner email or correct account noreply address. Do not add AI authors or co-author trailers. Preserve inherited merge history and third-party notices. Use a work branch for this continuation. Necessary VMEX/adjacent-library fixes belong in separate narrow PRs, with baseline/candidate comparisons; do not merge them or push to upstream default branches. Inspect the existing publication helper before using it: it previously pushed benchmark commits directly to main and staged a broad allowlist. Do not invoke it blindly.
 
-1. Make figure generation read-only and repair run metadata/label contracts, with regression tests.
-2. Create a converged independent scorer, retaining the old 96-point grid only for continuity.
-3. Finish the one missing projected NS129, TCON0=0 historical-baseline cell, keeping the matching default result and immutable run provenance.
-4. Test the force operator's history independence and separate physical, coordinate and reconstruction effects.
-5. Begin an axisymmetric exact-family derivative test and a sheared-A recovery path in parallel, rather than making every phase wait for the integer 3-D diagnosis.
+Never publish credentials, private machine notes, shell environment dumps or connection details. GitHub API receipts and sanitized package/device metadata are sufficient. Keep source-code comments and prose factual. No badges or statements implying full validation from a passing unit suite.
 
-Do not begin a wholesale coordinate-system rewrite, a global TCON0 default change, a large kinetic campaign, or a new optimization framework during this block.
+## 2. What has changed since the previous review
 
-## 2. Questions, scope and scientific outcome
+There are two new commits: `9df03c2` records the implementation/results and `d5484d1` records publication. The R0 evidence repairs should be retained: read-only TCON rendering, historical metadata amendments, unique run directories, explicit requested/effective controls, and independent reference/native radial labels. The source now includes an independent NumPy/complex-step oracle, full-torus weighting, pressure decomposition, radial quadrature extensions and complete axisymmetric input-map finite differences. [S1-S6]
 
-The project should answer these questions with independently checked data:
+The reported local suite increased from 29 to 47 tests. This does not establish clean-environment reproducibility: the current GitHub reference workflow failed at pytest after installing the stated requirements. The new pure measurement tests import a driver that requires VMEX, which the reference environment does not install. Detailed CI logs were not accessible during review; inspect them locally and fix the source-confirmed dependency problem first. Do not repeat the statement 'all tests pass' without naming the environment. [S7]
 
-- Does the numerical equilibrium recover a known physical field, its current and pressure gradient, not only a small discrete force residual?
-- Which errors come from the input approximation, state representation, nonlinear root, field reconstruction, inverse coordinates and measurement grid?
-- Do physical equilibrium sensitivities approach the derivatives of the exact family? How much do coordinate constraints and initialization affect them at finite resolution?
-- Which public modules and downstream interfaces preserve those properties for both symmetry settings, both closure choices and the appropriate boundary conditions?
-- What can be optimized within an exact solution family, and which nearby physical deformations remain regular and accurately differentiable?
+The latest saved NS33 measurement still has unresolved radial quadrature. The legacy 96-point sample remains reproducible, but denser grids change the result substantially. Selected reported values for the same default-TCON projected-start solved state are:
 
-A useful result can be a demonstrated limitation with a resolved cause. Failure to converge a particular family is not a reason to abandon the entire benchmark. Conversely, an unresolved discrepancy cannot be converted into a successful capability by changing a caption or a tolerance.
+| Radial/angular rule | E_B | E_J | E_gradp | E_F,p |
+|---|---:|---:|---:|---:|
+| legacy96 | 8.71e-4 | 4.39e-1 | separately recorded | 4.93 |
+| 16x64x64 Gauss | 1.737e-3 | 1.628e-1 | 8.069e-3 | 1.744 |
+| 64x64x64 Gauss | about 1.425e-3 | about 1.830e-1 | about 8.058e-3 | about 1.972 |
+| 64x64x64 midpoint | about 1.380e-3 | about 1.941e-1 | about 8.056e-3 | about 2.101 |
 
-The most promising extension beyond reproducing Landreman is **a quantitative study of physical sensitivity under coordinate freedom**. Exact-family tangent directions, pure coordinate changes and transverse physical perturbations provide three different controls. They must not be mixed.
+These are observations from committed records, not new runs in this review. Retrieve full precision from the records. Angular shifts agree closely in the tested comparisons; that does not establish convergence under arbitrary angular refinement. The current physical gates remain E_B <= 1e-5, E_J <= 1e-3, E_F,p <= 1e-3. None of the above is close to passing.
 
-## 3. Source baselines and reproducibility
+The composite run was interrupted after 27:52, during `cell4_gauss`. Its three completed printed rows are preserved only as provisional stdout in `interruption.json`. Do not reuse its run ID or cite those rows as a completed dataset. Its existing definition also partitions the reference flux label, not the true native knot coordinate, and its node counts are hard-coded for NS33. [S3, S4]
 
-Keep the following historical pins immutable:
+Important current lineage:
 
-| Role | Repository | Pin |
-|---|---|---|
-| Historical benchmark | rogeriojorge/vmex-benchmark-analytical | `575f13f67b346118c3d7f05cc60cc6e29131359a` |
-| Historical primary solver | uwplasma/vmex | `b5f5267efc0795c4a49a224e321e9b370975c14c` |
-| Analytical supplement | landreman/analytic_3d_equilibria | `4c0b690ddebdc71811c88223eb9f44a98ab64222` |
-| Recorded DESC | PlasmaControl/DESC | `4f48720beac3d4169e9165923d730445118bc2de` |
-| Recorded SOLVAX | uwplasma/SOLVAX | `2e246a5d6093662f9b5f72c46f995cd7c4bbd479` |
-| Recorded Boozer transform | uwplasma/booz_xform_jax | `cd25084422de10b620bd86ede0bbd51ba06d7fa6` |
+| Item | Value |
+|---|---|
+| Latest completed radial64 run | `ns33-projected-default-gpu-radial64-v1` |
+| Radial64 report SHA-256 | `ac448fd9be924b64119c98238b9317310d9a0c98c1e6d184197dfddba850a000` |
+| Interrupted run | `ns33-projected-default-gpu-composite-v1` |
+| Saved spectral-state SHA-256 | `3fefa156a0a7835a36503aa3ffeb6f72905c0743f446a8784403d4550687c48a` |
+| Input SHA-256 | `7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab` |
+| Corrected input-map report | `results/reference/derivative_runs/axisym-input-map-20260924T201351.596655Z/derivatives.json` |
+| Input-map report SHA-256 | `56bcf3769c394117e5586480827e55f66671e6a2af7c8d85fda80d512af569db` |
 
-The VMEX main head inspected in this review was `4632dad8261ca72756819c1c5fcd2e2ec022aeaa`. Treat it as a second snapshot, not an invisible replacement of the historical baseline. Resolve a later head explicitly if needed. The last inspected commit concerns dependency-floor planning; it does not itself establish that any numerical discrepancy is fixed.
+The existing pressure audit finds an input-profile error near roundoff but a measurable mismatch between native and exact flux labels. This is evidence about a finite reconstructed state, not proof of a continuum solver defect. Pure angle relabelling cannot change normalized toroidal flux at a fixed physical point.
 
-Create baseline and candidate worktrees outside this repository. Record imported module paths, Git commits, dirty patches, Python/package versions, float precision, platform, device actually used, thread settings and relevant JAX environment variables. `git rev-parse HEAD` in the benchmark working directory does not identify an imported solver's revision. A package version string does not replace a source hash.
+No new nonlinear recovery or VMEX response derivative was completed in the latest block. The missing historical `NS=129, TCON0=0` projected-start solve remains missing. Do not lose track of it, but do not make every useful experiment wait for a high-precision norm of the already-failed NS33 state.
 
-Keep DESC in its compatible environment. The current VMEX dependency discussion records a real old-Equinox/new-JAX import problem and conflicts with some DESC dependencies [R04]. Run `pip check` and import/solve smoke tests. Do not fix one environment by blindly upgrading all dependencies in another. Record CPU and accelerator environments separately; do not infer parallel execution from the list of available devices.
+## 3. Source pins and scope
 
-Resolve null optional-library pins only as their phases are reached. Review the source actually imported by the chosen capability. An inventory, a semantic review, an executed test and a physical validation are four separate ledger fields. Prioritize the reachable source slices needed below while the wider VMEX review continues.
+Keep historical and candidate environments distinct:
 
-## 4. Present measured state
+| Role | Pin |
+|---|---|
+| Historical VMEX | `b5f5267efc0795c4a49a224e321e9b370975c14c` |
+| Current VMEX inspected here, release 0.11.2 | `926892ab7131a6bc0c5b61218d1f75e7b77bc401` |
+| Earlier comparison pin in the active plan | `4632dad8261ca72756819c1c5fcd2e2ec022aeaa` |
+| Analytical supplement | `4c0b690ddebdc71811c88223eb9f44a98ab64222` |
+| Recorded DESC | `4f48720beac3d4169e9165923d730445118bc2de` |
+| Recorded SOLVAX | `2e246a5d6093662f9b5f72c46f995cd7c4bbd479` |
+| Recorded booz_xform_jax | `cd25084422de10b620bd86ede0bbd51ba06d7fa6` |
+| Optional VMEX PR448 head, not main | `70bfe9da0372326633bae8054042f985255456c2` |
+| Optional VMEC++ PR849 head, not main | `cec07e9e06f54af38851eb2cf0dcf46f75a1aea6` |
 
-The recorded reference suite has 29 passing tests, 14 configurations and 28 parser-checked decks. Sheared B/C boundaries have been refined beyond the original handoff. Their latest input fit errors clear a smoke gate, not a final solution accuracy budget. The explicit local sheared-map derivative checks do not yet differentiate the complete boundary/profile/flux conversion.
+The new VMEX release addresses compilation-cache separation by machine. That change is relevant to timing reproducibility, not evidence of an equilibrium fix. PR448 is draft research, and PR849 is an unmerged comparator. Recheck their actual state before using them. Keep separate worktrees and record exact imported-source identity and relevant dirty patches. [S8-S11]
 
-The table below reproduces selected reported values. All volume scores use the legacy 96-point grid and require stronger measurement certification.
+Continue the source review along the reachable implementation paths. Inventory, semantic review, executed tests and physical validation remain four separate fields. Review field/interpolation, residual/masks, profiles and derivative routines before claiming those capabilities; review optional libraries when a concrete integration reaches them. Do not stall all experiments behind reading every unrelated repository in the organization.
 
-| Case / representation | NS | TCON0 | E_B | E_J | E_F,p |
-|---|---:|---:|---:|---:|---:|
-| Axisymmetric integer, prescribed iota, solved | 129 | deck value | 6.51e-7 | 8.24e-5 | 8.18e-4 |
-| Axisymmetric integer, prescribed current, solved | 129 | deck value | 6.89e-7 | 8.25e-5 | 8.18e-4 |
-| Integer 3-D, projected exact state, no solve | 129 | not a root test | 2.42e-7 | 7.14e-6 | 8.15e-5 |
-| Integer 3-D, projected start, solved | 33 | 1 | 8.71e-4 | 4.39e-1 | 4.93 |
-| Integer 3-D, projected start, solved | 33 | 0 | 4.48e-5 | 1.73e-2 | 1.82e-1 |
-| Integer 3-D, projected start, solved | 65 | 1 | 7.06e-4 | 1.49e-1 | 1.70 |
-| Integer 3-D, projected start, solved | 65 | 0 | 8.26e-6 | 1.51e-3 | 1.67e-2 |
-| Integer 3-D, projected start, solved | 129 | 1 | 1.30e-4 | 2.92e-3 | 1.74e-2 |
-| Integer 3-D, projected start | 129 | 0 | **not run** | **not run** | **not run** |
+## 4. Models, units and conventions that remain fixed
 
-The reported TCON ladder has nine measured solved states, including cold starts and intermediate strength at NS33. All meet their recorded discrete FTOL=1e-10 stopping test; none passes all three physical thresholds. This statement does not include the separately successful axisymmetric control.
+### 4.1 Reference families
 
-Asymmetric Solov'ev WOUT surface B errors decrease with radial refinement, and a WOUT/restart round trip preserves surface values. The native Cartesian LASYM path is unsupported at the historical pin. A fitted continuous reconstruction is a separate path whose error must be measured, not silently substituted.
+The integer family and diagonal-stretch extension use positive a,b,c and outer pressure label delta. Let
 
-DESC now supplies an independent native comparison. Its base M=N=8, L=10 solved integer-3D state has reported E_B=1.05e-5, E_J=1.48e-4 and E_F,p=1.91e-5. The remapped M8 run is iteration-capped and remains unconverged. Its boundary differs from the analytical boundary by a nonzero fit error, so the existing table does not rank solvers at equivalent accuracy.
+$$q=(x/a)^2+(y/b)^2,\qquad f=\sqrt{2q-q^2-4(z/c)^2},$$
+$$\mathbf B=\left(\frac{2zx/c-(a/b)fy}{q},\frac{2zy/c+(b/a)fx}{q},c(1-q)\right).$$
 
-The complete-family solver derivatives, free boundary, polishing responses and physical optimization remain open. The historical logbook should remain available for all intermediate corrections, failed launches and source-review limits.
+With
 
-## 5. R0: repair evidence handling before new results
+$$u_a=-\frac{a^2-b^2}{4c^2},\quad H_a=\frac{a^2+b^2}{2}-\frac{(a^2-b^2)^2}{8c^2},$$
+$$H=\frac{x^2+y^2+4z^2+|B|^2}{2},\quad \psi=\frac{H-H_a}{2c^2},\quad p=2c^2(\delta-\psi),$$
 
-**Depends on:** adoption of this plan. **Maps to old phases:** P0/P10. **Priority:** immediate.
+require `abs(u_a)+sqrt(delta)<1/2`. The domain must stay strictly inside the positive-radicand chart. The displayed paper family has a=sqrt(1+epsilon), b=sqrt(1-epsilon), c=1. The extension changes the pressure-surface center when c changes; it is not just a vertical stretch of an unchanged old boundary. [L1; preserved model derivation]
 
-Implement the confirmed harness repairs in `REVIEW_FINDINGS.md`:
+Useful exact quantities are
 
-- Remove writes to raw reports and sample scores from plotting scripts. Read observations from records, never from a hard-coded iteration/version table.
-- Preserve existing bytes and record historical amendments separately. Verify each recoverable field against logs, state metadata or environment records. Leave unrecoverable facts unknown.
-- Give each run an immutable ID and parent ID. Save the effective input and source/seed hashes. Repetition produces another run, not an overwrite.
-- Store a solver-independent point cloud separately from solver observations. Replace inherited `vmex_s` in DESC with actual `s_native=rho_DESC**2`; keep `s_reference` separate.
-- Resolve source commits from imported packages, and report actual per-stage NS/FTOL/NITER/TCON0 settings. Correct failed-run RSS collection and distinguish host/device memory.
-- Separate `solver_converged`, `pointwise_thresholds_met`, `measurement_resolved`, `representation_resolved`, `root_certified`, and `accepted`. A terminal state may have a physical score while `solver_converged=false`.
+$$s=\psi/\delta,\quad V=2\pi^2abc\delta,\quad\Phi_t=\pi abc\delta,$$
+$$\langle B^2\rangle=H_a+c^2\delta,\quad\langle p\rangle=c^2\delta,\quad
+\beta_V=\frac{2c^2\delta}{H_a+c^2\delta}.$$
 
-Use a small JSON contract, not a workflow engine. A practical record contains identity, effective configuration, source/environment, status/certificates, metrics, timings and artifact hashes. Save raw nonlinear reports, sample arrays and optional native state independently of derived summaries. Figure manifests name the exact generator commit and their read-only inputs.
+Use actual values from `cases.json`, including stored rounding. Do not replace rounded a,b by symbolic square roots when checking previously generated artifacts; that would change the reference problem and its exact volume.
 
-Required regression tests: rendering does not mutate inputs; a capped state cannot be accepted; mixed source IDs cannot be silently pooled; requested/effective control differences are represented; reference samples contain no solver-specific state; DESC labels are independently assigned; failed-run records are finite/valid without pretending missing memory was measured.
+For the sheared family, keep the explicit field and chart in `analytic.py` and the independent supplement. Its pressure label is psi=k^2/2, but normalized toroidal flux is s=Q_t(k)/Q_t(k_b). Pressure is `(delta-psi)/lambda^2` in reference units. Invert Q_t consistently, and obtain current/transform from independently refined flux and Ampere integrals. A smooth analytical torus need not be a single-valued graph in physical cylindrical angle. Check monotonicity over the relevant radii, not just one boundary sample; reject an invalid chart rather than clipping it into a deck.
 
-**Exit:** tests exercise these paths, all existing JSON parses, a historical amendment table exists, and figures can be regenerated without modifying raw records. Physical results with incomplete metadata are retained as historical diagnostics, not silently deleted.
+For the independent axisymmetric control, retain
 
-## 6. R1: independent physical scoring and an error budget
+$$\psi=b(R^2-R_0^2)^2+gZ^2+2\chi\sqrt{bg}(R^2-R_0^2)Z,$$
+$$p=8b(\psi_b-\psi),\qquad F^2=F_0^2-4g\psi,$$
 
-**Depends on:** R0 for accepted reports. **Maps to:** P1/P2/P10. **Priority:** immediate.
+with positive-definite quadratic form, R>0 and F^2>0. The cross term is genuinely up-down asymmetric for nonzero chi. A shifted symmetry plane or a rephased 3-D field is a covariance test, not a new generic asymmetric equilibrium.
 
-### 6.1 Quantities and normalization
+### 4.2 Dimensionalization and closures
 
-At identical physical positions define
+Reference formulae use mu0=1. With fixed scales L_* and B_*, use x=L_* xbar, B=B_* Bbar, p=B_*^2 pbar/mu0, J=B_* Jbar/(mu0 L_*), and magnetic flux B_* L_*^2 times reference flux. Current from a line integral scales as B_* L_*/mu0. Record the numerical mu0 used.
 
-$$
-E_B=\frac{\|\mathbf B_h-\mathbf B_e\|_{L^2}}{\|\mathbf B_e\|_{L^2}},\qquad
-E_J=\frac{\|\mathbf J_h-\mathbf J_e\|_{L^2}}{\|\mathbf J_e\|_{L^2}},
-$$
-$$
-E_{F,p}=\frac{\|\mathbf J_h\times\mathbf B_h-\nabla p_h\|_{L^2}}
-{\|\nabla p_e\|_{L^2}},\qquad
-E_{F,B}=\frac{\mathrm{RMS}(|\mathbf J_h\times\mathbf B_h-\nabla p_h|)}
-{B_*^2/(\mu_0 L_*)}.
-$$
+`NCURR=0` prescribes iota. `NCURR=1` prescribes current and makes iota an output. Generated raw `AC` coefficients describe the derivative of the chosen enclosed-current fit, while `CURTOR` specifies the dimensional edge-current normalization; confirm the actual VMEX profile semantics. The earlier incorrect normalized-versus-raw Ampere comparison has already been corrected. Do not reintroduce it.
 
-Also record dimensional RMS, maximum sampled error, grad-p error, divergence, pressure variation and flux-surface mismatch. For vacuum or nearly zero reference current, do not divide by a vanishing reference norm. Use stated fixed magnetic scales. Maximum sampled values are not proven continuum suprema.
+Compare signed physical fields, not absolute iota alone. The repository's counterclockwise R-Z poloidal convention has negative transform for these examples; the paper/DESC orientation has the opposite sign. NFP appears both in Fourier phases and physical-angle integration. A one-period volume integral needs explicit replication; normalized ratios cancel a common missing factor but absolute integrals do not.
 
-Adopt one permeability constant and record it. Length, field, pressure, current and flux scale as
+## 5. T0: restore portable tests and compatible evidence readers
 
-$$
-\mathbf x=L_*\bar{\mathbf x},\quad \mathbf B=B_*\bar{\mathbf B},\quad
-p=B_*^2\bar p/\mu_0,\quad \mathbf J=B_*\bar{\mathbf J}/(\mu_0L_*),\quad
-\Phi=B_*L_*^2\bar\Phi.
-$$
+**Immediate; no equilibrium solve needed. Maps to previous R0/P0.**
 
-The physical toroidal angle is phi. If zeta=NFP*phi is used, record that fact in every derivative and volume weight. Choose full-torus weights as the public contract; one-period integration must have an explicit replication factor. Verify the integral of one against exact/reference volume before trusting absolute integrals.
+Move pure measurement gates/ancestry code out of the VMEX-importing driver into the existing pure module. Keep a clean reference environment containing only `requirements.txt`, and a separate solver environment with pinned VMEX and compatible dependencies. Run both intentionally. Do not silently skip pure tests on systems without VMEX. Add a regression that imports every reference-test dependency with VMEX absent. Retrieve the current CI traceback to identify any additional failures. [F01]
 
-### 6.2 Three sampling roles
+Implement a small normalization reader for old/new forward reports. For schema 1 read the documented legacy fields; for schema 2 read `source`, `controls.effective`, `solver_converged`, status and artifact hashes. Keep input copy, effective settings and state provenance distinct. Verify a scorer can consume a newly generated schema-2 run before the missing NS129 experiment. Preserve raw bytes and make amendments separate. [F02]
 
-Keep `legacy96` unchanged for historical comparison. Do not relabel it a certified quadrature.
+Do not label a boundary smoke threshold as full representation convergence. Keep fields such as `input_fit_smoke_passed`, `representation_resolved`, `measurement_resolved`, `solver_converged`, `root_certified`, `adjoint_certified` and `accepted` distinct. A projection can have a resolved physical score without ever being a solved equilibrium. The measurement program must not hard-code acceptance of a root it never tested.
 
-Create a volume integration ladder on a fixed state. For mild cases, start with roughly 8 radial by 32 poloidal by 32 toroidal nodes, then double separately where the error changes. These are starting experiments, not guaranteed sufficient resolutions. Stream batches. Use independent nonzero angular shifts and alternative radial nodes to detect accidental alignment with radial knots or periodic modes. Strongly shaped B/C inputs with toroidal modes near 100 require much higher angular resolution than the mild cases; begin from the actual represented bandwidth and verify convergence of nonlinear quantities.
+Validate imported-source membership, not just the nearest Git root. Include hashes of imported untracked/installed source when applicable, and never record a benchmark checkout SHA as the solver's SHA because its virtual environment happens to be nested there. Parent-grid compatibility must include domain, units, coordinate conventions, field representation, relevant code/patch identity and dtype. Intentional cross-version comparisons have explicit comparison records rather than being treated as one grid-refinement ladder. [F11]
 
-Add targeted near-axis and near-edge samples, including several small positive rho values, radial cell interiors and one-sided approaches to interpolation knots. The axis itself requires the regular limiting formulas, not an ill-conditioned polar inverse. Report subregion errors separately; do not remove a difficult region from a previously declared norm without stating the change.
+**Exit:** clean reference tests pass; old and new records normalize correctly; deliberately incompatible records are rejected; a minimal end-to-end producer/consumer test works; no historical raw file changes. Correct the README test statement to distinguish local and CI evidence.
 
-Use an independent scattered point set as a defect detector. It does not replace physical-volume quadrature unless its measure and statistical error are defined. A training grid used to optimize a chart is not its final verification grid.
+## 6. T1: replace the expensive unresolved scorer with bounded, coordinate-aware integration
 
-### 6.3 Two field-evaluation routes
+**Immediate numerical priority; maps to R1/P2.**
 
-Route A evaluates the current native Cartesian API, including coordinate inversion. Route B evaluates the same native representation through a forward chart and its derivatives. Let q=(s,theta,phi), and write
+### 6.1 Keep three different questions separate
 
-$$
-\mathbf X(q),\qquad C=\partial\mathbf X/\partial q,\qquad
-\mathbf b(q)=\mathbf B_h(\mathbf X(q)).
-$$
+At physical positions x, compute
 
-Then
+$$E_B^2=\frac{\int_\Omega|B_h-B_e|^2dV}{\int_\Omega|B_e|^2dV},\qquad
+E_J^2=\frac{\int_\Omega|J_h-J_e|^2dV}{\int_\Omega|J_e|^2dV},$$
+$$E_{F,p}^2=\frac{\int_\Omega|J_h\times B_h-\nabla p_h|^2dV}{\int_\Omega|\nabla p_e|^2dV}.$$
 
-$$
-D_x\mathbf B_h=(D_q\mathbf b)C^{-1},\qquad
-\nabla_x p_h=C^{-T}(p_s,0,0)^T,\qquad
-\mathbf J_h=\nabla_x\times\mathbf B_h/\mu_0.
-$$
+Also retain dimensional force RMS, magnetic-scale force RMS and pressure-gradient error. Every report identifies Omega and its volume. Use the exact reference, not numerical J or grad p, in the reference denominators. Zero-gradient vacuum fixtures need a fixed magnetic scale instead of division by zero.
 
-Use a stable 3x3 solve, not an explicit large inverse. Match coordinate definitions and radial staggering; a high-order fitted lift is not Route B unless labelled as a different representation. Validate with analytical fields and compare A/B at common physical points. Record geometry reconstruction error `X(q(x))-x`, inverse consistency `C D_xq-I`, Jacobian orientation and native radial inclusion.
+The three questions are: how inaccurate is this fixed state; is that estimate adequately integrated; and does a sequence of solved states converge to the exact equilibrium? A resolved estimate of a bad state is not recovery, while an unresolved norm does not prevent a bounded diagnosis of obvious failure.
 
-This forward-chart route is also the highest-value performance improvement: the existing scorer repeats costly inverse-coordinate differentiation. Reuse coordinate results and one field Jacobian, jit functions outside the batch loop, stream reductions, and avoid recompilation from newly created closures. Validate scalar and batched results before reporting speed. Measure whether a direct coordinate evaluator is actually faster; do not promise a factor in advance.
+Use three explicitly labelled tolerances:
 
-For public spatial derivatives, test B and its first derivative first, then second and third derivatives on smooth interior regions. State the continuity class of the interpolation; derivatives at knots cannot be claimed where they do not exist classically.
+- **Diagnostic failure estimate:** a proposed initial allowance `max(0.1*target, 0.01*E)` for each norm, plus local/domain checks. It supports triage, not publication-level accepted recovery. Refine uncertainty if the decision is close.
+- **Reported quantitative norm:** a stated tighter relative allowance, initially 1e-3 of E for a well-above-threshold error, with independent rule/partition checks and a reported empirical uncertainty.
+- **Accepted recovery:** measurement contribution below 0.1 of the physical target, input/representation/root checks, and error plus its adopted uncertainty below the physical gate. State clearly that quadrature-difference estimates are empirical, not rigorous interval bounds.
 
-### 6.4 Input and measurement error budgets
+Keep initial physical gates E_B<=1e-5, E_J<=1e-3, E_F,p<=1e-3. Targeted near-axis/edge point checks get separately stated norms and thresholds; do not apply a global volume-L2 threshold indiscriminately to every local maximum or equal-weight point cloud.
 
-Separate input boundary/profile error, analytical-reference integration error, projection error, nonlinear/root error, reconstruction error, inverse error and quadrature error. Do not add relative errors as if this were a rigorous bound for nonlinear force; measure each controlled difference directly.
+### 6.2 Integrate on actual interpolation intervals
 
-Retain the initial mild-case targets E_B<=1e-5, E_J<=1e-3 and E_F,p<=1e-3. These remain initial acceptance levels, not a universal specification for every downstream observable. Aim to keep reference and measurement uncertainty below one tenth of the relevant target. Require agreement between independently shifted/refined scores within a small fraction of the target and a stable trend in the reported value. Record cases where roundoff prevents a requested target rather than inventing convergence orders.
+The historical native field uses uniform knots in s_native. The analytical comparison grid uses s_reference. These coordinates differ on the current solved state. There are two legitimate paths:
 
-The production root tolerance must be tightened until relevant physical values and derivatives stop changing appreciably. A small squared normalized FSQ does not supply this bound. Compare fixed-state measurements before and after each refinement to avoid confusing a changed quadrature with a changed equilibrium.
+**Native-domain path:** generate quadrature directly in q_h=(s_h,theta_h,phi), split at all native knots, evaluate x_h(q_h), B_h and J_h without inverse coordinates, evaluate the exact field at those same Cartesian positions, and weight by `abs(det D_q x_h)`. If rho rather than s is used, include the correct ds=2rho drho conversion. Label the domain Omega_h. Check that the analytical field is defined there. Report boundary/domain differences rather than silently discarding outside points.
 
-**Exit:** at least the axisymmetric solved state, integer-3D exact projection and one problematic integer solved state have converged independent scores, checked volume normalization and an A/B reconstruction comparison. The remaining matrix inherits the tested contract.
+**Common/reference-domain path:** retain x_e(s,theta,phi). For each angular curve, find all roots of
 
-## 7. R2: close the coordinate-constraint experiment without overinterpreting it
+$$s_h(x_e(s,\theta,\phi))-s_{h,j}=0$$
 
-**Depends on:** R0; R1 for physical certification. **Maps to:** P2/P3/P4. **Priority:** immediate.
+and split the reference integral at those crossings. Prove or test the required monotonicity in each admitted region; handle or reject multiple crossings explicitly. Near distinct magnetic axes the mapping may not be one-to-one along a ray. Use a documented common interior and separately measured excluded shells only when necessary, not as a way to hide bad points. The reference determinant remains the volume weight on this path.
 
-### 7.1 Complete the missing historical cell
+Start with native-domain integration for inexpensive error localization and a sparse common-point cross-check. For the fixed-boundary comparison, quantify the domain mismatch before interpreting a native-domain norm as equivalent to the previous reference-domain norm. Once accepted boundary fits are sufficiently accurate, verify both routes agree within the measurement budget. The primary cross-code ranking, if eventually made, must use the same physical domain and metric.
 
-First verify the local executable really uses the historical VMEX pin. The old command is:
+Do not rename the existing reference-cell rule 'native-knot aligned'. Add a synthetic displaced-chart test using the supplied probe. Derive total node count from breakpoints and order, so NS33/65/129 and nonuniform spline states work. Test cells containing every relevant geometry/lambda/profile knot; the union, not a single table's knots, is the partition. [F03, F04, L2]
+
+### 6.3 Stream statistics and preserve partial work
+
+For every cell or fixed-size batch, accumulate at least: sum(w); squared error and reference integrals for B,J,grad p,force; dimensional maxima; minimum signed Jacobian and condition indicators; inversion residuals; invalid sample counts; and local contributions by radial cell. Use pairwise or compensated float64 accumulation where sums span a large range. Do not retain all 3x3 tensors for millions of points when only their norm sums are needed.
+
+Persist each completed cell group/grid to a small immutable JSON/NPZ record, with checksums and a stable grid ID, before the next group starts. Keep a bounded deterministic audit sample, selected worst-error points and optional explicitly requested full arrays. The default result should not create another 55 MB Git blob. Large full states remain checksummed release assets when needed; do not rewrite the existing Git history to remove old files.
+
+The run manifest may point to completed immutable children and a terminal receipt. Catch KeyboardInterrupt to save status/known completed references, then re-raise; do not mask unexpected programming failures. Use a new run ID for resumption, with explicit reuse of compatible completed children. Add a tiny interruption test that completes one grid, interrupts the next, and proves the first is recoverable and byte-identical. [F07]
+
+Prepare JAX kernels once per state/shape. Use fixed-size batches with a valid final-batch mask; test a non-divisible sample count. Measure compile, evaluation, oracle, transfer and reduction costs separately. Only optimize a kernel after checking its outputs against the baseline. A smaller batch does not by itself limit compilation-cache RSS; use process isolation and a measured budget where necessary.
+
+### 6.4 Independent field and curl checks
+
+Keep the current A/B comparison, but label its shared dependencies. On a small audit set, explicitly call B(x_original) and gradB(x_original) before coordinate seeding, and compare with x_h(q_h). Gate backward-error propagation using measured field sensitivities and a fixed length scale. Require finite inputs/outputs, correct signed chart orientation, and a dimensionless inverse-Jacobian residual. [F06, F08]
+
+Add an independently coded covariant-curl evaluator at a modest resolution. With e_i=partial_i x, signed Jacobian Jq=e_1 dot (e_2 cross e_3), and B_i=B dot e_i,
+
+$$\nabla\times B=\frac{1}{J_q}\left[(\partial_2B_3-\partial_3B_2)e_1+
+(\partial_3B_1-\partial_1B_3)e_2+(\partial_1B_2-\partial_2B_1)e_3\right].$$
+
+Use independent spline/Fourier evaluation, or independently differentiated covariant components, rather than calling `_cartesian_derivative` twice. An implementation using SciPy's not-a-knot spline on independently extracted regular amplitudes is a reasonable small CPU comparator. This checks evaluation of the same representation, not an independent equilibrium model. Separate that limitation from the exact analytical Cartesian oracle. Confirm the orientation and tensor ordering on simple fields before the 3-D case.
+
+### 6.5 Refine the integrator without a coarse-rule veto
+
+Permit orders 2,4,8,16 or adaptive subdivision. Compare the finest two or three compatible results and an independent rule. Do not require the coarse order-2 midpoint result to meet the final tolerance forever. Gate angular refinement separately from radial refinement, and retain phase-shift checks. Include the derivative-weighted Fourier tails when choosing angular grids; a small geometry tail alone does not bound current/force error.
+
+The test suite must include a case in which coarse rules fail but fine rules converge, NS-independent point counts, a known angular alias, a failed inverse with finite-looking fields, a wrong determinant sign, and a mixed-contract parent ladder. Extract pure predicates into the reference environment rather than importing the solver driver.
+
+### 6.6 Minimal fixed-state experiment set
+
+Run the repaired measurement on: the saved NS33 default solved state; the NS129 exact projection (no solve); and the NS129 axisymmetric solved control. Add a zero-TCON state after the inexpensive source/measurement checks are stable. Do not run all old states at the largest grid first. For the bad NS33 state, stop at a defensible diagnostic estimate and publish its local error distribution; return for tighter quantitative norms only when they answer a remaining question.
+
+**Exit:** real native-knot alignment or explicitly corrected reference crossings; clean portable tests; immutable partial data; bounded memory/cost; resolved control measurements; and a clearly labelled bad-state diagnosis. No claim that the currently interrupted composite result is completed.
+
+## 7. T2: distinguish discrete force, coordinate choice and physical error
+
+**Depends on T0; T1 controls are used as they become available. Maps to R2/P3.**
+
+Before a new long solve, make the reusable residual an explicit mathematical object. Check `F(z_a)` after evaluating z_b, after z_c, with fresh/reused caches, and in direct/multigrid paths. Compare values and JVP/VJP results under identical masks and gauge semantics. A legacy iteration can intentionally depend on the preceding residual; that behavior must not silently enter the function differentiated as F(z). VMEC++ PR849 is a relevant comparison design, not a demonstrated VMEX defect. [S11]
+
+Evaluate the same projected/solved states with and without the coordinate constraint, using the actual warm-start transfer and baseline rebinding. Compare complete raw force vectors, not differences of squared normalized FSQ values. If F=F0+C, then `||F||^2` contains `2 F0 dot C`; squared norms do not add or subtract as force vectors. Record radial/mode contributions, masks, normalizations and omitted degrees of freedom.
+
+Independently measure physical force contributions on those same states. With dB=B_h-B_e, dJ=J_h-J_e and dgp=grad p_h-grad p_e,
+
+$$F_h=dJ\times B_e+J_e\times dB+dJ\times dB-dgp.$$
+
+This identity is exact for an exact reference equilibrium. Store the vector terms and their inner products or local squared contributions. Their norms need not sum to the total norm. This tells whether the discrepancy is dominated by current reconstruction, field displacement or pressure-gradient mismatch before changing the solver.
+
+Where possible, project the independent continuum force into the actual VMEX test directions with the correct coordinate Jacobians, boundary terms, scaling and radial staggering. Do not compare a naive Cartesian FFT with a differently normalized covariant VMEC residual. Derive the map on an axisymmetric control first. Separate physical virtual work from an auxiliary coordinate penalty rather than assuming every force block is a direct Cartesian force.
+
+### 7.1 Complete the missing historical cell without an unbounded dependency
+
+After T0 and a bounded T1 control, run the missing NS129 projected `TCON0=0` case once at the historical pin. It remains diagnostic until measurement, representation and root gates are resolved. The intended controls are:
 
 ```sh
-BENCH_FTOL=1e-10 BENCH_TCON0=0 python benchmarks/run_vmex.py \
-  inputs/input.integer_3d_iota 129 3000 \
+BENCH_FTOL=1e-10 BENCH_TCON0=0 BENCH_RUN_ID=integer3d-ns129-zero-NEW_UNIQUE_ID \
+  python benchmarks/run_vmex.py inputs/input.integer_3d_iota 129 3000 \
   results/projection/integer_3d_vmex_ns129/seed.npz
 ```
 
-The repaired runner may use clearer equivalent arguments, but must record the effective controls. Preserve an unmodified copy of the seed and its hash. Save nonlinear history, final native state, effective input and both legacy/new samples. Use the same saved default NS129 state as a comparison; rerun default only when source/environment or incomplete provenance requires it. Do not extrapolate the zero-strength answer from NS33/65.
+Choose a genuinely new run ID and verify the imported historical source before this command. The schema-2 output is under `results/vmex/runs/`; update the measurement invocation accordingly. Preserve the original input/seed hashes and actual effective controls. Do not replace the matching historical default result with one from a newer solver.
 
-The legacy experiment uses FTOL=1e-10 and is not automatically a derivative-ready root. Root anchoring and a tolerance ladder come later. A failed run remains a result with a documented reason and available terminal state.
+Then use a small factorial study, not an unrestricted scan: at fixed angular representation vary NS; at fixed NS vary angular representation; at a selected well-behaved case vary root tolerance; only then compare constraint strengths. Include cold/projected/continuation starts where they distinguish hypotheses. Record coordinate Jacobian conditioning, high-mode content and physical label drift. A lower numerical constraint residual alone is not a success criterion.
 
-### 7.2 Establish a deterministic residual before using Newton or adjoints
+### 7.2 Gauge-defined roots and TCON sensitivity
 
-Read the exact code paths that construct the m=1 constrained subspace, select residual branches, rebind hot-start baselines and reuse preconditioner/cache data. Test
+For a deterministic residual in an explicitly constrained space,
 
-$$F(x),\ F(y),\ F(x)$$
+$$F_h(z,P(a),\tau)=0,\quad F_z z_a=-F_P P_a,\quad F_z z_\tau=-F_\tau.$$
 
-with fresh and reused runtime objects. Exercise both directions across any residual-dependent threshold, repeated identical calls, symmetry settings, and TCON0=0/nonzero. Repeat for the residual actually differentiated, not only a displayed FSQ scalar. Then test JVP linearity, finite-difference consistency and the adjoint dot-product identity.
+Here tau is the constraint strength, not a physical parameter or the field-line integration variable. For Q, solve
 
-VMEC++ issue #624 and PR #626 show why this is necessary [R05]: a previous-residual m=1 policy was appropriate for legacy iteration parity but inappropriate for a reusable function F(x). The same issue is not established in VMEX. A passing VMEX purity test is a useful outcome; it prevents misdiagnosing a coordinate constraint as a stale-state operator defect.
+$$F_z^T\lambda=Q_z^T,\qquad Q_a=Q_P P_a-\lambda^T F_P P_a,$$
+$$\frac{dQ}{d\tau}=Q_\tau-\lambda^T F_\tau.$$
 
-Preserve iteration compatibility when testing a stricter stateless residual. Do not silently replace the original time-stepping policy and call the resulting path identical to VMEC2000.
+Implement tau dependence explicitly in a benchmark residual only after tracing how runtime/baseline/normalization depend on it. A centered finite-difference RHS is acceptable initially if its step convergence is reported; do not call it automatic differentiation. Do not assume tau is already included in the public implicit parameter object.
 
-### 7.3 Decompose the residual and the physical response
+An auxiliary coordinate parameter should not alter a unique continuum physical branch. Test whether physical `dQ/dtau` and coordinate-remap sensitivity decrease with spatial refinement. At tau=0 the discrete system can lose a useful gauge constraint; a tiny diagonal regularization or a pseudoinverse cutoff is a changed derivative problem unless explicitly justified and tested. Use eliminated gauge coordinates or a bordered constrained solve, verify rank/scaling, and check residuals in the original operator.
 
-On each unchanged projected/solved state, record the force before and after the coordinate-constraint terms, basis conversion, m=1 projection, normalization and preconditioning. Document actual source formulas. Where the stages do not combine additively, do not infer a physical/constraint decomposition by subtracting differently normalized scalar norms.
+Derive regular angle variations, including their compensating lambda, in the source's actual internal normalization. Preserve radial analyticity at the axis. Coordinate coefficient derivatives are not physical observables; compare Eulerian fields, pressure and flux labels at fixed Cartesian points. Test at least one genuine physical direction separately from a pure coordinate direction. Never rename a displaced pressure surface as an angle-gauge change.
 
-Record mode and radial contributions in dimensional or consistently scaled units. The increase of a normalized FSQ with NS need not mean an increasing continuum force. Its denominator, radial scaling and active DOFs also change.
+**Exit:** a residual-purity test, a completed missing-cell record or diagnosed bounded failure, independent physical error decomposition, and at least one constrained response calculation with original-operator residuals. Decide whether an upstream issue is about the harness, field reconstruction, gauge policy, root accuracy, or a remaining physical branch question. Do not announce a global TCON default recommendation from one case.
 
-Measure pressure and the normalized toroidal-flux label at physical points. A pure poloidal coordinate change leaves s=Phi_t/Phi_edge unchanged. Distinguish a changed theta representative from a displaced flux surface or an inverse-map error.
+## 8. T3: turn the verified input map into actual equilibrium sensitivities
 
-Use independent virtual-work projections of physical force onto controlled smooth displacements as a check of the discrete force map. Respect VMEX's prescribed-profile and flux constraints. Do not substitute a naive magnetic-plus-pressure energy variation at fixed coefficients for the functional actually represented by the solver, particularly with prescribed pressure/GAMMA=0.
+**Can proceed in parallel with the bad-state diagnosis after T0 and an axisymmetric measurement control. Maps to R3/P4.**
 
-### 7.4 Refine separate controls, not only NS
+The complete-map finite-difference experiment is useful and should not be repeated from scratch. Extend it to save signed derivatives and fixed output labels. Nondimensionalize each block using declared boundary length, pressure, current and flux scales. Report absolute errors for known-zero channels and per-block relative changes for nonzero channels. Do not use one unscaled norm of metres, pascals, amperes and webers as a convergence certificate. [S5, F10]
 
-After the missing cell, vary radial resolution, angular truncation, angular quadrature, nonlinear tolerance and constraint strength independently on a small number of states. Reuse projected starts and continuation; retain selected cold starts as basin-of-attraction controls. Inspect spectral tails of geometry, lambda, B and J. Exclude the major-radius constant mode when defining a shape-width metric; also measure derivative-weighted tails.
+Use fixed polynomial degree, fit/quadrature grids and boundary modes throughout a derivative pair. Preserve raw AC versus CURTOR semantics. For parameter-dependent basis selection, freeze the selection for the local derivative and independently verify its approximation budget; a discontinuous fit-degree choice is not a smooth parameter map.
 
-Continue within the exact integer family from epsilon=0 to epsilon=0.5 with a fixed 3-D mode set. This avoids switching the meaning of the state vector when a symmetry-breaking amplitude leaves zero. Compare prescribed-current and prescribed-transform closures for the same physical sequence. In parallel start sheared A, whose nonconstant transform provides a different diagnostic of the same numerical questions.
+Start with a verified finite-difference `P_a` applied to the differentiated VMEX residual. This isolates the equilibrium derivative without requiring an all-JAX rewrite of the input generator. Then implement a small fixed-basis JVP and compare it with the saved signed FD vectors. Do not reinstate the previously removed untested helper without tests.
 
-Repeat a minimal axisymmetric, projected integer and solved integer control on the separately pinned current VMEX. Change one software or environment dimension at a time where practical. A current-head improvement must have both a source explanation and matched measurements.
+For a=b=1, useful analytical scalars are
 
-### 7.5 Decision rules
+$$\beta_V=\frac{2c^2\delta}{1+c^2\delta},\qquad
+\partial_c\beta_V=\frac{4c\delta}{(1+c^2\delta)^2},\qquad
+\partial_\delta\beta_V=\frac{2c^2}{(1+c^2\delta)^2}.$$
 
-- If forward-chart and inverse-chart scores disagree, repair the field/reconstruction path before attributing the effect to force balance.
-- If the reusable residual depends on history, isolate the policy in a narrow upstream PR and rerun the minimal experiment before broader conclusions.
-- If errors decrease with angular resolution at fixed NS, fix angular representation/aliasing rather than extending radial ladders alone.
-- If a regular gauge improves efficiency at the same physical error, implement it as an initialization or preconditioning option before altering equilibrium physics.
-- If TCON0=0 introduces extra null directions, an unconstrained inverse is not a valid adjoint. Impose an explicit mathematically equivalent gauge or use the validated nonzero-strength representation.
-- If all validated paths show a persistent physical discrepancy, preserve a minimal reproducer and use independent codes to distinguish discretization, branch selection and model restrictions.
+Volume and flux derivatives are good conversion controls, but alone they mainly test boundary/input dependence. The first nontrivial solver objectives should include a signed interior-field projection at fixed Cartesian points and beta or magnetic energy with its correct domain dependence. Choose points contained in every perturbed configuration. Differentiate moving-domain integrals with their Jacobian and boundary motion; do not compare them with fixed-domain derivatives by mistake.
 
-**Exit:** the missing cell is resolved, the physical measurement is converged, operator purity has an outcome, and the leading discrepancy is either isolated with a reproducer or bounded with specific remaining alternatives. A global default recommendation is not an exit requirement.
+The strong cancellation check is
 
-## 8. R3: coordinate freedom, regular charts and derivative tests
+$$\left.\partial_\delta B(x)\right|_x=0$$
 
-**Depends on:** R1 and an appropriate deterministic root from R2 or an axisymmetric control. **Maps to:** P2/P4/P8.
+for the integer family, although the boundary, pressure profile and total flux change. At moving numerical coordinates x_h(q,delta), the Eulerian response is
 
-### 8.1 Pure coordinate changes are a separate reference problem
+$$\left.\partial_\delta B_h\right|_x=
+\frac{d}{d\delta}B_h(x_h(q,\delta),\delta)-\nabla B_h\,\partial_\delta x_h.$$
 
-Let theta_old = eta - u(s,eta,phi), and define
+Do not divide its error by the zero exact value. Use a fixed physical derivative scale. The nonzero c-direction is an essential partner: a code returning zero for every derivative should fail immediately.
 
-$$\mathbf X_{new}(s,\eta,\phi)=\mathbf X_{old}(s,\eta-u,\phi).$$
+For sheared A, differentiate the toroidal-flux inversion as well as the boundary, pressure and current profiles. Use u=k^2 to remove an artificial axis 0/0. If `Q(u,a)=s Q_b(a)`,
 
-If the straight-field-line angle is theta+lambda, its dimensionless displacement transforms as
+$$u_a=\frac{s\,dQ_b/da-\partial_a Q}{\partial_u Q}.$$
 
-$$\lambda_{new}(s,\eta,\phi)=\lambda_{old}(s,\eta-u,\phi)-u.$$
+Physical-angle inversion also needs its implicit derivative on a validated branch. In this family lambda changes vertical geometry, pressure and flux, but not iota at fixed normalized toroidal flux when the other reference parameters are fixed. Test `d iota(s)/d lambda=0` with **prescribed current**, not by differentiating an imposed iota profile. Check pressure/flux scaling and nonzero field responses in the same direction.
 
-For a zero-lambda base chart, the corresponding flux-scaled quantity is -Phi'(s)u, with the exact 2*pi, NFP, `phipf`, `lamscale` and internal-basis conventions checked against the source. Do not interchange a dimensionless angular displacement, a flux-scaled lambda and an internal solver coefficient.
+Every response record contains: the root state actually used for Q; root residual and anchor changes; DOF/gauge definition; parameter/observable scaling; tangent and transpose solver true residuals; finite-difference step interval; and physical derivative error across at least two spatial resolutions. Verify bilinear JVP/VJP duality and a small independent dense solve at the smallest rung. Use SOLVAX factors and Krylov methods already available; do not assume an unscaled nonsymmetric operator is suitable for conjugate gradients.
 
-Use regular gauges. For m>=1 a convenient family is
+A public `custom_vjp` wrapper does not establish `jax.jvp` support. Test each transformation actually used, and expose residual-level tangent solves when the wrapper is reverse-only. Higher derivatives require additional smoothness and traceable rules; they are a later experiment, not inferred from a first gradient. [L9, L12]
 
-$$u=\rho^m(1-\rho^2)^2 P(\rho^2)\sin(m\eta-nN_{FP}\phi),\qquad \rho=\sqrt{s},$$
+**Exit:** one nonzero and one null physical response on the axisymmetric family with convergence evidence, then the integer 3-D and sheared current-prescribed controls. Keep frozen-path FD consistency and independently reconverged branch response as separate comparisons.
 
-with cosine partners where LASYM is exercised. Remove redundant rigid relabellings or fix them explicitly. Verify the regularity of the full transformed geometry and lambda; the envelope is a sufficient starting design, not a substitute for checking the mapping. Enforce a positive lower bound on 1-u_eta and a fixed orientation throughout the volume.
+## 9. T4: recover breadth without a Cartesian explosion of cases
 
-The previous scan's m=3 envelope s(1-s) produces a nonanalytic axis chart. Retain those runs as historical representation stress tests, not as valid members of the clean regular-gauge comparison. The previously checked m=2 remap does not have that particular defect.
+**Maps to R4/P1-P4. Start sheared-A preparation alongside T2/T3.**
 
-For any parameter a, the physical field derivative at a fixed Cartesian location is
+Use the existing case records rather than one script per flag. Mandatory mild controls are:
 
-$$\delta\mathbf B_E=\partial_a\mathbf b-(D_x\mathbf B)\partial_a\mathbf X.$$
-
-For a pure gauge, delta B_E, delta p_E and delta s_E must vanish. Measure their convergence before and after numerical projection. Compare integrated observables using the appropriately transformed volume element. A derivative of a moving-grid field is not automatically an Eulerian derivative.
-
-### 8.2 Implicit sensitivity of the equilibrium and its gauge
-
-Write the actual reduced, gauge-defined residual as
-
-$$F_h(z,P(a),\tau)=0,$$
-
-where P contains the full boundary/profile/flux input map and tau is TCON0. After confirming the residual is deterministic and differentiable on the selected branch,
-
-$$F_z z_a=-F_P P_a,\qquad F_z z_\tau=-F_\tau.$$
-
-For an objective Q,
-
-$$F_z^T\lambda=Q_z^T,\qquad
-\frac{dQ}{da}=Q_a-\lambda^T F_P P_a,\qquad
-\frac{dQ}{d\tau}=Q_\tau-\lambda^T F_\tau.$$
-
-Here Q_a means the explicit derivative at fixed z, including direct dependence through P(a); it does not include z_a. The last derivative is a useful new experiment. In a unique smooth physical branch, an auxiliary coordinate choice should not change continuum gauge-invariant observables. Its finite-resolution response and its convergence can quantify how much a numerical gauge influences those observables. A nonzero finite-h response is not automatically a coding error; a zero response obtained by fixing the objective as an input is not evidence of recovery. At tau=0, check rank rather than assuming an invertible derivative.
-
-The state space must be the space actually evolved by the root. Specify constrained/frozen m=1 combinations, boundary DOFs, axis regularity, lambda gauges and source-dependent particular solutions. A parameter-dependent gauge needs its derivative included. Do not invert a redundant full coordinate system, add an arbitrary diagonal regularizer and call that result the derivative of the original physical problem.
-
-For a low-resolution diagnostic, compute scaled singular vectors or rank-revealing factorizations on the admissible state space. Classify each small-residual direction by its Eulerian physical field/pressure/surface response and its overlap with known gauge tangents. A raw singular value alone depends on coordinate units, residual normalization and preconditioning; it is not a stability result. For nonnormal operators distinguish left and right near-null vectors.
-
-Reuse SOLVAX factorizations, transpose solves and true-residual checks. Test dense independent solves at small size and matrix-free solves at larger size. Do not form a large dense Jacobian merely to produce a condition-number figure.
-
-### 8.3 Three derivative comparisons, all necessary
-
-1. **Discrete definition:** JVP/VJP dot products, linear residuals, and frozen-path finite differences of the same gauge-defined residual.
-2. **Independent reconvergence:** physical observables from perturbed inputs with branch tracking and separately converged roots.
-3. **Analytical-family limit:** complete-family derivatives compared with the explicit reference and refined in representation and measurement resolution.
-
-VMEX documents differences between frozen-path derivatives and cold re-solves [R04]. Neither path alone establishes the continuum response. For finite differences, use several step sizes, both signs, and a resolved interval between truncation and root/roundoff error. Save the actual perturbed equilibria and branch diagnostics, not only a best relative-error number.
-
-Use a nonzero derivative, a null derivative and a vector-output response. Suggested initial nonzero-gradient target is 1e-3 relative on a resolved scalar, then tighten toward 1e-4 where practical. For zero references use absolute derivatives normalized by a declared characteristic parameter/field scale. Require a convergence trend, not a division by zero or selection of one favorable finite-difference step.
-
-Probe `grad`, JVP, VJP, batching and higher derivatives separately. `custom_vjp` is not directly forward-differentiable [R15]. A reverse rule does not establish that callbacks, linear solves and root logic support Hessians. Where the public API is reverse-only, a residual-based tangent solve is a legitimate separately labelled implementation. Do not call it a successful public `jax.jvp` test.
-
-### 8.4 Full analytical input maps
-
-For the integer/stretch family use a,b,c,delta with
-
-$$u_a=-\frac{a^2-b^2}{4c^2},\quad
-H_a=\frac{a^2+b^2}{2}-\frac{(a^2-b^2)^2}{8c^2},\quad
-|u_a|+\sqrt{\delta}<\frac12.$$
-
-The pressure surfaces and scalars are
-
-$$p(s)=\frac{B_*^2}{\mu_0}2c^2\delta(1-s),\quad
-\Phi_{edge}=B_*L_*^2\pi abc\delta,\quad
-V=L_*^3 2\pi^2abc\delta,$$
-$$\beta_V=\frac{2c^2\delta}{H_a+c^2\delta}.$$
-
-Changing c changes the pressure-surface center u_a; it is not just multiplication of the old Z coefficients. Use the existing explicit field and geometry from `analytic.py`, retain their independent checks and differentiate the entire input construction. For a current-prescribed run, differentiate the Ampere current profile and its conversion to the VMEX derivative-profile convention too.
-
-For the original a=sqrt(1+epsilon), b=sqrt(1-epsilon), c=1 family, with D=1-epsilon**2/2+delta,
-
-$$\partial_\epsilon\beta_V=2\delta\epsilon/D^2,\qquad
-\partial_\delta\beta_V=2(1-\epsilon^2/2)/D^2.$$
-
-At a fixed Cartesian point in the common interior, partial_delta B=0: delta selects the outer pressure surface, not a different local magnetic field. This is the principal cancellation test. At fixed computational coordinates include the motion of the physical sample point.
-
-For the sheared family let Q(u,a) be toroidal flux with u=k**2, and
-
-$$Q(u,a)=s Q_b(a),\qquad
-\frac{\partial u}{\partial a}=\frac{s\,dQ_b/da-Q_a}{Q_u}.$$
-
-Use distinct names such as `du_da` for this derivative and `label_center` for the integer family's center. The u=k**2 variable avoids a removable on-axis singularity in a k-based inversion. The physical-angle root satisfies G(t,a)=0 and t_a=-G_a/G_t on a chosen regular branch. Record lower bounds on the relevant denominators.
-
-Differentiate boundary samples, quadratures, flux inversion, current and pressure profiles, and the coefficient fits. Freeze mode sets, quadrature plans and fit bases during a derivative test. Differentiate the fixed linear least-squares fit analytically or by a verified solve rule; do not differentiate an adaptive change of polynomial degree or rank as though it were smooth. Verify physical profiles on held-out nodes, not just coefficient derivatives.
-
-For a lambda change at fixed epsilon,S,delta and physical scales, the sheared family obeys
-
-$$\partial_\lambda\iota(s)=0,\quad
-\partial_\lambda\Phi_{edge}=-\Phi_{edge}/\lambda,\quad
-\partial_\lambda V=-V/\lambda,\quad
-\partial_\lambda p(s)=-2p(s)/\lambda.$$
-
-Measure the transform cancellation with **prescribed current**, updating that current consistently. Prescribing iota and observing it unchanged is not the desired test.
-
-**Exit:** nonzero, pure-gauge and exact-family null responses are measured on appropriate controls; tangent/adjoint certificates and finite-difference intervals are saved; effects of gauge choice, TCON0 and resolution are separated. An unresolved integer-3D branch must not block an independently successful axisymmetric response result.
-
-## 9. R4: recovery breadth and independent codes
-
-**Depends on:** R1 for acceptance; R2/R3 supply reusable methods. **Maps to:** P1-P4.
-
-Use representative combinations rather than an exhaustive product of every grid, start, hardware and flag. The required physical coverage remains:
-
-| Geometry | Symmetry setting | Closures | Required evidence |
-|---|---|---|---|
-| Axisymmetric integer control | LASYM=F and T, same physical case | iota and current | Native B/J/force, transform prediction, derivatives, restart |
-| A distinct symmetric Solov'ev parameter set | F and selected T repeat | both | Independent Grad-Shafranov recovery, not a duplicate physical case |
-| Genuinely up-down-asymmetric Solov'ev | T | both | Full-basis volume fields and response after the native path is supported |
-| Integer 3-D, including stretch | F and T controls | both | Constraint/gauge diagnosis and exact-family response |
-| Sheared axisymmetric limit and sheared A | F and selected T | both | Flux inversion, current/transform prediction and lambda null |
-| Rephased/translated exact 3-D field | T | selected both | Covariance with nonzero asymmetric coefficients, not new physical asymmetry |
-| Sheared B/C | selected symmetry/closure | stress subset | Representation and chart conditioning, not the first recovery gate |
-| Transverse symmetry-broken 3-D perturbation | T | physical choice stated | Independently converged numerical reference, not an exact-family claim |
-
-For LASYM, trace all sine/cosine partners through geometry, Clebsch field, inversion and derivatives. Merely removing the current guard is not an implementation. Start with a same-state live surface/WOUT check, then exact-projection full-volume checks, then nonlinear recovery. Keep fitted-state reconstruction as an independently assessed alternative, not a hidden substitute.
-
-For all closures, pressure, current and transform profiles refer to the same normalized toroidal flux. VMEX's polynomial current input represents the prescribed derivative-profile shape with total-current normalization; do not copy enclosed-current coefficients into it. Test an independent loop integral and an independent field-line/flux transform measurement.
-
-### Cross-code order
-
-**VMEC2000 and VMEC++.** Use the same finite boundary/profile/flux problem to check shared discretization and implementation. VMEC++'s corrected stateless operator is particularly useful for the residual study. Pin a revision that includes the relevant policy fix, and test its semantics. Native iteration parity and stateless root evaluation are distinct evidence. Educational VMEC can expose intermediate constraint and NESTOR stages without requiring another production solver [R16].
-
-**DESC.** Continue the current native comparison with independently converged integration and matched inputs. Bound the remapped M8 solve; inspect root/stationarity and representation before simply increasing its iteration cap. Test current closure as well as imposed transform. Its Fourier-Zernike representation and direct-force approach provide a genuinely different radial discretization [R08]. Use perturbation/continuation as a method, not as proof of a more accurate solution [R09].
-
-**GVEC.** Pin and attempt a small axisymmetric and sheared-A or mild 3-D case when the minimal adapter is justified. Its B-spline radial basis and alternative coordinate mappings provide useful independent controls [R10]. Do not write a universal converter or block the core study on a difficult build. Validate geometry, orientation, flux and profile conventions before comparing output.
-
-Use two comparison lanes: (i) the same finite represented problem, to isolate solver differences; (ii) separately refined approximations to the exact continuum problem, to measure convergence to the reference. Code-specific boundary fits are nonzero forcing errors in lane (ii), not just labels on equivalent input.
-
-SPEC or a stepped-pressure calculation is optional for a later topology question. It does not solve the same smooth nested-pressure discretization at finite interfaces. Do not score it as an interchangeable exact-current reference without a defined limiting experiment. An independent axisymmetric Grad-Shafranov code is similarly useful only after mapping toroidal-flux profiles to its poloidal-flux conventions.
-
-**Exit:** the mandatory mild cases have either resolved recovery evidence or a scoped, reproduced limitation; comparator statements are based on equal physical problems/accuracy, not equal mode counts or a successful flag alone.
-
-## 10. R5: diagnostics, adjacent libraries and a separate mirror control
-
-**Depends on:** exact projected geometry can start immediately after R1; use solved equilibria only after their own acceptance. **Maps to:** P5/P9.
-
-The analytical field is available even when a nonlinear solve is difficult. It can independently test field/geometry consumers now, with `analytic_projection` or `analytic_reference_sampled` labels. This avoids making the entire all-module program wait for a single recovery problem.
-
-| Capability | Fixture and check | Important limit |
+| Group | Required comparisons | Independent evidence |
 |---|---|---|
-| SOLVAX | Small dense versus structured tangent/transpose solves, factor reuse, true residuals and derivative residuals | Testing imported operators does not validate every SOLVAX algorithm |
-| Boozer / booz_xform_jax | Reconstruct physical B, currents/covariants and transform; compare an independent transform at matched gauges; F/T and NFP controls | Rational-iota gauge nonuniqueness is not a physical field error; avoid arbitrary small-denominator division |
-| Field derivatives | Exact B and spatial jets, tensor ordering, units, knots/axis, live versus WOUT versus fitted routes | Smooth analytical fields do not make a piecewise interpolant arbitrarily differentiable |
-| Bounce/action | Independent root-bracketed wells, endpoint-regularized quadrature, action derivatives, passing/trapped limits | Integer closed lines are not an ergodic surface sampler; well topology changes can destroy ordinary derivatives |
-| Mercier / magnetic well / ballooning | Geometry identities, independent formulas or independently refined eigenproblems, sign conventions | Exact equilibrium does not supply exact stability or prove stability |
-| NEO_JAX | Geometry and ripple integrals against independent integration on suitable sheared surfaces | No assumed zero ripple; distinguish epsilon_eff from its powers and rational-surface assumptions |
-| ESSOS / tracing | B handoff, full-orbit energy, appropriate canonical momentum in an axisymmetric control, timestep and interpolation refinement | Full orbits do not conserve magnetic moment exactly; LASYM support must be checked, not bypassed |
-| DKX | Geometry/current-sign normalization, a prescribed kinetic case and matched independent solver if available | Total MHD current is not automatically bootstrap current; ambipolar roots require kinetics |
-| GKX | Metric, curvature and drift tensors; optional isolated eigenpair and left/right response | Exact MHD does not imply a known turbulent heat flux or growth rate |
-| pyQSC_JAX draft | Compatible axis/field jets and radius-order study on an appropriate case | A restricted QS ansatz need not represent a generic exact non-QS equilibrium |
-| Open mirror | Harmonic vacuum potential, divergence/curl identities, open flux surfaces, optional paraxial control | Closed toroidal references do not validate open topology or finite-beta mirror closure |
+| Axisymmetric integer | NCURR=0/1; LASYM=F/T | Exact B/J/p/flux and physical responses |
+| Symmetric Solov'ev | Native representation and solved control | Independent Grad-Shafranov identity |
+| Asymmetric Solov'ev | LASYM=T, NCURR=0/1 | Genuine up-down-asymmetric exact field |
+| Integer 3-D | Both closures; F/T same-physics control; selected stretch/rephase | Exact field, labels, flow and null response |
+| Sheared A | Both closures; F/T; continuation from easier shape | Exact field plus independently refined flux/current quadrature |
+| Sheared B/C | Selected higher-resolution stress runs | Resolved boundary/chart before attempting a solve |
+| Generic 3-D asymmetric perturbation | LASYM=T after reference cases | Independently converged numerical reference, not an exact field |
 
-A simple independent mirror/vacuum field is generated by
+Do not count symmetric F/T duplication as another physical configuration. A rigid shift or toroidal rephase exercises asymmetric harmonics and covariance but does not constitute a generic symmetry-breaking equilibrium. Sheared B/C already have improved input fits; do not restore obsolete unresolved low-resolution decks. Their large toroidal mode counts make them unsuitable first derivative cases.
 
-$$\Phi=B_0z+a[z^3/3-z(x^2+y^2)/2],\qquad \mathbf B=\nabla\Phi,$$
+At the historical pin, live Cartesian LASYM fields are not supported. Removing a rejection guard is not an implementation. Trace all R/Z/lambda sine/cosine blocks, native Clebsch reconstruction, inverse coordinates, derivative tensor ordering, WOUT conversion and restart. Build one narrow upstream patch only after tests on a symmetric state represented with LASYM=T and on the exact asymmetric Solov'ev field. Until then, label WOUT surface values and fitted-volume reconstruction as distinct, limited routes.
 
-so
+For each family first test the input, then project the exact state, then solve from a verified seed, then try cold/continuation starts. A projection passing the physical score does not prove that the nonlinear solver recovers it. An equilibrium need not be an attracting state of every relaxation algorithm; inspect residual, geometry and constrained curvature before assigning a branch or stability explanation to a failed solve.
 
-$$B_x=-azx,\quad B_y=-azy,\quad B_z=B_0+a[z^2-(x^2+y^2)/2].$$
+Use a few matched native DESC runs and, where practical, VMEC2000/VMEC++ force/solve comparisons. Compare physical errors at equivalent input/domain accuracy, not nominally equal mode counts. GVEC is valuable for arbitrary-degree radial splines and mapping control after its input conventions are verified. The ordinary `itpplasma/benchmark_vmec` adapters may save effort, but inspect the specific conversions and do not import its entire framework. SPEC-type stepped-pressure results are a different model and require an explicit limit before comparison with smooth ideal-MHD references. [L5-L8, L13, S12]
 
-Its scalar potential is harmonic. Choose a domain with nonzero axial field and verify the open-surface construction and boundaries separately. It is not a finite-pressure exact mirror equilibrium. Use it to exercise the mirror field/coordinate lane without conflating models.
+**Exit:** resolved mild-case recovery or a precise bounded failure for each required class; current-predicted transform rather than merely imposed iota; and a capability table separating unsupported field paths from nonlinear-solver behavior.
 
-Do not require every optional package to be installed simultaneously. Record unavailable and not-applicable states explicitly, with a precise reason and next supported test. Review any source-level lead, such as particle-phase handling, with a minimal reproducer before calling it a confirmed defect.
+## 10. T5: use exact fields to test more modules now
 
-**Exit:** each relevant reachable module has a measured scoped test or a justified explicit status. No broad claim that all physics in a downstream code is analytically verified.
+**Partly independent of nonlinear recovery. Maps to R5/P5/P9.**
 
-## 11. R6: free boundary, exterior fields and strict coupled derivatives
+### 10.1 An exact field-line flow and its tangent map
 
-**Depends on:** R1; R3 for physical derivative claims. Exact operator tests may run independently. **Maps to:** P6/P9.
+Landreman's integer field obeys `(B dot grad)B=-diag(1,1,4)x`. The diagonal-stretch extension preserves that identity. Set Omega=diag(1,1,2) and define the dimensionless field-line parameter t by `dx/dt=B(x)`. Then
 
-Retain three evidence levels:
+$$x(t)=\cos(\Omega t)x_0+\Omega^{-1}\sin(\Omega t)B(x_0),$$
+$$B(x(t))=-\Omega\sin(\Omega t)x_0+\cos(\Omega t)B(x_0),$$
+$$D_{x_0}x(t)=\cos(\Omega t)+\Omega^{-1}\sin(\Omega t)\nabla B(x_0).$$
 
-1. **Exact operator tests on prescribed surfaces:** harmonic potentials, independent coil kernels, NESTOR/MGRID and virtual-casing identities.
-2. **Independent numerical coupled roots:** established coil/MGRID equilibria, including axisymmetric and 3-D, F/T controls and meaningful asymmetric cases where supported.
-3. **Analytical interior with fitted external sources:** an approximate matching and coupled-equilibrium experiment with separately converged source and plasma errors.
+The flow closes after 2pi, preserves volume, and has identity full-period tangent map on its smooth domain. These formulae follow from the paper's oscillator construction; they are not a claimed new equilibrium result. [L1]
 
-For operator tests, use harmonic polynomials, simple coil/loop fields with independent high-accuracy quadrature, and layer-potential identities. Compare NESTOR and an independent high-order singular quadrature; use a target-distance ladder approaching the surface. Malhotra et al. and Toler et al. give directly relevant singular/axisymmetric methods [R11,R12]. Pin both virtual-casing implementations. Fix discrete quadrature plans during differentiation and refine them independently afterward.
+Use them to test VMEX's generic field API, Cartesian/cylindrical transforms, gradB ordering, field-line tracing, starting-point JVP/VJP and ESSOS field handoff. Compare trajectories at equal field-line parameter, or compare equivalent Poincare sections if the numerical tracer uses physical toroidal angle. Do not equate t with cylindrical phi. With dimensional `dx/dtau=B_SI`, the dimensionless parameter is t=B_* tau/L_*; a tracer using unit B has a different arc-length parameter.
 
-A toroidal vacuum domain requires appropriate circulation/flux data in addition to local normal-field data. Neumann compatibility and topological nullspaces must be enforced. The trivial toroidal vacuum field does not determine a unique plasma boundary and is not a good isolated test of an invertible free-boundary response.
+Test axisymmetric, 3-D, stretched and rigidly transformed cases. Record step/order convergence and distinguish exact-callable errors from errors after VMEX state reconstruction. Full charged-particle trajectories are different equations: this exact flow is not their reference. The delivered probe checks field-line equations, group composition, closure, tangent map, volume preservation and a DOP853 comparison without VMEX.
 
-For coupled matching, check
+### 10.2 Spatial derivatives and continuity
 
-$$\mathbf n\cdot\mathbf B_{in}=\mathbf n\cdot\mathbf B_{out}=0,\qquad
-p_{in}+B_{in}^2/(2\mu_0)=p_{out}+B_{out}^2/(2\mu_0),$$
+Benchmark orders 0-3 only with the derivative semantics appropriate to the actual reconstruction. For the historical cubic geometry, B is generically C1 across native knots; higher derivatives can be piecewise rather than classical at a knot. Record one-sided jump norms, cell-interior errors, axis limits and dependence on reconstruction order. Do not evaluate only midcells and conclude global smoothness. Do not use a C1 monotone interpolant as an automatic cure when the target requires higher derivatives. [F09, L3]
 
-with stated exterior pressure and any surface-current model. A tangential jump corresponds to
+A higher-degree representation comparison should preserve the same boundary/profiles and report its fitting error. Exact spline knot insertion or Fourier zero-padding is preferable to refitting a WOUT during continuation, when the native representation supports it. It preserves the represented state but does not itself improve a physical equilibrium.
 
-$$\mathbf K=\mathbf n\times(\mathbf B_{out}-\mathbf B_{in})/\mu_0.$$
+### 10.3 Diagnostics and downstream integrations
 
-Do not claim no surface current without checking this jump. Interior zero edge pressure alone does not construct an admissible exterior. Normal-field coil fitting alone is not a full stress/field match.
-
-The coupled implicit derivative must include the plasma, vacuum unknowns, boundary motion, circulation constraints and coil/MGRID parameters actually varied. Verify the finite Newton anchor, strict failure statuses and true transpose residual on the same state used to evaluate the objective. Source contains anchoring functionality; stale older documentation is not the authority. Conversely, the existence of an anchor function does not certify all fallback paths. Exclude best-effort derivatives from accepted results.
-
-Use coil-current amplitude and a smooth coil displacement as first parameters. Compare central differences of independently anchored coupled roots. Test a simultaneous rigid displacement of coils, domain and plasma as covariance; moving only the plasma while holding coils fixed is a physical perturbation, not a null test. Independently refine MGRID interpolation where used; direct coils and a gridded representation are different numerical paths.
-
-**Exit:** one exact vacuum/operator fixture in each useful symmetry category, a bounded coupled-root benchmark with derivative certificates, and a separately labelled analytical-interior fitting outcome. A failure of exterior realization can be scientifically informative; never invent an exact free-boundary solution to fill a matrix cell.
-
-## 12. R7: polishing with a correct derivative of its own problem
-
-**Depends on:** R1 and the intended source/operator contract. **Maps to:** P7.
-
-Compare pre/post polishing on the same continuous representation and held-out integration grid. A change of interpolation order or export mesh must be a separately controlled operation. Record physical field/current error, dimensional and normalized force, boundary/profile changes, coordinate regularity, residual norm and stationarity.
-
-If polishing minimizes
-
-$$\mathcal L(z,a)=\tfrac12 r(z,a)^T W r(z,a),$$
-
-the implicit solution is a root of its stationarity equation, not generally r=0. For fixed W,
-
-$$\nabla_z\mathcal L=J_r^TWr=0,\qquad
-H=J_r^TWJ_r+\sum_i(Wr)_i\nabla_z^2r_i.$$
-
-At nonzero residual, dropping the second term changes the response. State-dependent weights add further derivatives. Test the exact stationary derivative where implemented; label a Gauss-Newton response as approximate and quantify the error. Tightening stationarity does not by itself lower physical force below the representation floor.
-
-Make a bounded attempt on one symmetric and one genuinely asymmetric or 3-D case. Use an independent field error to prevent a small training force norm from concealing movement away from the analytical equilibrium. Do not make polishing a way to erase an unaccepted original solve from the record.
-
-**Exit:** a measured benefit, a demonstrated limitation, or a scoped failure with reproducible evidence and correct derivative semantics.
-
-## 13. R8: optimization and extensions of the analytical work
-
-**Depends on:** direct-reference optimization can start after reference/map validation; VMEX-mediated physical optimization requires R3/R4. **Maps to:** P8.
-
-### 13.1 Coordinate optimization, with unchanged physical equilibrium
-
-The first inexpensive optimization should seek a better regular chart, not a different equilibrium. Use a few regular gauge coefficients and minimize a declared spectral objective, for example a derivative-weighted high-mode tail of R/Z/lambda, normalized by a minor-size scale. Constrain map invertibility and independent held-out Eulerian B/J errors. Use a separate validation grid and show projection error, spectrum, solver effort and physical response before/after.
-
-Hirshman-Breslau provides an explicit spectral-condensation reference [R06]. The action-based nested-coordinate work of Tecchiolli et al. provides a different initialization/regularity strategy for strongly shaped tori [R07]. The first application here should be a small adapter or initialization experiment, not importing an entire new solver architecture. A nicer spectrum alone is not a physical improvement.
-
-### 13.2 Optimization within the exact physical families
-
-Use direct analytical fields and differentiated quadratures to optimize the low-dimensional integer/stretch and sheared families. Repeated VMEX equilibrium solves are unnecessary for the reference optimization. VMEX should reproduce selected optimized configurations and responses independently.
-
-Fix enough scales to avoid trivial improvements: zero edge pressure; stated mean field/flux and volume or size; limits on aspect ratio, elongation, current, Jacobian conditioning and the analytical-domain margin. Maximize beta only with these constraints and an explicit physical interpretation. Adding a constant pressure offset or unlimited elongation is not a useful optimization result.
-
-Choose one primary tradeoff, such as beta versus current concentration and geometric distortion, or magnetic-well/field-variation metrics at fixed transform family. Use a smooth objective and independently evaluated final constraints. Do not assume these generic equilibria are quasisymmetric, omnigenous or stable.
-
-Record all starts in the small parameter box, active constraints, the direct-reference derivative check, objective history, unsuccessful candidates and an independently refined final result. Repeat with a finer quadrature and nearby starts. A flat or unfavorable tradeoff is an acceptable resolved outcome.
-
-### 13.3 Tangent versus transverse physical continuation
-
-Write
-
-$$P(a,\eta)=P_{exact}(a)+\Delta P(\eta),$$
-
-where eta represents a few genuine boundary/profile changes, including controlled LASYM modes. Exact-family tangent directions provide the analytical reference; transverse directions require independently converged numerical evidence.
-
-A useful physical diagnostic follows from
-
-$$\mathbf J=\sigma\mathbf B+\frac{\mathbf B\times\nabla p}{B^2},\qquad
-\mathbf B\cdot\nabla\sigma=-\nabla\cdot\left(\frac{\mathbf B\times\nabla p}{B^2}\right)=S.$$
-
-For a closed field line, a necessary compatibility condition is
-
-$$\oint S\,dl/|B|=0.$$
-
-Measure this and its controlled parameter response on the rational-transform family. Compare with current convergence, scaled residual rank and physical sensitivity. Along a sheared family examine resolved rational surfaces and the corresponding Fourier convention; denominators involve m*iota-n*NFP when the phase is m*theta-n*NFP*phi. Avoid assuming that an observed small divisor proves a singular solution or that finitely many compatibility conditions prove existence.
-
-Use pseudo-arclength continuation only if an actual branch fold requires it. Track the branch, current peaks, surface regularity and held-out force; do not let the optimizer jump among unlabelled roots. Start with a few modes and a trust region. Preserve exact-family tangent controls throughout.
-
-### 13.4 General boundary and coil optimization last
-
-Only after physical derivatives are certified should general boundary or coupled coil optimization be used to claim improvement. Compare final points at higher independent resolution, check gradients again and report error bars from representation/measurement refinement. An optimization that exploits field interpolation, an unresolved high-mode tail, a moving acceptance region, or a best-effort adjoint has not improved the physical problem.
-
-For free-boundary source optimization, retain engineering regularization and the full matching budget from R6. Do not confuse the ability to minimize a normal-field residual with a proof that the desired free-boundary equilibrium has been realized.
-
-**Exit:** one completed direct exact-family optimization, one controlled coordinate-optimization outcome, and a bounded tangent/transverse study. Broad physical optimization is either independently verified or explicitly left blocked by a named missing certificate.
-
-## 14. Minimal code changes and script organization
-
-Keep useful current scripts. Do not delete measured experiments simply because there are many filenames. Consolidate repeated operations only when it reduces ambiguity and preserves reproduce commands.
-
-The highest-priority edits are to `plot_tcon_ladder.py`, `run_vmex.py`, `native_samples.py`, `score_samples.py` and `run_desc_coordinate.py`. Move import-time argument parsing out of reusable projection modules. Extend the existing tests or add one small harness test file. One shared adapter may expose native geometry/field samples, effective run metadata and verified parameter maps. It must not mirror all upstream APIs.
-
-Suggested new drivers, only when the relevant phase starts:
-
-| Driver or extension | Purpose |
-|---|---|
-| `verify_measurement.py` | Volume/shift/knot/inversion/scorer convergence on saved states |
-| `probe_residual_contract.py` | Call-history independence, force-stage decomposition and tangent/transpose tests |
-| `run_family_response.py` | Complete analytical input maps and nonzero/null/constraint responses |
-| Extend `run_vmex.py` | Explicit source/config/run IDs, bounded continuation and two closures |
-| Extend `run_desc_coordinate.py` | Independent labels, CPU/GPU selection, correct source metadata and current closure |
-| `run_vacuum_checks.py` | Harmonic/operator tests before coupled free boundary |
-| `optimize_family.py` | Low-dimensional direct-reference optimization and held-out verification |
-
-These are proposed filenames, not claims that executable implementations already exist. Do not add empty stubs, fabricated records or a generic dispatch framework. Keep ordinary readable functions; line-count minimization must not remove validation, units, comments or clear exceptions. Avoid dense one-liners that conceal numerical choices.
-
-For an upstream VMEX or adjacent-library defect, prepare one narrow branch and PR with a minimal reproducer, derivation where needed, tests and before/after measurements. Do not merge it or push to upstream main. Benchmark the historical baseline and proposed fix separately. Do not use the benchmark repository to accumulate an unreviewed fork of the solver.
-
-## 15. Figures, performance and the README
-
-Generate every figure from saved arrays and read-only summaries. Keep axes, units, physical region, representation, source pin and evidence class visible. Do not interpolate through an unrun cell or hide an iteration-capped point inside a line of accepted states.
-
-Prioritize these figure groups:
-
-| ID | Data and question |
-|---|---|
-| V2-F01 | Fixed-state norm versus quadrature size and shift, including legacy96: are the measurements converged? |
-| V2-F02 | Native forward-chart versus inverse-chart field/current/force and coordinate backward error: where does evaluation error enter? |
-| V2-F03 | Completed TCON radial/angular/tolerance ladders, projection and solved states separate: which trend survives measurement refinement? |
-| V2-F04 | Force-stage, mode and radial decomposition, with pure-gauge and flux-surface displacement separated |
-| V2-F05 | Scaled operator near-null directions classified by Eulerian physical response, plus call-history tests |
-| V2-F06 | Nonzero and null exact-family derivatives, TCON sensitivity and finite-difference step intervals |
-| V2-F07 | Axisymmetric/LASYM/sheared-A recovery and current-predicted iota; input and boundary-fit errors shown |
-| V2-F08 | Matched finite-problem and exact-limit comparisons for VMEX/VMEC++/DESC and optional GVEC |
-| V2-F09 | Diagnostics, vacuum target-distance tests, strict free-boundary responses and bounded polishing |
-| V2-F10 | Direct exact-family tradeoff, chart optimization and tangent/transverse continuation |
-| V2-F11 | End-to-end time to physical/derivative accuracy, including scoring, plus executed capability matrix |
-
-Retain the old figures as historical evidence; supersede their claims only where new data warrant it. Avoid making the README a transcript of every diagnostic. Its lead should state the physical cases actually recovered, the most important limitation, the derivative status and the exact commands needed to reproduce the main result. Put detailed chronology in the logbook and link raw data.
-
-Measure compilation, solve, root anchor, sampling, scoring, gradients, export and verification separately, plus the complete end-to-end cost. Synchronize device work. Distinguish cold process, warm same input, warm new parameters and cache state. Use repeated measurements with spread. Do not combine CPU/GPU, package changes and algorithm changes into a claimed speedup without controls. Peak host RSS is not GPU memory, and a process high-water mark is not automatically the memory used by its last stage.
-
-The current scoring cost exceeds the solve cost on the small TCON cases. Reducing redundant inversions and compilation is therefore a more justified first performance task than changing the equilibrium algorithm to save a few iterations. All speed claims remain conditional on equal physical and derivative error.
-
-## 16. Acceptance states and completion
-
-Use a small explicit state vocabulary: `planned`, `implemented_not_run`, `diagnostic`, `passed`, `failed`, `blocked`, `unavailable`, `not_applicable`. Record the evidence class separately: exact reference, projection, analytical recovery, discrete consistency, independent numerical reference, integration, or exploratory optimization.
-
-For an accepted analytical recovery require valid input/domain, resolved representation, successful intended nonlinear/root status, converged physical measurement, and the stated physical thresholds. For a derivative additionally require the correct parameter/gauge map, a certified linear solve, branch control and an independent comparison. A root is not accepted just because its score is small, and a small training score is not a certificate.
-
-For the next handoff, success means R0/R1 are implemented, the missing R2 cell and residual-contract test have a recorded outcome, and at least one independently verified physical derivative/control path has progressed. The final all-capability program remains larger: meaningful F/T, both closures, 3-D and axisymmetry, vacuum/coupled free boundary, diagnostics, bounded polishing and optimization, plus scoped downstream/mirror tests.
-
-A negative outcome can close a scientific experiment when its assumptions, convergence and failure mechanism are examined. It cannot label unsupported functionality as passed. Optional dependencies may be unavailable without blocking all core evidence. Do not silently convert previously required work into optional work because one implementation was inconvenient; record and justify any scope change.
-
-## 17. Git identity, publication and privacy
-
-Use the existing authenticated `rogeriojorge` account. Verify it before any write. Configure Git author and committer locally using the owner's approved email or the correctly derived account noreply address. Do not change global Git settings. All new commits, pushes, comments and PRs must use that account and must not contain automated-assistant authors or co-author trailers.
-
-Preserve existing merge history. The reviewed merge commit has a GitHub web-flow committer; do not rewrite it to satisfy a prospective identity rule. If exact owner author/committer identity is required for future merges, use the authorized local merge/fast-forward workflow rather than assuming web UI merges have identical committer metadata. Do not merge upstream PRs as part of this assignment.
-
-Inspect the staged diff before publication. Exclude credentials, private paths/data, environments, caches, unreviewed logs and large accidental artifacts. Preserve third-party licenses and scientific attribution. Store representative native states and large arrays as checksummed release assets when appropriate; do not omit the state needed to reproduce a reported diagnostic. CI should have read-only permissions and should not generate commits/comments.
-
-## 18. Continuing logbook and exact resume state
-
-After each meaningful block append an entry containing:
-
-```text
-Date/time and timezone:
-Phase / task IDs:
-Benchmark and dependency commits, dirty patches:
-Question and expected discriminating observation:
-Files changed and why:
-Commands and effective configuration:
-Run IDs, parent states, artifact paths and hashes:
-Results, uncertainties and failed attempts:
-Tests actually executed and tests skipped:
-Interpretation supported; alternatives not excluded:
-Branches, commits and PR state:
-Exact next action and prerequisites:
-```
-
-Keep a compact current table above the append-only entries:
-
-| Phase | State at this review | First unresolved action |
+| Capability | Small useful experiment | Required qualification |
 |---|---|---|
-| R0 | Passed and published to public `main`: immutable rendering, metadata amendments, unique-run contract and regression tests | No remaining R0 work; keep the immutable evidence baseline while continuing R1 |
-| R1 | R0 passed locally; historical NS33 global radial ladder through 64 points remains unresolved. The first parent-linked knot-aligned GPU attempt was intentionally interrupted at the user's pause request during the first 4-point-per-cell grid. Three stdout-only 2-point rows and the unchanged initial report plus interruption receipt are preserved; no measurement decision is possible | Start a complete composite comparison under a fresh unique run ID; verify identities and parent ancestry, save all rows/samples, inspect 2/4-point-per-cell rule spreads, regenerate/inspect the saved-data figure, then decide R1 resolution before scoring projection and axisymmetric controls |
-| R2 | Nine historical ladder states; one NS129 cell missing | Finish projected zero-strength cell, then stateless residual tests |
-| R3 | Axisymmetric integer-family full-input finite-difference ladder and independent Ampere-to-AC check recorded; VMEX tangents/adjoints and sheared full-input derivatives remain open | Implement a fixed-linear-map JVP/finite-difference certificate for the frozen fit basis, then transfer exact-family tangent tests to the VMEX residual; the GPU is released for sheared-A input/parser checks and recovery after the JVP work |
-| R4 | Partial recovery and initial DESC comparison | Sheared A and true LASYM volume path, matched controls |
-| R5 | Broad integrations planned | Small exact-geometry consumers without waiting for all solves |
-| R6 | Planned | Harmonic/vacuum identities, then a strict anchored coupled case |
-| R7 | Planned | One same-representation bounded polishing experiment |
-| R8 | Planned | Small direct-reference chart/family optimization, with held-out checks |
+| WOUT, restart, input/output | Value/tensor/flux round trip on common points; resolution transfer | Serialization parity is not continuum correctness |
+| Boozer transform / booz_xform_jax | Reconstruct physical B and surface averages; compare independent transform and selected spectrum derivatives | Rational closed lines have gauge/sampling subtleties; exact MHD is not automatically QS/QI |
+| Bounce action / wells | Independent bracketed turning points and endpoint-regularized quadrature; fixed-topology parameter derivative | Well creation/merger and marginal trapping can invalidate ordinary derivatives |
+| SOLVAX | Original-operator residual, dense small reference, transpose duality, factor reuse | Finite iterative tolerances and gauge rank affect response accuracy |
+| ESSOS | Exact field-line flow, field conversion, chosen orbit invariants and step refinement | Magnetic moment is not an exact invariant of full-particle motion |
+| NEO_JAX | Geometry/normalization and ripple quadrature on suitable nondegenerate surfaces | Exact MHD does not supply a known kinetic coefficient by itself |
+| DKX | Metric/current/profile units, conservation checks and one matched kinetic reference | Total MHD current is not synonymous with bootstrap current |
+| GKX | Metric, curvature and drift checks; one isolated eigenpair response if supported | Exact equilibrium does not determine an analytic growth rate; degeneracies need branch treatment |
+| pyQSC_JAX | Axis/field-jet and valid radius-order asymptotics | Restricted QS near-axis ansatz cannot represent an arbitrary exact 3-D field |
+| VMEX mirror path | Separate harmonic vacuum/open-geometry fixture and appropriate paraxial checks | Toroidal references do not validate open topology or a finite-beta mirror closure |
 
-### Revision-2 review entry, 2026-09-24
+Resolve and record optional library pins only when their experiment runs. Reuse direct functions and existing adapters; one small shared adapter is preferable to copying physics throughout the benchmark. Missing dependencies are unavailable, not passed. Independent diagnostic tests can run on exact callables or labelled projections while nonlinear recovery remains open.
 
-The reviewed public benchmark commit is `575f13f67b346118c3d7f05cc60cc6e29131359a`; PR #1 is merged. Historical solver evidence remains pinned to VMEX `b5f5267...`. The review identified report mutation, sparse measurement, label/metadata and regularity issues in the harness, and a relevant external residual-policy precedent in VMEC++. These findings motivate the reordered phases above, not a declaration that the entire physical dataset or solver is incorrect.
+**Exit:** an expanded capability matrix backed by a few well-defined executed tests, especially exact-flow and field derivative controls, rather than a list of modules that merely imported successfully.
 
-Three standalone mathematical probes passed: coarse angular aliasing, one-period/full-torus volume normalization, and the leading radial order induced by the old m=3 gauge. No repository solver or benchmark test suite was rerun for this review. This review made no remote Git changes.
+## 11. T6: exterior operators, coupled free boundary and bounded polishing
 
-**First local action:** preserve the existing plan/logbook and raw TCON records; implement R0 with tests. Keep the original source and existing artifacts intact. Then run R1 on saved projection/solved controls before accepting new physical conclusions. The bounded missing NS129 experiment may run after R0, but it remains diagnostic until R1 is complete.
+**Maps to R6/R7/P6/P7. No claim of exact global exterior from an interior formula.**
 
-### R0 implementation entry, 2026-09-24 12:45 CDT
+### 11.1 Exterior and free-boundary evidence
 
-**Question:** Can the TCON figures be regenerated without modifying primary evidence, and can new runs record their actual inputs, controls, source and failure state without claiming acceptance prematurely?
+Retain three distinct levels: exact operator fixtures; independently converged coupled plasma/vacuum equilibria; and approximate exterior-source fits to an exact interior target.
 
-**Source and history:** Benchmark base is `575f13f67b346118c3d7f05cc60cc6e29131359a`; primary solver for the historical records is `uwplasma/vmex@b5f5267efc0795c4a49a224e321e9b370975c14c`. The old active plan was copied byte-for-byte to `docs/history/plan_through_575f13f.md` (SHA-256 `9c59fa92c8ebe281b5d6f8b33ae8e2245d02bfee515c99f71a3ba64edc7723ba`). The nine package files were preserved under `docs/handoff/revision-2/`; all listed SHA-256 checks passed. The active `plan.md` is the supplied revision-2 plan with a link to the preserved history.
+Start with harmonic potentials, uniform/linear vacuum fields and the toroidal circulation field where mathematically appropriate. Test MGRID interpolation and derivatives, Neumann compatibility, source circulation, virtual-casing decomposition and target-distance convergence. The pure toroidal field does not select a unique plasma boundary and is not an invertible free-boundary adjoint fixture.
 
-**Changes:** Added pure evidence-contract helpers; made the VMEX runner reserve a unique directory, copy and hash its input, record requested/effective per-stage settings, imported-source identity, seed lineage, post-failure host RSS and separate unknown device memory; split new reference point clouds from VMEX observations; removed the scorer's acceptance shortcut; assigned DESC's native radial label from `rho_DESC**2` and recorded DESC source identity. Replaced the TCON plotter's in-place edits with new diagnostic summaries/figures and an amendment table that excludes fields historically injected by the plotter.
+Use an independent axisymmetric singular quadrature, such as the appropriate Kapur-Rokhlin formulation, and a separately refined 3-D surface-integral comparator. Validate singular and near-singular target limits separately. Freeze a numerical integration plan for a derivative only after verifying it remains adequate under the perturbation; a fixed plan is not automatically a correct plan. [L10, L11]
 
-**Commands and results:** `python -m compileall -q benchmarks tests` passed. `pytest -q` passed: 37 tests in 12.04 s. One initial assertion failed only because exact floating-point array equality was too strict; changed that check to a 1e-15 relative comparison and reran successfully. A direct import smoke attempt failed because the standalone command lacked `PYTHONPATH=benchmarks`; rerunning the renderer with that path succeeded. `python benchmarks/run_vmex.py --help` succeeded and imported the installed VMEX package. Strict JSON parsing with non-standard NaN/Infinity rejected found 122 JSON files and zero parse failures. `gh api user --jq .login` returned `rogeriojorge`; local Git name/email are the owner and the account-derived noreply address.
+For coupled roots, include an axisymmetric and a mild 3-D case, symmetric-basis controls and a genuine asymmetric configuration when supported. Prescribed external currents/fluxes, circulation choices, pressure boundary conditions and gauge must match between the objective and its derivative. Check normal B and total normal stress. On a flux boundary with B_n=0, require the appropriate jump of `p+B^2/(2 mu0)`; a tangential-field jump implies a surface current `K=n cross (B_out-B_in)/mu0` and must be admitted explicitly rather than ignored.
 
-**Immutable evidence:** Before/after SHA-256 comparison covered all 64 existing `forward.json`, `native_scores.json`, and `native_samples.npz` files under `results/vmex`; every byte remained unchanged. Nine unique historical TCON run reports were read. The historical plotting code overwrote `iterations`, package/runtime metadata, command, physical gate, and acceptance annotations; the pre-overwrite values cannot be recovered from the reviewed Git history. These fields are listed in `results/audit/tcon_reinterpretation/historical_amendments.json` and omitted from derived tables. Physical score arrays remain legacy96 diagnostics and are not yet independently certified.
+Do not continue the analytical interior field outside the plasma and call it a vacuum reference: its curl generally remains nonzero there. An exterior source fit is an approximate coupled construction until its vacuum/model/matching errors have been independently controlled. Coil realization and engineering constraints are separate questions from interior equilibrium existence.
 
-**Artifacts:** `results/audit/tcon_reinterpretation/ns33_summary.json` SHA-256 `157b98bbb4e50ef2ce5412b9679ff1f9c46257c8e8fad5a59528375304afb53d`; `resolution_summary.json` `8abaefe915700e4ca697406e5546d48911b31c1ac3de4e3faa3340994b0f263d`; amendment table `cbb15263f0c5a41a91da93280beef11be67a3ec0fdd907a85553f5e318314c76`; NS33 figure `6e310a3e7d7f3f4036d14f03eb6f519d4f167526d5c9fad70fdd0e133f25ebc9`; resolution figure `ef75e321da62b1e3f66ab3845e414451088e9d7b04c9e48ffc1e7b3f9710b015`. Both figures were inspected after generation. The NS129/TCON0=0 point remains absent.
+Test the actual current `freeboundary_implicit` implementation, not a stale narrative that says anchoring is absent. Require the coupled state used for Q, the linearization and the adjoint to be the same anchored root, with strict failure status and true linear residual. Best-effort derivatives remain diagnostic. Do not assume a reverse API supplies a forward API.
 
-**State and interpretation:** R0's stated exit checks passed locally. This establishes safe rendering and record contracts, not physical-score accuracy or a solver defect. No VMEX or DESC solve was run in this block. Branch `r0-r1-evidence-certification` is uncommitted and has no PR; GitHub account identity was verified before editing.
+### 11.2 High-order polish and PR448
 
-**Exact next action:** implement `benchmarks/verify_measurement.py` for saved symmetric integer-family WOUT states. Independently evaluate exact B/J/grad-p from the pinned supplement's NumPy field with complex-step derivatives, integrate physical weights over the full torus, compare Route A Cartesian inversion with Route B forward-chart fields/Jacobians on shifted radial/angular grids, and record convergence/error budgets before starting the missing NS129/TCON0=0 solve.
+The optional recovery branch has promising exact-transfer and sparse-Jacobian machinery but remains a separate, axisymmetric fixed-profile experiment. Its independent and provisional certificate levels, actual RSS, and unsupported cases must remain explicit. In particular, map its magnetic-normalized force `epsilon_B` to this study's force metric, not to analytical field error E_B. Its current target crossing is not independently closed. [S10]
 
-### R1 implementation and pinned-GPU smoke entry, 2026-09-24 13:30 CDT
+First apply any candidate to a small exact Solov'ev/integer control with B/J/force truth. Preserve the state in its native high-order basis, use exact knot insertion and angular padding when available, and compare the same physical normalization before/after. Do not attribute a WOUT reconstruction change to a nonlinear physical improvement.
 
-**Question:** Do the saved NS33 projected-default scores reproduce independently on an immutable full-torus point cloud, and do Cartesian inversion and the forward flux chart return the same physical fields and derivatives?
+For a least-squares residual r(z,a), stationarity is `g=r_z^T W r=0`. Its exact derivative contains
 
-**Source and identity:** The historical VMEX baseline remained pinned at `b5f5267efc0795c4a49a224e321e9b370975c14c`; a separate current-source comparison pin at `4632dad8261ca72756819c1c5fcd2e2ec022aeaa` was added to `sources.json`. A new clean detached checkout of the historical source was used for the authorized GPU work. The previously existing dirty checkout was left untouched. GitHub identity had already been verified as `rogeriojorge`; local Git identity remains the owner name and account-derived noreply address. The active branch is `r0-r1-evidence-certification`, with no commit or PR yet.
+$$g_z=r_z^T W r_z+\sum_i (Wr)_i\,\nabla_z^2r_i,$$
 
-**Changes:** Added the independent integer-family NumPy complex-step chart Jacobian and exact Cartesian field oracle, full-torus volume weights with NFP replication, Route A native Cartesian API and Route B forward-chart comparisons, a stable batched pressure-gradient solve, native-axis/edge/cell/knot probes, and immutable measurement reports with benchmark-code hashes and runtime identity. Evaluator functions are reused across grid calls, and the public VMEX field API is seeded by recovered coordinates. Added reference tests for the chart, fields, volume normalization and radial probes.
+for fixed W, plus the appropriate terms when weights or constraints depend on parameters. Gauss-Newton alone omits the residual-weighted second derivatives. A force norm, stationarity norm, gauge feasibility, positive geometry and an exact stationary response are separate gates. With equality constraints use the differentiated KKT system, including constraint motion, rather than differentiating an unconstrained normal equation.
 
-**Validation:** `pytest -q` passed 41 tests in 13.36 s; `python -m compileall -q benchmarks tests` and the scorer `--help` check passed. CPU and GPU smoke measurements were run against the same saved NS33 WOUT, input and historical source pin. The final smoke run was `ns33-projected-default-gpu-smoke-v2`; it took 89.67 s and recorded 2771.77 MiB process high-water RSS on JAX 0.9.2 / NumPy 2.5.2 / Python 3.12.13 / GPU, with device-memory peak unavailable. Its report SHA-256 is `653eb16e8ff697fe314ae5141d019c7206b5ad3491c1a358d210ac3266b42009`; saved spectral-state SHA-256 is `3fefa156a0a7835a36503aa3ffeb6f72905c0743f446a8784403d4550687c48a`; copied input SHA-256 is `7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab`. The report includes hashes for the scorer, reference, input generator and manifest.
+Use compact radial support, compressed JVPs and sparse/direct or matrix-free solves only after a small dense comparison verifies the pattern and products. Avoid squaring condition numbers unnecessarily through poorly scaled normal equations. Explicit-array admission is not an RSS guarantee; benchmark compilation/cache memory separately. A bounded negative outcome closes this experiment honestly; it does not justify importing a large research branch into the primary baseline.
 
-**Observed values:** On the unchanged `legacy96` points, the new Route A scores reproduce the saved arrays to relative RMS `2.20e-15` for B, `1.12e-13` for J and `2.85e-14` for grad-p; maximum position discrepancy is `2.37e-16 m`. Route A/B differences are at most `3.2e-14` across the recorded legacy/smoke quantities. The native label differs from the exact reference label by as much as `4.30e-3` on the smoke cloud; this is a sampled coordinate/reconstruction observation, not yet a converged physical consequence. The exact full-torus volume is `0.267110774413093 m^3`, while the legacy sample weights total `0.13355538723891902 m^3`: the saved legacy weights cover one of two field periods without the NFP replication. Normalized legacy ratios were unchanged by that common factor. The coarse 4x8x8 and shifted smoke grids give `E_J=9.81e-2` and `1.10e-1` and `E_F,p=1.05` and `1.17`, respectively, compared with legacy96 `E_J=4.39e-1` and `E_F,p=4.93`; the smoke is explicitly diagnostic and unresolved.
+## 12. T7: optimization and scientific extensions
 
-**Failures retained:** Initial scorer attempts exposed and fixed a batched `numpy.linalg.solve` RHS-shape mismatch, a closed-NPZ read in the legacy comparison, and a summary-print path assumption after the JSON had already been written. The first full-profile attempt was interrupted after `legacy96`, `base_8x32x32` and `base_shifted` because each grid rebuilt JAX callables. Its report is `results/audit/measurement_gpu/ns33-projected-default-gpu-full-v1/measurement.json` (SHA-256 `98ff7296854f4aa0c4d59149223d7a3bc2602e4ce1ae07afc9e9f70e2339ac45`) and records status `measurement_interrupted` plus the observed partial rows. The base and shifted NS33 scores were nearly identical (`E_J=1.63495e-1`, `E_F,p=1.7580`), far from the legacy96 values; the completed grid ladder is still needed to establish whether these are converged. The evaluator factory and coordinate-seeded native calls were then added; the final smoke report remained diagnostic and passed route comparison.
+**Maps to R8/P8. Direct-reference work can run early; solver-driven claims require T3.**
 
-**Artifacts and limits:** Smoke and interrupted records are under `results/audit/measurement_gpu/`, with copied input and spectral state in each unique run directory. Device-memory use is unknown, and the interrupted run did not save its completed fine-grid arrays. No exact-projection, axisymmetric, near-axis, near-edge or one-sided-knot scorer run has completed in this entry. The R1 thresholds are not certified, no README physical-recovery claim was changed, and no solver defect is inferred from the alias-sensitive NS33 score.
+### 12.1 Optimize within exact families
 
-**Exact next action:** finish the active run `ns33-projected-default-gpu-full-v2` and inspect all nine volume-grid rows, targeted native-radial rows, report/code hashes, route agreement, runtime and memory metadata. Then run the same full scorer on the NS129 exact-projection state and axisymmetric solved control before deciding whether any physical score is resolved.
+Use the explicit fields, maps and quadratures to optimize exact-family parameters directly. VMEX should verify selected states and sensitivities, not repeatedly solve for a field already available in closed form. Hold edge pressure at zero, eliminate arbitrary length/field rescalings, and constrain volume/aspect ratio, current, elongation, domain margin and chart validity. Raising pressure by an arbitrary constant is not a useful beta optimization.
 
-### R1 full NS33 measurement and pressure audit, 2026-09-24 13:49 CDT
+Start with a two- or three-parameter study, retaining all starts, constraints and objective histories. Appropriate objectives include field-strength variation, current concentration, a verified stability diagnostic or a constrained beta/shape tradeoff. Use dimensionless residuals and declare weights. Any confinement or stability improvement needs a relevant diagnostic calculation; exact force balance alone does not establish it.
 
-**Question:** Does the problematic projected-default NS33 state have a converged full-volume physical score, and can the pressure/flux-label discrepancy be assigned to the input fit or to the state coordinates?
+The sheared family's lambda direction is particularly useful: iota is unchanged while geometry and pressure change. It isolates effects that a generic pressure scan entangles. Evaluate direct-reference derivatives and compare selected VMEX responses after the current-prescribed null test works.
 
-**Run identity:** `ns33-projected-default-gpu-full-v2` used the saved projected-start NS33 WOUT, its iota input, VMEX `b5f5267efc0795c4a49a224e321e9b370975c14c`, solver FTOL `1e-10`, 311 iterations and effective `TCON0=1`. The imported solver source matched the report. Runtime was Python 3.12.13, NumPy 2.5.2, JAX 0.9.2, float64 on an NVIDIA RTX A4000. Scoring took 584.88 s, process high-water RSS was 5096.97 MiB and device-memory peak was unavailable.
+### 12.2 Optimize coordinates without changing physical surfaces
 
-**Full-volume measurements:** `legacy96` reproduced the saved B/J/grad-p arrays at relative RMS `2.20e-15 / 1.12e-13 / 2.85e-14`; its positions differed by at most `2.37e-16 m`. Its weights sum to `0.13355538723891902 m^3`, exactly half the exact full-torus volume `0.267110774413093 m^3` for NFP=2. The missing replication factor cancels in normalized ratios, but is wrong for absolute integrals. At 8x32x32, the unshifted/shifted scores agree (`E_B=1.36271e-3`, `E_J=1.63495e-1`, `E_F,p=1.75802`). Radial refinement to 16x32x32 changes `E_B` to `1.73722e-3`; the 16x64x64 Gauss result is `E_B/E_J/E_gradp/E_F,p = 1.73723e-3 / 1.62802e-1 / 8.06927e-3 / 1.74427`. Its shifted Gauss result agrees to printed precision. The 16x64x64 midpoint result is `1.84949e-3 / 1.47982e-1 / 8.06326e-3 / 1.56371`. The three fine rows have score spreads `1.12256e-4 / 1.48204e-2 / 6.00741e-6 / 1.80566e-1` for B/J/grad-p/force. This exceeds the 1/10-target measurement allowance by orders of magnitude for B, J and force; `measurement_resolved=false`, `accepted=false`.
+A coordinate remap can reduce Fourier width and improve conditioning. Use regular radial amplitudes and a strictly monotone poloidal map, with the required lambda compensation. Choose a few modes rather than a new universal coordinate framework. Minimize a derivative-weighted spectral tail and/or a scaled condition indicator, subject to positive geometry and held-out field invariance. Distinguish the coordinate objective from physical objectives.
 
-**Local and route checks:** The equal-weight native-surface scans completed at the axis, edge, and selected cell interiors/one-sided knots. Their `E_F,p` values are `6.00286`, `1.22536e-1`, and `1.15747`; the corresponding A/B force differences are `3.31e-10`, `1.12e-13`, and `1.02e-13`. Route agreement is therefore much tighter than the physical errors at these tested points, but does not repair the failed radial convergence. The coordinate-label difference reaches `4.50e-3` on the knot/cell cloud. Targeted point errors are diagnostics with equal point weights, not volume norms.
+The action-based toroidal coordinate method [L7] and GVEC mappings [L8] are alternatives for difficult initialization. Evaluate them first on unchanged analytical surfaces. If a remap changes the represented finite field, measure that projection error rather than saying the remap is physically exact after truncation. Fit and judge on different grids. An optimized chart that only improves its training-grid force is not a success.
 
-**Pressure decomposition:** `pressure_audit.json` uses the same saved fine and targeted arrays. At full volume, the generated input profile differs from the exact analytical pressure by only `1.52e-16` on the fixed pressure scale. The native/reference label shift contributes `1.93e-3` RMS and `4.71e-3` maximum. The exact pressure variation along selected VMEX-native surfaces reaches `8.26e-3` of the fixed pressure scale near the native knot/cell probes. This attributes the measured pressure mismatch at those locations to flux-label/surface displacement rather than a poor pressure polynomial fit; it is a finite-state diagnostic, not proof of a continuum defect.
+### 12.3 Tangent versus transverse physical response
 
-**Artifacts and validation:** `results/audit/measurement_gpu/ns33-projected-default-gpu-full-v2/measurement.json` SHA-256 `1e204a441d33b651e38cf2cfc0f71aae415d4cf2dfcd3c5bd5c97df90817cb06`; `pressure_audit.json` `ae345d028a80452180b80c52af4605c15f52650d194fa96b4da1efa6f7c7306f`; `finest_samples.npz` `a65eb1483933b6aeab4714ec1381c88789aac5f2131dc261ebc3900837d7d748`; `targeted_samples.npz` `7335e063ad5d5a0a34a0c89c98dd4dd6a287e3270bf307eb49a8209fe4e824c1`; saved state `3fefa156a0a7835a36503aa3ffeb6f72905c0743f446a8784403d4550687c48a`; copied input `7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab`. The scorer report includes the hashes of its code and reference files. `pytest -q` now passes 42 tests in 14.68 s; compileall, scorer help and Ruff F checks also pass. A pressure-audit unit test initially exposed an RMS helper that assumed vector-valued samples; it was corrected for scalar pressure and the complete suite passed afterward.
+After exact-family responses are verified, add a small number of boundary/profile directions outside the family. Use continuation and reconvergence, track the branch, and compare them with exact-family tangents and pure coordinate directions. For
 
-**Interpretation and limit:** A/B field/current/pressure-gradient agreement and coordinate backward-error checks show that the current comparison routes evaluate the same tested VMEX representation. They do not establish resolved physical recovery. The midpoint/Gauss disagreement means the NS33 full-volume score remains unresolved, and the strong force/current errors fail the recovery thresholds. The 16-point full profile is insufficient; no exact-projection or axisymmetric full profile has yet been run. The active branch remains `r0-r1-evidence-certification`, with no commit or PR.
+$$J=\sigma B+\frac{B\times\nabla p}{B^2},$$
 
-**Exact next action:** run a parent-linked NS33 radial extension at 32x64x64 using unshifted Gauss, shifted Gauss and midpoint radial nodes. If those three scores still exceed the one-tenth-target spread, continue to 64 radial points. Only after the radial/measurement contract is resolved on the problematic state, run the NS129 analytical projection and axisymmetric solved controls with that same contract.
+current continuity gives
 
-### R1 NS33 radial-32 extension, 2026-09-24 14:16 CDT
+$$B\cdot\nabla\sigma=-\nabla\cdot\left(\frac{B\times\nabla p}{B^2}\right).$$
 
-**Question:** Does the NS33 projected-default full-torus measurement settle when the radial quadrature is refined from 16 to 32 points, with independent shifted angular nodes and a midpoint radial rule?
+On a closed line, the line integral of the right-hand side divided by |B| must vanish. Measure this compatibility residual and current convergence before interpreting a large response near rational transform as numerical failure or as physical nonexistence. Finite resolution and a finite set of resonance tests do not prove a smooth continuum branch. Conversely, integer transform alone does not prove that the whole constrained discrete Jacobian is singular.
 
-**Run identity:** The parent-linked run `ns33-projected-default-gpu-radial32-v1` used the immutable projected-default NS33 WOUT at VMEX `b5f5267efc0795c4a49a224e321e9b370975c14c`; its input SHA-256 is `7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab` and spectral state SHA-256 is `3fefa156a0a7835a36503aa3ffeb6f72905c0743f446a8784403d4550687c48a`. The state remains the FTOL `1e-10`, 311-iteration projected start with effective `TCON0=1`. It ran the 16-point anchor triple and 32×64×64 Gauss, shifted Gauss and midpoint grids, then repeated the targeted near-axis, near-edge and native-knot/cell-interior probes. The VMEX source checkout was clean and matched the expected pin.
+A useful scientific result is a resolved difference between exact-family tangent, coordinate and transverse sensitivities, with numerical errors controlled. Report null/negative tradeoffs as well as improvements.
 
-**Measurements:** The 16×64×64 unshifted Gauss scores were `E_B/E_J/E_gradp/E_F,p = 1.737231e-3 / 0.1628019 / 8.069266e-3 / 1.744274`. At 32×64×64 Gauss they were `1.245829e-3 / 0.1804418 / 8.050459e-3 / 1.944415`. The shifted 32-point Gauss scores agree with unshifted Gauss to printed precision. The 32-point radial-midpoint scores were `9.083047e-4 / 0.2099158 / 8.039138e-3 / 2.276178`. Therefore the 32-point within-level spread is `3.375243e-4 / 2.947402e-2 / 1.132110e-5 / 0.3317635`; the 16-to-32 Gauss change is `4.914020e-4 / 1.763987e-2 / 1.880668e-5 / 0.2001406`. B, J and force measurement changes exceed the one-tenth-target allowance by orders of magnitude. The grid score is unresolved, physical B/J/force thresholds fail, and `accepted=false`. Exact volume normalization remained correct on all grids. Route A/B errors on the targeted clouds were at most `3.32e-10` for force and `2.35e-12` for current, so the failure is not explained by disagreement between the two current reconstruction routes.
+### 12.4 Goal-oriented refinement rather than uniform growth
 
-**Runtime, validation and artifacts:** The run took `1175.09 s`, with process high-water RSS `5872.44 MiB`; GPU memory peak remains unavailable. Runtime was Python 3.12.13, NumPy 2.5.2, JAX 0.9.2, float64 on an NVIDIA RTX A4000. The measurement report SHA-256 is `3edfda470df51614c67bae5ece4f74112448be5cc52f5a9b89440704ea5e8475`; finest-grid samples `9ea223a90f69c825c744c29b7a2453033146db8ad0908f693855b2d0c485fcfc`; targeted samples `7335e063ad5d5a0a34a0c89c98dd4dd6a287e3270bf307eb49a8209fe4e824c1`. The saved-data figure SHA-256 is `c6f85d226f48b4a03359106134380bca2fd58ec9496aa2e03e0bc88ecba965d7`, with figure-manifest SHA-256 `908d2b804c22b1fcf748b2e26540c6736734bfb65f660ff76bc812545a902a7c`; it was rendered from the saved report and visually inspected. README and matrix now label this diagnostic unresolved. `pytest -q` passes 42 tests in 12.48 s; compileall, scorer CLI help, focused Ruff F checks and `git diff --check` outside the historical Markdown line-breaks passed. Repository-wide Ruff finds 11 pre-existing unused imports in untouched files and was not used to edit them. A duplicate launch using the same immutable run ID was rejected by the unique-run guard; the active 2048-chunk run remained intact.
+Once a derivative-capable root is available, form a small enriched-space defect. Let z_H^0 be a consistent transfer of z_h and r_H=F_H(z_H^0). A first correction solves A_H delta z=-r_H. For an observable, the adjoint prediction is
 
-**State and exact next action:** R0 is passed locally; R1 remains diagnostic, not accepted. Branch `r0-r1-evidence-certification` has no commit or PR. Add a `radial64` child profile that verifies this parent report's source, input and state hashes and folds its immutable 16/32 rows into the 64-point convergence comparison; run the 64×64×64 Gauss, shifted-Gauss and radial-midpoint trio on the same saved WOUT. If that remains unresolved, refine again. Do not start the missing NS129/TCON0=0 experiment until R1's measurement contract is resolved on this state; then score the exact projection and axisymmetric solved control before proceeding through R2 residual-history tests.
+$$\Delta Q\simeq Q_H(z_H^0)-Q_h(z_h)-\lambda_H^T r_H,\qquad
+A_H^T\lambda_H=Q_{H,z}^T.$$
 
-### R1 NS33 radial-64 run in progress, 2026-09-24 14:33 CDT
+Use compatible gauges, scales and parameter constraints. Calibrate this estimate against an actual corrected/enriched solution; do not advertise it as a rigorous bound imported from finite-element theory. Local products of adjoint weights and residual contributions can prioritize radial spans/modes affecting Q, complementing pure force-based refinement. Exact knot insertion preserves a high-order state during this experiment; projection to another representation does not do so automatically. [L4]
 
-**Action and provenance:** Added the `radial64` scorer profile. It requires a complete parent radial report and verifies matching VMEX commit, input SHA-256, and saved-state SHA-256; it records the parent report hash and the earlier 16-to-32 spread, then combines parent and child rows for the latest refinement test. Focused Ruff F checks, compileall, scorer help and `pytest -q` passed (42 tests, 12.48 s) after this change. The attached benchmark repository remains uncommitted.
+The first useful objectives are already available: beta, a signed interior field functional, or current-prescribed iota. Keep this extension small. Only then consider validated boundary/coil optimization with held-out physics and geometry constraints.
 
-**Failed launch retained:** The first attempt exited before reserving an output directory because the interpreter imported a different installed VMEX package that did not provide the pinned scorer API. No measurement artifact was written by that attempt. The retry explicitly prioritizes the clean historical checkout on `PYTHONPATH`; the scorer's mandatory source check passed and the child report records VMEX commit `b5f5267efc0795c4a49a224e321e9b370975c14c`.
+## 13. T8: figures, performance and a usable repository
 
-**Active child:** `ns33-projected-default-gpu-radial64-v1` records parent run `ns33-projected-default-gpu-radial32-v1` at SHA-256 `3edfda470df51614c67bae5ece4f74112448be5cc52f5a9b89440704ea5e8475`. The saved-state/input/source checks match. The first 64×64×64 Gauss row is `E_B/E_J/E_gradp/E_F,p = 1.425378e-3 / 0.1829523 / 8.058392e-3 / 1.971869`, changing from the 32-point Gauss row by `1.795482e-4 / 2.510539e-3 / 7.932853e-6 / 2.745382e-2`. This remains far above the measurement allowance for B, J and force; the shifted and midpoint rows are still running, so no child completion or certification is claimed.
+Generate figures only from persisted records. Plotting may produce derived summaries and manifests, never edit raw observations or fill missing metadata. Label historical96, reference-domain, native-domain, analytical projection, solved, terminal and provisional data distinctly.
 
-**Exact next action:** Finish the same immutable child run, retrieve its final report and arrays, inspect 64-point within-level spread and 32-to-64 change, regenerate and inspect the figure from that report, then update the table and README from the completed measurements. If unresolved, decide between another global radial level and a knot-aligned composite quadrature using the recorded convergence trend. Keep R2's NS129/TCON0=0 solve waiting until the R1 measurement contract is resolved.
+The next figure set should answer specific questions:
 
-### R1 NS33 radial-64 completion and knot-aligned scorer, 2026-09-24
+| Figure | Required data | Purpose |
+|---|---|---|
+| Measurement partition | Native knot crossings versus reference knots on a few angular rays | Demonstrate actual interval alignment |
+| Radial error density | Cellwise B/J/grad-p/force integrals and uncertainty | Locate the physical/reconstruction error |
+| Measurement cost | Error-estimate spread versus cost/RSS for old and streamed routes | Show bounded reliable scoring rather than just a faster kernel |
+| Representation continuity | One-sided derivative jumps and cell-interior errors | State what orders 0-3 mean on each representation |
+| Constraint/root comparison | Completed NS129 cell, controls, pure residual and physical scores | Separate constraint choice from accuracy |
+| Response tests | Signed tangent/adjoint/FD/analytical values and step/resolution studies | Verify physical derivatives, including nulls |
+| Exact-flow checks | Trajectory/tangent/closure errors versus step and representation | Exercise interfaces with an exact time-parametrized reference |
+| Broader recovery | Axisym, LASYM, integer and sheared mild-case results | Show real breadth without collapsing unlike evidence |
+| Exterior/polish studies | Matching residuals, source-distance error, stationarity, memory | Keep model and certificate levels visible |
+| Optimization/goal refinement | Histories, constraints, held-out metrics and predicted/actual changes | Demonstrate a resolved scientific improvement or limit |
 
-**Question and state:** The immutable historical VMEX NS33 projected-default state is still not measurement-resolved on a global radial sequence. This entry closes the previously active radial64 child and records the next discriminating quadrature experiment. The VMEX source is `b5f5267efc0795c4a49a224e321e9b370975c14c`; the state/input hashes remain `3fefa156a0a7835a36503aa3ffeb6f72905c0743f446a8784403d4550687c48a` / `7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab`. Parent run `ns33-projected-default-gpu-radial32-v1` is hash-linked as `3edfda470df51614c67bae5ece4f74112448be5cc52f5a9b89440704ea5e8475`.
+Keep the README short enough to navigate. Lead with the latest accepted results and a short limitations table; put detailed failed-run narratives and old numbers in a linked results note. Show current test/CI status honestly. Include exact minimal commands for reference tests, one forward solve, one response, and figure regeneration. Do not copy the entire logbook into the README.
 
-**Radial-64 result:** Run `ns33-projected-default-gpu-radial64-v1` completed with status `measurement_diagnostic`, `measurement_resolved=false`, and `accepted=false`. On the 64×64×64 unshifted Gauss, shifted Gauss and radial-midpoint grids, the within-level score spreads in B/J/grad-p/force were `4.51278e-5 / 1.11277e-2 / 2.23549e-6 / 0.128720`. The unshifted 32-to-64 Gauss changes were `1.79549e-4 / 2.51054e-3 / 7.93285e-6 / 0.0274538`. Shifted and unshifted Gauss agree closely; midpoint and Gauss do not meet the R1 one-tenth-target spread, and the radial level change fails for B/J/force. The 64-point unshifted scores are `1.42538e-3 / 0.182952 / 8.05839e-3 / 1.97187`; the physical B/J/force recovery gates therefore also fail. Full-volume weights match the exact torus volume, and Route A/B differences on each global row remain around roundoff. Targeted native-coordinate probes completed, without establishing the global volume norms.
+Timing comparisons must include source versions, actual device used, thread settings, independent compile/warm evaluation, root anchoring, reference/input preparation, scoring, derivatives and I/O. Use repeated measurements and report spread. Compare cost to a stated physical/derivative accuracy, not equal FTOL or nominal grid size. Record failures and budget overruns. Device enumeration is not evidence of multi-device execution. Host RSS and device memory are different metrics.
 
-**Provenance, costs, and artifacts:** The run took `1488.3495 s`; process high-water RSS was `6725.46875 MiB`; device memory peak was unavailable. Runtime: Python 3.12.13, NumPy 2.5.2, JAX 0.9.2, float64 on NVIDIA RTX A4000. The report hash is `ac448fd9be924b64119c98238b9317310d9a0c98c1e6d184197dfddba850a000`; finest and targeted sample hashes are `6f4b87f1e61d533e2969d2b8c50678fab1d68ca7b972a2c531bce94ab675efda` and `7335e063ad5d5a0a34a0c89c98dd4dd6a287e3270bf307eb49a8209fe4e824c1`. The saved-report figure hash is `5e93b60669b1f42ae25826030ea548b34ea67abebb46412ae81392eea7f9eee6`; its manifest hash is `941c942b972dede3f7592418337550a43935083775beeb5d3629c7f4ff3eeb28`. The figure was regenerated from the report and visually inspected. An initial launch imported the wrong installed VMEX and exited before reserving an output directory; the pinned-source retry passed the scorer's source guard. No solver was run in this completion block.
+Use short pilots to set a per-process time/RSS budget before increasing resolution. When a pilot spends most time on certificate evaluation, repair/reuse that evaluation rather than launching a longer version blindly. Preserve useful completed work on interruption. Isolate cache experiments in benchmark-owned directories, never delete the user's global cache.
 
-**Scorer change and validation:** The independent scorer now has `cell_gauss` and `cell_midpoint` radial rules. The composite profile uses the NS33 state's 32 native uniform-s spline cells and compares 2 versus 4 radial quadrature points per cell, each with unshifted Gauss, angular-shifted Gauss and cell-midpoint controls. Immutable parent report ancestry, source/input/state identity, full-volume normalization, Route A/B agreement, within-order rule spread and order-2-to-order-4 score change are all recorded separately. Tests verify that nodes lie strictly inside each of the 32 cells, that the composite reference grid integrates the exact full-torus volume at the configured angular resolution, and that each resolution criterion can fail the certification. `pytest -q`: 45 passed in 14.86 s; `python -m compileall -q benchmarks tests`, scorer `--help`, focused Ruff F checks and `git diff --check` on the changed scorer/test files passed. The global repository Ruff scan still reports the previously noted unused imports in untouched files.
+## 14. Minimal implementation layout and task order
 
-**Interpretation and limits:** Aligning subintervals to the spline knots is a source-motivated diagnostic, not evidence that the quadrature discrepancy is solved. VMEX's [pinned radial evaluator](https://github.com/uwplasma/vmex/blob/b5f5267efc0795c4a49a224e321e9b370975c14c/vmex/core/extender.py#L411-L468) uses a uniform-s not-a-knot cubic spline; each composite cell rule should therefore expose intra-cell integration stability more directly than a global Gaussian rule. Its scores still measure one finite solved state and cannot identify which physical or representation error dominates. The historical and current VMEX pins remain separate. Branch `r0-r1-evidence-certification` remains uncommitted with no PR; nothing was published in this block.
+Prefer edits to the existing modules:
 
-**Exact next action:** Transfer the updated scorer files to the clean historical-pin GPU workspace, verify their hashes and the input/state/source identities, then run `ns33-projected-default-gpu-composite-v1` as a child of the radial64 report using 2- and 4-point-per-cell triples. Save and retrieve every report/sample/target artifact, timing and RSS; device memory remains explicitly unknown unless measured. Regenerate and visually inspect the figure. If composite scoring passes the measurement gate, apply the same scorer contract to the exact projection and axisymmetric solved control before resuming the missing NS129 projected `TCON0=0` experiment and the residual-history tests. If it fails, use the order/rule component spreads to define the next refinement; do not report R1 resolved.
+- `evidence.py`: explicit supported record schemas, compatibility checks, child-artifact receipts.
+- `measurement.py`: pure quadrature partitions, reductions, scales and acceptance logic; no mandatory VMEX import.
+- `verify_measurement.py`: solver-specific evaluation and a thin driver; remove duplicated large-array accumulation and hard-coded grids.
+- `full_input_derivatives.py`: signed block-scaled tangents and fixed-basis JVP tests.
+- `run_vmex.py`: tested effective settings, source identity and the new-schema integration path.
 
-### R1 knot-aligned composite run launched, 2026-09-24 14:58 CDT
+Add one `native_evaluation.py` only if it removes real duplication between measurement and derivatives. Add one response driver and one exact-flow integration driver when their experiments are ready. Do not create a file for every grid, flag, plot panel or failed attempt. Keep analytic formulas in the shared reference module with independent tests.
 
-**Action and source identity:** Added knot-aligned composite quadrature rules to the independent scorer and launched the immutable child `ns33-projected-default-gpu-composite-v1`. It uses the same historical VMEX `b5f5267efc0795c4a49a224e321e9b370975c14c`, input SHA-256 `7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab`, and WOUT source SHA-256 `78932d912fb41c4034cceaae75c411946c7120a30635e16e924b5102167dce93`. Its parent is `ns33-projected-default-gpu-radial64-v1`, report SHA-256 `ac448fd9be924b64119c98238b9317310d9a0c98c1e6d184197dfddba850a000`. The scorer and quadrature module hashes on the execution host are `b24c478a228ed830a6f43b06c15b9638dd69d4ea2906cbc24675b4937ef39649` and `66cccf0032fa65c912185d5b33c69043ea84fb16f9a0acf4a2cf5d19f223051a`; both match the tested local files. The child report confirmed all source, input, state, code, Python/NumPy/JAX, float64 and GPU identities before evaluation.
+A practical first sequence is:
 
-**Run controls and initial observation:** The command uses public repository-relative input/output names and the WOUT that produced the parent fixed state; it requests 2 and 4 Gauss points per each of the 32 uniform-s cells, unshifted/shifted Gauss and cell-midpoint alternatives, with 2048-point chunks. The child uses immutable input/state/source identities listed above. Its initial report was `running` without persisted measurement rows; the scorer writes its definitive record only on completion/failure. The process was later interrupted at the user's pause request, as documented below. No duplicate run was started.
+1. T0 clean-reference CI/import boundary and schema-reader tests.
+2. T1 pure displaced-knot and interruption tests, NS-generic counts, streamed sufficient statistics.
+3. One small native-cell/inverse/covariant-curl comparison; gate geometry and labels.
+4. Bounded scoring of the NS33 failure plus the NS129 projection/axisymmetric controls.
+5. The missing historical NS129 zero-constraint solve and residual-history checks.
+6. Signed complete input tangents and the first actual axisymmetric root response; sheared-A input/projection/recovery in parallel.
+7. Exact-flow/interface tests and selected LASYM implementation; then downstream/exterior and bounded polish experiments.
+8. Direct-family optimization, transverse continuation, goal-oriented refinement and final performance comparison.
 
-**Provisional output and interruption:** Standard output emitted `cell2_gauss`, `cell2_shifted`, and `cell2_midpoint`. Their `E_B/E_J/E_gradp/E_F,p` values are respectively `0.0014834130777348921 / 0.18716163699714883 / 0.008060896721261555 / 2.02325757989362`, `0.0014834130777354286 / 0.18716163699642022 / 0.008060896721261502 / 2.0232575798783285`, and `0.001380249844442854 / 0.19407938728985125 / 0.008056156683301048 / 2.1005818147415036`; each reported exact-volume relative error 0. The Gauss pair agrees closely for this order, while midpoint differs; neither observation establishes radial/order convergence, physical recovery, or R1 acceptance. At elapsed `27:52`, the user-requested pause interrupted the process with SIGINT during `cell4_gauss` flux-coordinate sampling. Last observed host RSS was `5,891,632 KiB`; selected-GPU reported memory use was `3,679 MiB`, not a measured peak. No 4-point row or targeted probe completed. The initial measurement report was preserved unchanged at status `running`, SHA-256 `9b151f9b39b11826889dd69b998ed2dd1d6dc13a2e7b1dd20004cf7e1f7ce925`; the separate [interruption receipt](results/audit/measurement_gpu/ns33-projected-default-gpu-composite-v1/interruption.json), SHA-256 `ec38c8040880ffac9edbaa4d05dbe726cff4e04f3e0408683991036559043342`, stores all three stdout rows, hashes, interruption details and pending grids. The immutable `input.indata` and `spectral_state.npz` copies were retrieved alongside it and hash-match the expected input/state identities. The run ID is reserved and a future full attempt needs a new unique ID.
+No phase requires every optional library to be installed. A reached but unsupported capability remains explicitly unavailable/blocked with its reason and next reproducible action. Core completion requires actual solved mild axisymmetric and 3-D examples, meaningful LASYM coverage, both closures, measured spatial/response errors and at least operator-level plus coupled free-boundary evidence. An unresolved case stays unresolved; do not claim a completed all-round benchmark by counting planned cells.
 
-**Exact next action:** Treat `ns33-projected-default-gpu-composite-v1` as interrupted and permanently reserved. Its report and copied input/state are preserved under the run directory, with the stdout-only rows separately marked provisional. When work resumes, choose a fresh unique child run ID, verify the same source/input/state/code hashes and radial64 parent report before sampling, complete every 2/4-point-per-cell rule and targeted probe, retrieve saved arrays, record actual runtime/RSS and any measured device peak, and generate/inspect a figure from the completed report. Never reuse the interrupted ID or claim its provisional rows as a certified measurement.
+## 15. Current status and continuing logbook
 
-### R3 axisymmetric exact-family complete-input finite differences, 2026-09-24
+| Task | Status at this handoff | Next evidence needed |
+|---|---|---|
+| T0 portable evidence/tests | Completed for this block: clean Python 3.12/VMEX-absent suite passed 55 tests; post-edit Python 3.11 suite also passes 55; old/new report reader and schema-2 consumer exercised | Keep the import boundary and immutable evidence tests in CI |
+| T1 measurement | Bounded native-knot and streamed-checkpoint work completed; 96-point controls remain unresolved measurements; interrupted composite was not repeated | Use exact native-knot roots; design a cheaper resolution ladder before any larger run |
+| T2 constraint/root | NS129 projected TCON0=0 and same-seed TCON0=1 comparison completed at historical pin; residual-history and force-decomposition diagnostics completed | Resolve spatial scorer/root certificates before any default recommendation |
+| T3 sensitivities | NS17 dense solve certifies the linear response; NS65 frozen-path FD converges; branch inversion is stable; JVP of the field map along the measured branch-state FD matches branch B-FD to 0.70%, while residual-level JVP remains 5.92e-3 away | Analyze the active m=1 root-response difference and test any candidate gauge alignment against physical B before assigning a cause; derivative remains uncertified |
+| T4 breadth | Sheared-A cold and lambda-zero geometry-seeded NS17 current solves both capped at 10,000; matched 96-point plot confirms the projected start is worse on B/J/gradp/flux labels; no recovery accepted | Derive and validate a nonzero straight-field lambda seed from exact field-line flow before another bounded recovery solve |
+| T5 diagnostics | Broad program mostly pending | Exact-flow and bounded field-derivative/interface tests |
+| T6 exterior/polish | Mostly pending; separate PR448 research context | Exact operator fixtures, strict coupled case, bounded optional polish |
+| T7 optimization | Planned | Direct-family/chart pilot, then verified solver-driven extensions |
+| T8 presentation/cost | Many historical figures; new cost bottleneck established | Read-only updated figures, complete resource accounting |
 
-**Question and method:** Does the production analytical input construction vary smoothly with exact-family parameters on an axisymmetric control when its Fourier modes and polynomial profile degree are fixed? `benchmarks/full_input_derivatives.py` evaluates the same `boundary_coefficients` and `fit_profiles` functions used to build INDATA, then differences the complete vector containing boundary coefficients, dimensional pressure `AM`, prescribed-iota `AI`, prescribed-current `CURTOR` and derivative-profile `AC`, held-out pressure/iota/current-shape values, edge toroidal flux, volume and beta. A 47-point Gauss held-out s grid is separate from the builder's fit/test nodes. Perturbations in vertical scale `c` and pressure-surface label `delta` were tested at steps from `1e-2` through `1e-5`; profile degree and axisymmetric mode basis were asserted unchanged. A separate fixed-Cartesian-point field tangent compares JAX with the same central-difference ladder.
+For every work block append: question; relevant task; benchmark and imported-source hashes; branch/PR state; command and effective configuration; parent/input/state/grid/contract hashes; measurements with uncertainty; failed or interrupted attempts; artifacts; code/tests actually inspected or run; and the exact next action. Distinguish 'not run', 'failed', 'unavailable', 'diagnostic', 'resolved measurement', 'accepted recovery', and 'accepted derivative'. Do not infer a terminal state from an old paragraph saying a process was running; use the newest receipt and actual process state locally.
 
-**Measured results:** Every plus/minus input-map perturbation retained degree 8 for pressure, iota and enclosed current, with `NTOR=0`. Neighboring complete-vector derivative estimates converge through the fine steps: relative changes from `1e-4` to `3e-5` and from `3e-5` to `1e-5` were `2.52e-8 / 5.66e-8` for `c`, and `8.68e-9 / 1.20e-9` for `delta`. At the finest step the beta derivative differs from its closed-form value by `4.97e-14` absolute for `c` and `1.88e-10` for `delta`; the edge-flux derivative in the delta direction is `pi Wb` to the input-map precision. The fixed-position `dB/dc` central difference approaches its JAX reference to `3.21e-11` relative at step `1e-5`. Fixed-position `dB/ddelta` is exactly zero in JAX, as required because delta changes the outer pressure surface and not the local integer-family magnetic field. Baseline fit errors are `2.48e-12 m` boundary maximum, `3.33e-16` pressure, `6.66e-16` iota and `8.76e-16` enclosed-current relative error.
+### Review entry: continuation from d5484d1
 
-**Artifacts, validation and limits:** The initial run `axisym-input-map-20260924T200630.971663Z` saved an immutable full-map report. Its corrected continuation `axisym-input-map-20260924T201351.596655Z` is linked at [derivatives.json](results/reference/derivative_runs/axisym-input-map-20260924T201351.596655Z/derivatives.json), SHA-256 `56bcf3769c394117e5586480827e55f66671e6a2af7c8d85fda80d512af569db`; its script SHA-256 is `9cd3f6d2367288edcbd327af78e1de90b6ac1c0c1ff13d5d861273202f8f9791`. For 512 and 1024 angular points, independent normalized enclosed-current values differ by at most `3.33e-16`; across five held-out s values and three radial finite-difference steps, independently differentiated raw `I(s)` agrees with the generated VMEX `AC(s)` derivative profile to at most `4.13e-12` and `2.37e-12` relative, respectively. The independently integrated edge current and input `CURTOR` agree to the recorded precision (`0.0` relative difference). This checks the `CURTOR` edge normalization and raw `AC` profile convention separately.
+The review confirms two commits beyond the earlier snapshot and retains the evidence repairs. New priorities are clean reference tests, compatible schema readers, real native-knot alignment, progressive convergence logic, interruption-safe streaming, signed/scaled input tangents and explicit reconstruction regularity. Current GitHub reference CI failed at pytest; the source contains a sufficient missing-dependency path, but detailed failure logs were not retrieved. The current VMEX release and open PR448/VMEC++ PR849 were checked as separate sources, not imported as successful benchmark results.
 
-**Failed attempt retained:** Run `axisym-input-map-20260924T201024.963582Z` incorrectly divided the independent `dI/ds` by the edge current before comparing it with `AC`, which stores the raw fitted derivative while `CURTOR` carries the edge-current scale. It appeared to disagree by about 80%. The code now compares matching raw derivative conventions and separately checks normalized loop current; the failed immutable report remains diagnostic and is not cited as a result. Earlier, the first full-map script attempt also failed due a local name shadow; it left no report and the corrected run succeeded.
+Six standalone probes passed: displaced-knot quadrature; NS-dependent grid-count arithmetic; exact integer-family flow/tangent/volume preservation; dimensionally scaled derivative comparison; derivative regularity of a C2-map field; and streaming sufficient-statistic equivalence. No new repository solver or full benchmark suite was executed by this review. No remote repository writes were made.
 
-The command `PYTHONPATH=benchmarks python benchmarks/full_input_derivatives.py` uses CPU/JAX and no VMEX solve. `pytest -q` passes all 47 tests in 16.94 s; `python -m compileall -q benchmarks tests` and focused Ruff F checks pass. The repository-diff whitespace check passes on the edited source, tests, README and matrix; only the preserved revision-2 Markdown header has intentional trailing spaces for line breaks. These records establish finite differences for the complete discrete analytical input map and the exact field control, not derivatives of VMEX's root, JVP/VJP support, or its residual. Branch `r0-r1-evidence-certification` remains uncommitted and has no PR.
+**Exact first action:** preserve the current plan/logbook and compare the working tree with d5484d1. Fix the solver-independent test imports and the schema reader, then write a cheap test that exposes the reference/native knot distinction and preserves a completed grid on interruption. Do not start by repeating the 27-minute composite profile unchanged.
 
-**Exact next action:** Implement and test a fixed-basis JVP for the boundary/profile fit map against its finite-difference interval. The first in-session attempt at a JAX helper was removed before handoff because it was untested and had a known tuple/reshape defect; it is not evidence or supported code. Keep solver response separate. The NS33 process has released its GPU after interruption. After the JVP work, start sheared-A recovery and record input-fit and pinned-parser evidence before the solve.
 
-### Handoff checkpoint, 2026-09-24
+### Adoption and checkout comparison, 2026-09-24
 
-**Pause state:** Work is intentionally paused at the user's request. Branch `r0-r1-evidence-certification` contains the continuing local changes and has no new commit or PR. No GitHub publication was made in this checkpoint. The README embeds the principal polished saved-data figures for VMEX and DESC, including exact/reference geometry, VMEX recovery and constraint diagnostics, the unresolved NS33 physical-score refinement, the measured VMEX/DESC integer-3D comparison, the axisymmetric control, and the historical TCON reinterpretation. The composite experiment was interrupted before a completed dataset existed, so no provisional-only figure was generated. Its initial `running` report was not rewritten; the separate interruption receipt explains the final process state.
+The actual checkout and `origin/main` were both exactly `d5484d1e7a15c9cf10599c2b0f05bdf69e22e861` at handoff review; the working tree was clean. The two publication commits after `575f13f` are present. All eight selected reviewed source-blob IDs in `review_snapshot.json` match the checkout. No later local/remote work was overwritten. A new continuation branch `t0-t1-d5484d1` was created from that reviewed tip. The archived preceding active plan hash matches `git show d5484d1:plan.md` byte-for-byte; the complete prior plan/logbook and prior historical plan remain in `docs/history/`.
 
-**Final code validation for this checkpoint:** The untested JAX fixed-basis helper was removed; the remaining finite-difference input-map file hashes exactly to the script hash recorded by its immutable derivative report (`9cd3f6d2367288edcbd327af78e1de90b6ac1c0c1ff13d5d861273202f8f9791`). `pytest -q` passed 47 tests in 19.58 s; `python -m compileall -q benchmarks tests` passed; focused Ruff F checks passed for the derivative module/test; and `git diff --check` passed for the edited README, matrix, derivative module and derivative test. Strict JSON parsing passed for the derivative report, radial64 measurement report and benchmark matrix. The interrupted composite initial report and interruption receipt also strict-parse; their hashes are recorded above. `input.indata` and `spectral_state.npz` hash to the immutable report's input and saved-state identities. `plan.md` retains its original intentional Markdown hard-break trailing spaces in the revision header; no other plan edits were whitespace-checked in this command.
+The handoff package's ten files were extracted, each checksum passed, and the full package was copied into `docs/handoff/review-d5484d1/` with its original `SHA256SUMS`. The six review probes and their recorded outputs were inspected; they are standalone numerical illustrations, not solver measurements. `gh run view 36061177756 --log-failed` retrieved the reference CI traceback: collection fails because `tests/test_measurement_reference.py` imports `_composite_spread` and `_parent_comparison_rows` from `verify_measurement.py`, whose module-level `import vmex` fails in the declared reference environment. The review's source and commit pins are preserved, and historical/current VMEX remain distinct.
 
-**Exact resume order:** (1) Start a complete knot-aligned NS33 comparison with a fresh unique run ID, parent-linked to radial64; the interrupted ID is reserved and its three stdout rows remain provisional only. Verify all source/input/state/code hashes, complete each quadrature and targeted probe, retain samples/timing/RSS, then render and inspect the saved-data figure. If the spread fails the one-tenth-target allowance, refine further; if it passes, apply the same contract to the exact projection and axisymmetric solved control. (2) Only when the measurement contract is resolved, perform the missing historical NS129 projected `TCON0=0` run; keep historical baseline and pinned current source snapshot separate. (3) Independently certify the reusable residual's history independence before trusting residual tangents. (4) Implement/test the fixed-basis input-map JVP and transfer exact-family tangent tests to the VMEX residual, retaining the existing axisymmetric derivative evidence as analytical reference only. (5) Run sheared-A recovery with input-fit and pinned parser checks, then continue the phase table in dependency order. Keep R2 and R3 separate; do not change the global constraint default or rewrite the solver before the discriminating tests settle the evidence.
+**Identity and branch state:** GitHub login is `rogeriojorge`; local Git author/committer remain configured for the verified account-derived noreply address. This is a local work branch based on reviewed public main; no commit, push, PR or upstream change has been made for this continuation.
 
-**Final handoff record:** Validation commands/results are `pytest -q` (47 passed, 19.58 s), `python -m compileall -q benchmarks tests` (passed), `ruff check --select F benchmarks/full_input_derivatives.py tests/test_full_input_derivatives.py` (passed), strict JSON parsing of all 142 repository JSON files (passed), `git diff --check -- README.md benchmark_matrix.json benchmarks/full_input_derivatives.py tests/test_full_input_derivatives.py` (passed), and README figure-link verification (17 embedded figure files, none missing). A privacy scan of public source/docs/results for the local checkout path and GPU host details returned no matches. Composite report SHA-256 is `9b151f9b39b11826889dd69b998ed2dd1d6dc13a2e7b1dd20004cf7e1f7ce925`; interruption receipt SHA-256 is `ec38c8040880ffac9edbaa4d05dbe726cff4e04f3e0408683991036559043342`; copied input and spectral state hashes are `7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab` and `3fefa156a0a7835a36503aa3ffeb6f72905c0743f446a8784403d4550687c48a`. The prior radial64 report remains `ac448fd9be924b64119c98238b9317310d9a0c98c1e6d184197dfddba850a000`; axisymmetric derivative report remains `56bcf3769c394117e5586480827e55f66671e6a2af7c8d85fda80d512af569db`. Branch `r0-r1-evidence-certification` is uncommitted, with no new commit, PR, or publication. There are no active GPU processes from this benchmark. The private runtime note contains the local checkout and connection details; it must not be added to the public repository.
+**Exact next action:** Implement T0 by moving pure composite acceptance and ancestry/report-normalization helpers into the existing VMEX-independent modules. Add schema-1/schema-2, source/status/effective-controls/capped-state regressions. Then create a fresh environment from `requirements.txt`, confirm the VMEX import boundary is absent, and run the reference suite.
 
-### Publication staging check, 2026-09-24
 
-The account returned by `gh api user` is `rogeriojorge` (account ID `6816712`); `gh auth status` confirms the active authenticated account. Local Git identity is `rogeriojorge <6816712+rogeriojorge@users.noreply.github.com>`. The existing public `origin/main` is commit `575f13f67b346118c3d7f05cc60cc6e29131359a`, matching this branch's pre-publication HEAD. The handoff bundle's eight-file `SHA256SUMS` check passes. The publish allowlist staged 84 repository files, including the sanitized revision-2 handoff, history, updated plan/README, benchmark source, tests, figures and immutable numerical artifacts. Machine-specific runtime note remains outside the repository. Staged content scans found no home-directory paths or host alias; staged whitespace findings are only the intentional Markdown hard-break spaces in the revision headers/history.
+### Continuation work block, 2026-09-24: T0-T3 results and axisymmetric response discriminator
 
-Inspection of `tools/publish.sh` found that its all-history identity check would reject the inherited GitHub-created merge commit (`Rogerio Jorge` author / `GitHub` committer) even though this task's new commit is configured for the owner. The helper now checks the commit it is publishing for the exact authenticated owner name/email and rejects a co-author trailer on that new commit, while preserving all ancestors. `sh -n tools/publish.sh` passes. This is a publication-gate correction, not a history rewrite.
+**Branch/state:** local continuation branch `t0-t1-d5484d1`, based on reviewed commit `d5484d1e7a15c9cf10599c2b0f05bdf69e22e861`; no continuation commit, push, PR, or upstream write has yet been made. Historical VMEX source remains `b5f5267efc0795c4a49a224e321e9b370975c14c`, separate from the recorded current snapshot. GitHub owner and local project Git identity were checked earlier in this continuation; no AI author/co-author has been configured.
 
-**Publication state at this entry:** Files are staged and reviewed, but the new commit and push have not yet occurred. After publishing, record the resulting commit hash and verify the remote main tip in a follow-up entry.
+**T0 evidence/import boundary:** Extracted handoff members and checksums are preserved in `docs/handoff/review-d5484d1/`; preceding plan bytes are preserved at `docs/history/plan_through_d5484d1.md` with SHA-256 `0b34804db8c0741f8f94b0e6e1af8616119fbe002cc8bc4330bea54f96fa8736`. Moved schema/evidence helpers into solver-independent modules and adjusted reference tests so their collection path no longer imports VMEX. The clean Python 3.12 environment with VMEX absent passed 55 tests in 14.17 s; `verify_reference.py` passed all 14 reference checks. `reference_derivatives.py` passed and explicitly reported `vmex_executed=false`. The schema-2 consumer path accepted a generated report; a deliberate one-iteration cap was retained as a diagnostic, not a valid measurement. The previous reference outputs were restored byte-for-byte after the isolated rerun. Latest recorded source hashes at the time of this block: `benchmarks/evidence.py` `a4cc14b249d98103cd5da7afbd9fb72e32ac865712e44f8dab2df9410c480371`; `benchmarks/measurement.py` `91b042394d3df7f1d480a61a88904553993e6d1eb76b230256e77bf72e458e48`; `benchmarks/verify_measurement.py` `db803fa1f36e93d3cc857ec805d38cf01fe43f1b8f1c997bddd8c9dea6aacd9e`.
 
-### Publication completion, 2026-09-24
+**T1 measurement mechanics:** Actual radial knots were found by directly bisecting the saved NS33 fixed ray against historical VMEX. The report `results/audit/native_knot_alignment_ns33_exact_roots.json` has maximum root residual `3.55e-15`, maximum knot displacement from uniform reference knots `0.00359461797`, and SHA-256 `b87e3dbba9e844733a3044ec46be0f498a54f0112df2ac09e5b64358b5ab6c6b`. Radial64 interpolation crossing error was `2.77e-6`; radial32 differed from direct roots by `8.81e-6`. Whole-volume Gauss points are not native-knot aligned; future aligned integration must split each native cell and use cell-local Gauss nodes. The bounded `measurement_t0` smoke took 8.215 s warm, peaked at 1071.78 MiB, and retained at most 96 audit samples; it did not resolve the NS33 measurement. Streamed sufficient statistics and immutable completed-grid checkpoints were exercised without rerunning the interrupted 27-minute composite unchanged. Thus T1 repair mechanics are demonstrated, but physical score convergence remains open.
 
-Commit `9df03c235aad3c82033a83bd3bc882cec81fc493` (`Record VMEX measurement certification and handoff`) was created and pushed directly to the existing public repository's `main` branch. GitHub's API reports the author and committer as `rogeriojorge <6816712+rogeriojorge@users.noreply.github.com>`. `git ls-remote` confirms the remote main tip is that commit; the published revision-2 handoff file was also verified through GitHub's contents API. All 84 staged repository files, including figures, measurement arrays/reports, the interrupted-run receipt, tests, source pins, README, plan and sanitized handoff documents, are in the commit. No pull request was created because the inspected publish helper pushes directly to `main`.
+**T2 zero-strength and reusable residual:** At historical VMEX, the same projected NS129 input/seed converged in 50 iterations for TCON0=0 versus 420 at TCON0=1. On the matched 96-point grid, zero-strength B/J/gradp/force ratios were `1.0795e-6 / 1.8027e-5 / 3.0036e-6 / 1.9413e-4`, versus `1.2991e-4 / 2.9206e-3 / 9.7036e-3 / 1.7449e-2`. Both are diagnostic legacy-grid scores only: scorer resolution, independently certified root, and representation gates are not satisfied. Do not change the default on this evidence. The zero run's `forward.json` SHA-256 is `ff81f475982fb78d875fca3bc789c3bfea5aa8d5e70e33f2cd069851f6f67134`. Reused preconditioned single-grid residual value/JVP/VJP were exactly history independent in the saved check: `results/audit/residual_history_ns33_20260924.json`, SHA-256 `cfa6708746909832331be9872a84b1bb61dae44cbeaf6f9f50d0044c8bef5b9c`; elapsed 10.053 s, peak RSS 1102.25 MiB. Raw and multigrid formulations are still untested. The first nested-JIT setup attempt failed because runtime compiler options cannot be set from a nested trace; runtime was then materialized before tracing, and both the failure and corrected method are retained in the run record. Physical force identity defect maximum was `3.8614e-10 N/m^3`; weighted RMS contributions were dJ×B `68.776`, J×dB `3.316`, dJ×dB `9.78e-5`, and pressure-gradient variation `1.0656 N/m^3`. This localizes the dominant term in that state; it is not a root certificate.
 
-GitHub accepted the push and emitted its large-file recommendation for `results/audit/measurement_gpu/ns33-projected-default-gpu-radial64-v1/finest_samples.npz` (55.16 MB, above the recommended 50 MB); the artifact is below the hard per-file limit and is included with its report/hash evidence. No LFS migration was performed. The machine-specific runtime note remains local and was not in the publish allowlist. The interruption receipt and copied input/state files are public with the rest of the handoff.
+**T3 axisymmetric tangent discriminator:** Added `benchmarks/axisymmetric_root_response.py` to transfer central signed input tangents in declared block scales into the historical VMEX residual response, evaluate fixed-Cartesian field/beta/iota, test the transpose pairing, and compare frozen-path FD separately from independently reconverged branch FD. At NS65 the anchored root residual was `5.70e-14`, anchor shift exactly zero, both tangent solves reported converged with residuals `6.54e-14` and `3.67e-12`, and JVP/VJP relative pairing errors were `4.45e-11` and `8.18e-12`. Nonzero `c` field derivative relative error against the exact field was `8.11e-5`; beta derivative absolute error was `1.73e-8`. The null `delta` exact B derivative is zero; its residual JVP has fixed-scale magnitude `6.194e-3`. Crucially, on the frozen linear path its centered FD difference from the JVP falls from `0.1387` at step `1e-3` to `1.268e-6` at `3e-6`, indicating the field/JVP path is consistent as the step shrinks. The independently reconverged branch FD remains separated from that JVP by `5.92e-3` at step `1e-4` (values `6.14e-3` and `6.03e-3` at `1e-3` and `3e-4`). This is an unresolved branch-vs-linear-response result; the derivative is not accepted. NS65 run report SHA-256 `4151a9a9c8ff25ad6d349f457eeeebc4d260a8f294a849bbddb64b49a2c7150a`; arrays SHA-256 `3fa34a565c46402336870a4b6e78dd63d75b8ed0a7c6963fabba9f41fedf2f5c`; run elapsed 92.80 s, peak RSS 4479.59 MiB, on CPU. `benchmarks/axisymmetric_root_response.py` SHA-256 `2b4b99535f3c518f46e96b8b18ae9b5a72c4881f332263bee2d3b0f6e16dae68`. Several independent NS17/33/65 records remain preserved. Branch finite differences through `1e-4` have not established asymptotic convergence for `delta`, and a dense smallest-rung linear solve is still required by T3's exit gate.
 
-**Exact next action:** Resume R1 from this public state by running a complete knot-aligned NS33 comparison under a fresh unique run ID. The interrupted `ns33-projected-default-gpu-composite-v1` ID remains reserved; its stdout rows are provisional. Follow the current phase table and retain the R1 measurement gate before starting the missing NS129 projected `TCON0=0` run.
+**Artifacts/code/tests inspected:** Axisymmetric reports and arrays listed above; earlier response rungs under `results/vmex/response_runs/`; corresponding run receipts and perturbed decks; test suite and schema consumer; native-knot roots and measurements; source pins. No README axis-response figure exists yet; any figure must be generated from these saved records and visually inspected before inclusion.
+
+**T4 launch:** The generated sheared-A current-prescribed deck is in `inputs/input.sheared_A_current`; its manifest records boundary maximum fit error `5.11801940894e-7 m` and pressure/iota/current profile fit errors between `9.49e-12` and `6.38e-11`, so it passes the existing representation gate. Analytic global chart validation and implicit physical-angle derivative checks each report six passing samples in `results/reference/sheared_chart.json` and `results/reference/sheared_derivative.json`; these are analytic-reference checks, not VMEX recovery. A bounded historical NS17, `FTOL=1e-10`, current-prescribed sheared-A solve was launched as run `sheared-a-ns17-historical-current-20260924` using the deck's default TCON0 and 10,000-iteration cap. Its outcome and native score are not known at this log entry; inspect its immutable forward report when the process exits.
+
+**Exact next action:** Inspect the completed bounded sheared-A report and saved sample arrays for convergence/geometry/native physical scores. Then diagnose the NS65 `delta` reconverged-branch discrepancy (including finer centered branch steps and a state/field consistency check) without relabeling the residual-level tangent as accepted. In the same work block generate a saved-data axisymmetric response figure only if it makes the unresolved distinction clear; visually inspect it, update README/manifest if appropriate, then refresh this task table/logbook. Before commit/push, rerun the relevant tests, remove trailing whitespace, inspect all staged paths for private machine details, confirm authenticated account identity, and review the exact outgoing diff.
+
+
+### Continuation work block, 2026-09-24: sheared-A bounded recovery and response figure
+
+**T4 sheared-A result:** The first historical cold NS17 `NCURR=1` run at effective `FTOL=1e-10`, default `TCON0=1`, and NITER=10,000 ended with `MORE ITERATIONS REQUIRED`; receipt status is `solver_failed`, elapsed solve time 24.635 s, and peak RSS 670.03 MiB. Its forward report SHA-256 is `9817231581454e3531b86f2c7174d5836b489ebf7f2f559e378d4dbc9eedd6aa`. A second run used the same source `b5f5267efc0795c4a49a224e321e9b370975c14c`, input hash `def5ce4ef00329b7c7c7c69c1c60821d2e6d1c8d7db5c3694c8ed17d6de78897`, stage controls and default constraint, with `--keep-terminal` to save and physically score the capped result. It ran 10,000 iterations, returned `solver_converged=false`, `IER=2`, `FSQR/FSQZ/FSQL = 3.5353e-7 / 3.5571e-7 / 3.9462e-7`, 24.804 s solve, 32.005 s scoring, and peak RSS 2681.56 MiB on CPU. Across 96 native samples the diagnostic scores were `E_B=6.8862e-3`, `E_J=4.6726e-2`, `E_gradp=8.5662e-2`, force-over-pressure scale `1.7379e-1`; maximum native-vs-reference flux-label difference was `5.7767e-2`, RMS `2.7146e-2`. No pointwise threshold passed; scorer resolution and root certification are false, so this is not a recovered equilibrium. The solver showed recurrent residual/step oscillations after the starting-axis Jacobian sign changed. The captured full console log hash is `794cd5b69dff11bd2d39cce07eaa1f335721e0f47159763f96c6c938d3e16910`. Terminal `forward.json` SHA-256 `74bcd258bc1f0cacb5f3fccfcd84ee638223781c75d1796f21c6b01d8e00b061`; WOUT SHA-256 `423746f6a85c62a746b6d2fadfda9f152086cf16b6187f5456fe7df699078502`; score SHA-256 `657b3a53b82b4779a56cb73ad3ba8c82180cf870c9c3e819da781fdbcd964765`. No continuation seed/projection was created yet. The fit/chart checks establish admissible input coordinates but do not guarantee solver attraction or physical recovery. Keep the first failed receipt and terminal-scored run separate.
+
+**T3 response figure:** Added `benchmarks/plot_axisymmetric_response.py`, which reads the saved NS65 response report only. The resulting `figures/vmex_axisymmetric_response_consistency.png` was inspected visually. Its two panels show frozen-path FD/JVP consistency improving as the finite-difference step shrinks, while the reconverged `delta` branch mismatch stays near `6e-3`; the plot does not imply derivative acceptance. Figure SHA-256 `fe6e9261f95813bd270dbde6904f282f65a6c93f1e28db41d2826bc995bb3df2`; manifest `results/vmex/axisymmetric_response_figure_manifest.json` binds its script and source report hashes. README now presents this result with its explicit unresolved status.
+
+**Branch/source/publication state:** Still local on `t0-t1-d5484d1`; no commit/push/PR for this continuation and no upstream changes. VMEX source checkout was clean at the historical pin. No global TCON0 default was changed.
+
+**Exact next action:** At NS17, construct an independent dense solve on the same projected active DOF subspace used by `implicit_state_tangent_multi_rhs` and certify its two input-response vectors against the Krylov result. In parallel with that smaller matrix test, inspect sheared-A chart-to-VMEX angle mapping and produce a saved exact-state projection/seed with a residual and native field score before another recovery solve. For the NS65 null-direction mismatch, project the branch-state FD minus tangent onto mode blocks (especially the axisymmetric m=1 geometry/lambda combination) and only then choose a gauge-aligned comparison; do not label it a gauge effect without that check. After these actions, update the task table and append their records before broadening resolutions.
+
+
+### Continuation work block, 2026-09-24: independent dense response certification
+
+**Question/task:** Is the NS17 residual-level tangent solve independently reproducible without the block-factor/Krylov solver? This is a linear-solve certificate only; it does not resolve the NS65 reconverged-root disagreement.
+
+**Method and pin:** At the same integer-axisymmetric `NCURR=1`, historical source pin `b5f5267efc0795c4a49a224e321e9b370975c14c`, constructed the explicit Jacobian of the preconditioned residual on the active projected DOF subspace and solved both `c` and `delta` RHS with NumPy's dense solver. The matrix uses 568 active unknowns, formed by chunked (8-column) forward-mode products. Both input tangents use the same centered `3e-4` input-map step as the NS17 response record. Run command: `PYTHONPATH=benchmarks:<historical VMEX checkout> python3 benchmarks/certify_dense_axisymmetric_response.py`; script SHA-256 `7795d8a87171743357e0b17f6d120e76c75bfd2a542cb770b749cf9c0e56bbd0`.
+
+**Result:** The base fixed-point residual was `5.96e-15` and anchor shift zero. Dense matrix singular-value range was `3.6826e-5` to `140.8166`, 2-norm condition estimate `3.824e6`. Dense linear residuals were `4.08e-16` (`c`) and `4.32e-15` (`delta`); reconstructed full-state tangents matched the residual block/Krylov tangents at relative L2 `4.84e-12` and `6.09e-12`. The response solver reported residuals `7.11e-15` and `4.46e-13`, each below its recorded tolerance. This passes the requested smallest-rung independent linear solve check, while leaving the separate reconverged-branch mismatch and NS65 dense check open. Report `results/audit/dense_axisymmetric_response/dense-axisym-response-20260924T234912.082849Z/dense_response.json` SHA-256 `e517857c8f61367e7bc1d8b866ddd2f6ebd53ba66bdb5cccd6b73eea23c0e40a`; matrix/RHS/solution arrays SHA-256 `8b8931bdf3845a2275178c6619b36b8bb387cef0a18092dc95aad149e602a788`. It took 58.48 s and peaked at 3127.28 MiB RSS on CPU. An initial identical matrix run and its report/arrays are retained under a separate timestamped directory; the final report additionally records script/runtime hashes and settings.
+
+**Branch state decomposition:** Existing NS65 report `axisym-root-response-20260924T232219.753772Z` was inspected without additional solves. For the `delta` branch at step `1e-4`, state-FD minus tangent L2 was `6.72e-4` in `R_cos`, `6.70e-4` in `Z_sin`, and `3.39e-3` in `L_sin`. In each field the largest discrepancy is the axisymmetric m=1 coefficient: `6.60e-4`, `6.70e-4`, and `3.38e-3`, respectively. This localizes the state difference to an m=1 geometry/lambda combination but does not prove it is a removable gauge. The physical branch-FD/JVP discrepancy remains `5.92e-3` in the fixed B scale. A follow-up must check physical field reconstruction validity and derive/validate any gauge alignment before attributing the difference.
+
+**Artifacts/code/tests:** Final dense script `benchmarks/certify_dense_axisymmetric_response.py`, report and NPZ above; previous run artifacts remain immutable. This run did not execute the general test suite. Script is deterministic for this source/configuration, writes a unique run directory, records the solver/source and artifact hashes, and writes the explicit matrix for independent review.
+
+**Branch/PR state:** Local branch `t0-t1-d5484d1`, no continuation commit or push yet; no PRs or upstream changes.
+
+**Exact next action:** Construct a clearly labeled sheared-A `lambda=0` geometry-projection seed on NS17 from the exact surfaces sampled at normalized toroidal-flux nodes. Before solving from it, record its input-edge mismatch, positive-volume/native-inversion checks, VMEX force residuals, and 96-point projected physical score. Use the score to decide whether it is a defensible continuation seed. Separately audit the saved NS65 branch state through the physical-coordinate inversion at 8/12/24 Newton steps and record validity; do not infer a gauge from the m=1 concentration alone.
+
+
+### Continuation work block, 2026-09-24: sheared-A exact-geometry projection
+
+**Question/task:** Can the NS17 sheared-A case start from the exact sampled boundary/interior geometry with its fitted current/pressure profiles? This projection deliberately uses `lambda=0`; it tests the geometry and label path only and is not presumed to encode the exact straight-field coordinate map.
+
+**Method/pin:** Added `benchmarks/project_sheared_vmex.py` at historical VMEX `b5f5267efc0795c4a49a224e321e9b370975c14c`. It samples `surface(case, label_at_s(s), theta, phi)` on the actual VMEX full radial grid and a `64x64` angular mesh, Fourier projects R/Z, applies VMEX's native m=1 transform, leaves lambda zero, evaluates VMEX's force residual, and runs the standard native Cartesian scorer. The report preserves the seed and point/observation arrays. Command: `PYTHONPATH=benchmarks:<historical VMEX checkout> python3 benchmarks/project_sheared_vmex.py`; script SHA-256 `e6dadb28b0ca95dcad8c5b10cbe591da2a0cd8e458723908a5a09f795e97cacf`.
+
+**Projection result:** NS17, MPOL=13, NTOR=12, NFP=2. The projected R/Z edge agrees with the processed deck boundary to max coefficient errors of `5.13e-17 m` or less; largest field block coefficient L2 mismatch is `1.22e-16 m`. All 96 held-out native field inversions were finite and reference volume weights positive. Native/reference normalized flux-label max/RMS differences were `2.679e-5 / 9.258e-6`. Yet with lambda zero, field/current relative errors are `1.3406e-1 / 2.6528e-1`, gradp relative error `3.5814e-4`, and force RMS divided by the pressure-gradient scale `1.2092`; preconditioned invariant residuals are `FSQR/FSQZ/FSQL = 0.22894 / 0.11049 / 0.02972`. The projection is therefore a strong geometry/label starting representation but a poor field-equilibrium state. It does not qualify as an accepted recovery or an exact full-state projection. Report `results/projection/sheared_A/sheared-A-projection-20260924T235541.410475Z/projection.json` SHA-256 `16be101e15eff97977b56c2304c5459a6fb91dc7d47a68e46061a5d065ea837d`; seed SHA-256 is recorded in that report. The complete run took 48.334 s and peaked at 2424.42 MiB RSS on CPU.
+
+**Current branch/run state:** Continuation branch remains local and unpushed. A bounded NS17, `FTOL=1e-10`, `NITER=10000`, default `TCON0`, historical-source solve from this saved seed has been launched with terminal-state preservation enabled as `sheared-a-ns17-projected-terminal-20260924`. Its outcome is not known at this log entry; inspect the forward report and console log after exit. The cold solve and lambda-zero projection remain separate evidence records.
+
+**Exact next action:** Inspect the projected-seed solve outcome and native score. Compare it with the cold-start terminal diagnostic without treating the different initial states as evidence of the same branch. If it caps, use its best terminal state as a continuation candidate only after recording geometry, residual, flux label, and native scores; do not raise NITER blindly. Then run the saved NS65 field-coordinate inversion audit at 8, 12 and 24 Newton iterations.
+
+
+### Continuation work block, 2026-09-24: projected-seed sheared-A recovery
+
+**Run:** Historical VMEX `b5f5267efc0795c4a49a224e321e9b370975c14c`, same sheared-A `NCURR=1` input hash `def5ce4ef00329b7c7c7c69c1c60821d2e6d1c8d7db5c3694c8ed17d6de78897`, NS17, FTOL `1e-10`, 10,000 iteration cap, default `TCON0=1`, using the saved lambda-zero geometry projection seed SHA-256 `da31b4218a55654d702434da1329febfc04dd2587c10a2ab42270348acb07413`. Full command: `PYTHONPATH=benchmarks:<historical VMEX checkout> BENCH_FTOL=1e-10 BENCH_RUN_ID=sheared-a-ns17-projected-terminal-20260924 python3 benchmarks/run_vmex.py inputs/input.sheared_A_current 17 10000 results/projection/sheared_A/sheared-A-projection-20260924T235541.410475Z/seed_ns17.npz --keep-terminal`.
+
+**Result:** Capped at 10,000 iterations with `solver_converged=false`, `IER=2`, `FSQR/FSQZ/FSQL = 2.3044e-6 / 2.3292e-6 / 2.5086e-6`. Solve took 24.900 s, native scoring 32.543 s, peak RSS 2644.91 MiB on CPU. The 96-point terminal scores were `E_B=1.6902e-2`, `E_J=7.1452e-2`, `E_gradp=2.2697e-1`, force-over-pressure scale `1.7339e-1`, and max/RMS native-vs-reference flux-label difference `1.7484e-1 / 6.8342e-2`. Compared with the cold terminal state, the exact-geometry-start terminal state is worse in B, J, gradp, and flux label, with comparable force ratio. The cold terminal score was `6.8862e-3 / 4.6726e-2 / 8.5662e-2 / 1.7379e-1` and max label error `5.7767e-2`. The exact projection itself had near-machine-precision edge agreement and small label error, confirming that the solver moved away from the accurate geometry/label representation under the tested relaxation. Neither solve converged or passed a physical threshold; neither is accepted. Report `forward.json` SHA-256 `651c7ac96ee80cc044e55fd0b8984ad3b92a81362a594b4a278135554d52fc69`; solver console log SHA-256 `1950962e90d71ba241fee2bb688b35a415111a9be551cd7e932310a18d6b6810`; WOUT SHA-256 `38b8e6c0b7cc6b902aa61b60d746e1f497dacff3ab55f15bd7199cba58ddab13`; native score JSON SHA-256 `fefbfc57a0b3305844f481bb8a89b00be03707627211dd8addafb7763ac929f7`.
+
+**Interpretation:** A lambda-zero projection is insufficient to represent the sheared physical field and is not a useful replacement for the VMEX cold start under this solver. The failed projected solve plus cold solve argues for constructing/validating the straight-field lambda map or a controlled continuation path before another attempt. It does not prove a global solver basin limitation. Preserve both diagnostics separately.
+
+**Branch/PR state:** Still local on `t0-t1-d5484d1`; no commits, push, PR or upstream write yet. No global constraint default changed.
+
+**Exact next action:** Extend the NS65 centered reconverged branch FD through steps `3e-5` and `1e-5`, saving each perturbed state and root residual. Compare branch-state FD minus tangent by active m-mode blocks; keep coordinate inversion ruled out as the field-evaluation cause. Then derive the sheared-A VMEX lambda map from the exact field-line flow, validate straightness and edge consistency, and only launch a new recovery if its saved projection score and force residual improve. Update README with a matched sheared-A diagnostic figure from saved reports, clearly labeling all rows as capped/projection evidence.
+
+
+### Continuation work block, 2026-09-24: NS65 branch field-inversion audit
+
+**Question/task:** Does the `delta` reconverged-branch/JVP gap come from insufficient Newton convergence when VMEX field spectra are evaluated at fixed Cartesian points?
+
+**Failure preserved:** The first audit version called `runtime_from_params` inside a JIT trace and hit JAX's restriction on nested compiler options. The attempt is recorded at `results/audit/axisym_branch_inversion/axisym-branch-inversion-20260925T000042.117212Z/failure.json`, SHA-256 `19d354e4c3608163e8e165dc10438c0c761d0b6ef4c634c0b0577a57e9d5e307`. The corrected evaluator materializes each parameter runtime before tracing and passes it into the jitted inversion/field path; the failed numerical report was not reused.
+
+**Corrected audit/pin:** Reused the saved NS65 base and perturbed branch states from report `axisym-root-response-20260924T232219.753772Z`, source pin `b5f5267efc0795c4a49a224e321e9b370975c14c`, four fixed Cartesian points, and centered steps `1e-3`, `3e-4`, `1e-4`. Compared 8, 12, and 24 Newton iteration caps. Command: `PYTHONPATH=benchmarks:<historical VMEX checkout> python3 benchmarks/audit_axisymmetric_branch_inversion.py`; script SHA-256 `8061994754c1c918c8b058ee24fd575ca297d56adedbc142a09bd0d2bc2bd107`.
+
+**Result:** Base and every plus/minus perturbed branch state had all 4/4 points valid at all three iteration settings. The centered branch B finite differences were identical for 8/12/24 iterations (L2/fixed-scale `8.1675e-4`, `8.2600e-4`, `9.0324e-4` at the three steps); their difference from the saved JVP remained `6.1424e-3`, `6.0337e-3`, `5.9151e-3`. Increasing inversion iterations from 8 to 24 changed each branch FD by exactly zero in the recorded float64 arrays. The field-inversion tolerance is therefore not responsible for the observed mismatch at these points. This does not explain the underlying reconverged-branch response and does not certify either derivative. Report `results/audit/axisym_branch_inversion/axisym-branch-inversion-20260925T000119.473037Z/inversion_audit.json` SHA-256 `fed4fce7f7040cdd9cd65d277f526c2726b6e28f3713ca7c449b173fef383213`; saved audit arrays SHA-256 `5b9209aa0ff462e1322059eaa96f707c515ac07c728539a0fd7cf67c9300d2e1`. Elapsed 5.33 s, peak RSS 903.06 MiB CPU. The max (24 vs 12 iteration) field FD difference is exactly `0.0` at each tested step.
+
+**Branch/PR state:** Local continuation branch only; no commits or remote writes; no upstream changes.
+
+**Exact next action:** Run only the missing finer `delta` branch points at NS65 (`h=3e-5` and `1e-5`) from independent cold starts, reuse the saved base state/points, and record root residual plus state-field FD. If the finite difference remains distinct from the certified residual tangent, inspect the constrained m=1 active block and the family of discrete equilibria; do not remove or weaken TCON0 based on this result. Then resume the sheared-A straight-field lambda construction.
+
+
+### Continuation work block, 2026-09-24: finer NS65 null-direction branch finite differences
+
+**Question/task:** Does the `delta` independently reconverged field response move toward the residual tangent as the centered step shrinks below `1e-4`?
+
+**Method/pin:** Historical VMEX `b5f5267efc0795c4a49a224e321e9b370975c14c`; same generated exact-family input map and base NS65 root/state/points as the response report. Independently cold solved plus/minus roots at `h=3e-5` and `h=1e-5`, anchored and field-evaluated at the same four fixed Cartesian points. Both variant decks, state arrays, root residuals and script hash are saved. Command: `PYTHONPATH=benchmarks:<historical VMEX checkout> python3 benchmarks/probe_axisymmetric_branch_fine_steps.py`; script SHA-256 `b33691521a4dc4ac845907ec88da2f9544c7f09fa7720a1fc72d2e9cb5c26fc4`.
+
+**Result:** All four branch roots had residuals between `5.84e-14` and `8.06e-14`, with solver iterations 474 on every perturbation and zero anchor shift. All four fixed points remained valid. At `h=3e-5` the branch B FD L2/fixed scale is `9.7701e-4` and its difference from the residual JVP is `5.9163e-3`; at `h=1e-5` these are `9.8674e-4` and `5.9172e-3`. The branch FD changed from the previous `h=1e-4` value by only `1.93e-4` and `2.13e-4`, respectively, while the much larger branch/JVP gap persisted. Thus the tested smaller centered steps do not remove the mismatch; they do not prove the limiting derivative exists. State-FD minus residual-tangent L2 at `h=1e-5` is `7.52e-4` in `R_cos`, `7.52e-4` in `Z_sin`, and `3.385e-3` in `L_sin`; the largest component of each is m=1 (`7.42e-4`, `7.52e-4`, `3.383e-3`). This remains a mode-localized observation, not proof that m=1 can be removed as gauge. At `h=1e-5` the saved plus/minus inputs are `input_delta_ns65_h1e-05_plus.indata` SHA-256 `ae22f8748d0436eeb40a522da01393195c4eb23d49e47414a8a4924e7a9aea58` and minus SHA-256 `104574b5c7c757a9da9e527e46c491b3b69add53b798eb2ebe23c0a29d962e8b`; the `h=3e-5` inputs are hashed in the report. Fine-step report `results/audit/axisym_branch_fine_steps/axisym-branch-fine-20260925T000429.848273Z/fine_branch_probe.json` SHA-256 `635b2929aa495b40f2b42a1297fffe67f400b47086d773609b26ed5837175080`; full state/field arrays SHA-256 `93213116c568576c59764097d2ce5ebe6dc095f30b4b9b04ead944190d115e1e`. Total elapsed 20.81 s, peak RSS 1451.86 MiB CPU. A first identical fine-step run without saved input decks remains separately archived and was superseded only for reproducibility completeness, not numerical data.
+
+**Assessment:** Together with the field-inversion audit (all valid and bitwise stable at 8/12/24 iterations), this narrows the disagreement to the discrete equilibrium branch/state response, not a field coordinate Newton cap. The residual-level tangent itself is independently dense-certified at NS17, but its physical null-direction prediction remains not validated against the NS65 re-solved branch. Do not change TCON0 or report an accepted derivative.
+
+**Branch/PR state:** Local only; no continuation commit/push or PR, no upstream changes.
+
+**Exact next action:** Implement a small saved-data analysis that identifies the constrained/active m=1 eigen-combination between each branch-state FD and residual tangent, verifies whether applying the corresponding transformation preserves physical B to tolerance, and records both before/after field differences. In parallel, derive the sheared-A lambda coordinate from the exact field-line flow and compare projected field/current before any more recovery solves. The README should get the sheared-A matched diagnostic figure from its three saved states, all labeled as projections/capped outputs.
+
+
+### Continuation work block, 2026-09-24: smaller-step NS65 branch response
+
+**Question/task:** Does the null-direction field branch derivative approach the residual-level tangent at smaller steps once inversion accuracy is already ruled out?
+
+**Runs/pin:** Historical VMEX source `b5f5267efc0795c4a49a224e321e9b370975c14c`; NS65; same base state, four Cartesian points, and fixed-current exact input family as the saved response report. Four independent cold root solves cover plus/minus at `h=3e-5` and `1e-5`. All perturbed inputs are saved with hashes. Command: `PYTHONPATH=benchmarks:<historical VMEX checkout> python3 benchmarks/probe_axisymmetric_branch_fine_steps.py`; code SHA-256 `b33691521a4dc4ac845907ec88da2f9544c7f09fa7720a1fc72d2e9cb5c26fc4`.
+
+**Measurements:** Branch B-FD L2 over the fixed `1 T/m` scale is `9.77009e-4` at `3e-5` and `9.86737e-4` at `1e-5`; B-FD minus residual-JVP is `5.91633e-3` and `5.91722e-3`. Relative to `h=1e-4`, branch FD changes `1.927e-4` and `2.134e-4`. All plus/minus anchored residuals lie between `5.84e-14` and `8.06e-14`, with 474 solver iterations each, zero anchor shift, and all four points valid. At `h=1e-5`, state-FD minus tangent L2 is `7.525e-4` in Rcos, `7.519e-4` in Zsin and `3.385e-3` in Lsin; m=1 accounts for `7.415e-4`, `7.518e-4` and `3.383e-3`. These small-step independent roots reproduce the mismatch; they do not establish a derivative limit or prove a gauge interpretation. Fine-step report `results/audit/axisym_branch_fine_steps/axisym-branch-fine-20260925T000429.848273Z/fine_branch_probe.json` SHA-256 `635b2929aa495b40f2b42a1297fffe67f400b47086d773609b26ed5837175080`; state/field arrays SHA-256 `93213116c568576c59764097d2ce5ebe6dc095f30b4b9b04ead944190d115e1e`. The run took 20.81 s and peaked at 1451.86 MiB RSS on CPU.
+
+At `h=1e-5`, plus/minus deck SHA-256 values are `ae22f8748d0436eeb40a522da01393195c4eb23d49e47414a8a4924e7a9aea58` and `104574b5c7c757a9da9e527e46c491b3b69add53b798eb2ebe23c0a29d962e8b`; all four deck hashes are in the report. The first run with identical numerical results but without saved decks is preserved separately; the final run adds input artifacts and hashes.
+
+**Assessment:** The remaining disagreement is stable under tighter coordinate inversion and smaller centered parameter steps. Root anchoring is not the cause at the measured tolerances. The mismatch is now sufficiently discriminating to separate the field map's derivative along the actual branch-state finite difference from the response obtained by differentiating the equilibrium residual.
+
+**Exact next action:** At h=1e-5, compute `jax.jvp` of the physical field reconstruction using the measured branch state FD as its state tangent and the same signed input tangent. Compare this to the actual branch B-FD, then separately report the contributions from Rcos, Zsin, Lsin and direct input/profile terms. This determines whether the coordinate response difference explains the physical gap before attempting any mode alignment. Keep the branch derivative uncertified. In the same handoff block, generate the matched sheared-A projection/cold/capped-seed figure from the three saved reports and update README/manifest.
+
+
+### Continuation work block, 2026-09-25: axisymmetric branch field-map discriminator and sheared-A figure
+
+**Question/task:** Does the NS65 discrepancy between the null-direction residual-level tangent and independently reconverged branch B-FD come from the physical-field reconstruction, or from the root/state response? In parallel, make the three sheared-A projection/capped-state results reviewable on one verified sample grid.
+
+**Axisymmetric method/pin:** At historical VMEX `b5f5267efc0795c4a49a224e321e9b370975c14`, applied `jax.jvp` to the physical Cartesian field reconstruction at the saved NS65 base state using the centered branch-state difference at `h=1e-5` plus the same centered signed input/profile tangent. Decomposed the response into `R_cos`, `Z_sin`, `L_sin` and direct input/profile contributions. The two independently saved branch roots had anchored residuals at most `8.0628e-14`; component-sum closure was `9.63e-13` in the fixed field scale. Command: `PYTHONPATH=benchmarks:<historical VMEX checkout> python3 benchmarks/decompose_axisymmetric_branch_jvp.py`; final script SHA-256 `8d285ee058982d0162544249d9dfacc35919ef45fcc636e13f35642259c8ac42`.
+
+**Axisymmetric result:** The measured branch B-FD norm was `9.86737e-4` in the fixed `1 T/m` scale; field-reconstruction JVP using the measured branch state FD was `9.88037e-4`, differing from branch B-FD by `6.88258e-6` (relative `6.9751e-3`). The residual-level JVP norm was `6.19395e-3`; its direct difference from branch B-FD is `5.91722e-3`. Thus the field map reproduces the observed physical response along the measured state direction to about 0.70%; the unresolved discrepancy is in the equilibrium-root/state response, not the local field reconstruction. Direct input/profile and geometry-block terms are individually large and cancel: their fixed-scale norms are `130.724` (`direct`), `70.003` (`R_cos`), `63.056` (`Z_sin`) and `0.576` (`L_sin`). This is diagnostic only; it neither identifies the cause within the root response nor certifies a derivative. Report `results/audit/axisym_branch_jvp_decomposition/axisym-branch-jvp-20260925T001031.029246Z/branch_jvp_decomposition.json` SHA-256 `5c3b03be949df4afb67d9024c025a4ac4ea50001528d0e1f970c8175dd3bb64c`; component arrays SHA-256 `df6450082fe85be179b1def90cf804f461469babe625ad59c879d315347257f5`. The run took 4.00 s and peaked at 732.50 MiB RSS on CPU.
+
+The first invocation completed the numerical work and wrote its report/arrays but exited nonzero in a post-write print expression that attempted a boolean check on a NumPy array. That immutable initial record remains under `axisym-branch-jvp-20260925T000812.228804Z`; report SHA-256 `ab904fbe69a5f1ed00ab2a7024ab7f85f77d1fb55a0f334c5ef4bf0b9dca7c14`, arrays SHA-256 `df6450082fe85be179b1def90cf804f461469babe625ad59c879d315347257f5`. The reporting expression was fixed and the full analysis rerun successfully at the final run ID above. The failure did not change numerical inputs or require repeating the root experiment.
+
+**Sheared-A figure:** Added `benchmarks/plot_sheared_recovery_diagnostic.py`, which verifies the historical source pin, identical processed-input hash, NS17 and 10,000-iteration caps, 96-sample score type, and byte-identical point-cloud hashes before plotting the exact R/Z, lambda-zero projection and the cold/projected terminal states. The figure `figures/vmex_sheared_a_ns17_diagnostic.png` was visually inspected. It shows B/J/grad-p/force-over-pressure and maximum flux-label errors on log scales, with the separate lambda-zero projection and capped terminal states explicitly labeled. Figure SHA-256 `5f3864af5f33230a4e50d4c38af6b321578568a80bcd55f1ccb435f0132e7d6e`; manifest `results/vmex/sheared_a_ns17_figure_manifest.json` binds its script and all source report/grid hashes. README links the figure and preserves the non-recovery interpretation.
+
+**Failure/attempt notes:** The first figure rendering exposed an invalid escaped MathText command in the pressure-gradient panel title; the label was corrected and the figure regenerated from the same immutable source reports. No solver rerun was needed.
+
+**Validation after edits:** `python3 -m pytest -q` passed all 55 tests in 16.44 s on Python 3.11.14 (VMEX was discoverable in this environment); `python3 benchmarks/verify_reference.py` passed all 14 reference cases; `python3 -m compileall -q benchmarks tests` and `git diff --check` passed. The earlier clean Python 3.12 environment with VMEX absent also passed all 55 tests for this block's T0 implementation. All nine files in the supplied review handoff pass its package `SHA256SUMS`. The inherited root `HANDOFF_SHA256SUMS` was refreshed for its 62 covered files and all current hashes now validate.
+
+The final staged review contains 219 paths, with no file larger than 1.76 MiB. The staged-content scan found no home-directory paths, local checkout/environment names or host aliases. `git diff --cached --check` is clean for all new work except ten intentional Markdown hard-break spaces in the supplied handoff and byte-for-byte archived plan; the exact source package checksums pass, so those documents are preserved unchanged. Local Git author and committer resolve to `rogeriojorge <6816712+rogeriojorge@users.noreply.github.com>`, and GitHub API authentication resolves to login `rogeriojorge`. `tools/publish.sh` is not used because its publication path pushes directly to `main`; the reviewed branch will be pushed only to `t0-t1-d5484d1`.
+
+**Branch/PR state:** Local continuation branch `t0-t1-d5484d1`; no continuation commit/push or PR yet; no upstream PR or merge.
+
+**Exact next action:** Use the saved branch-state/tangent arrays to characterize the active m=1 response difference, and test any candidate alignment by re-evaluating physical B before calling it gauge. In parallel, derive the sheared-A straight-field lambda map from exact field-line flow, verify straightness and edge consistency, and require improved saved projection/force scores before launching another recovery. Then rerun the VMEX-absent core suite, inspect the exact staged diff and privacy scan, and commit/push the sanitized continuation branch.

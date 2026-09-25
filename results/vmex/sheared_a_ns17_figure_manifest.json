@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "evidence": "matched_saved_sheared_a_projection_and_terminal_scores",
+  "status": "diagnostic_no_recovery",
+  "source_reports": [
+    "results/projection/sheared_A/sheared-A-projection-20260924T235541.410475Z/projection.json",
+    "results/vmex/runs/sheared-a-ns17-historical-current-terminal-20260924/forward.json",
+    "results/vmex/runs/sheared-a-ns17-projected-terminal-20260924/forward.json"
+  ],
+  "source_report_sha256": [
+    "16be101e15eff97977b56c2304c5459a6fb91dc7d47a68e46061a5d065ea837d",
+    "74bcd258bc1f0cacb5f3fccfcd84ee638223781c75d1796f21c6b01d8e00b061",
+    "651c7ac96ee80cc044e55fd0b8984ad3b92a81362a594b4a278135554d52fc69"
+  ],
+  "sample_grids": [
+    "results/projection/sheared_A/sheared-A-projection-20260924T235541.410475Z/reference_samples.npz",
+    "results/vmex/runs/sheared-a-ns17-historical-current-terminal-20260924/point_cloud.npz",
+    "results/vmex/runs/sheared-a-ns17-projected-terminal-20260924/point_cloud.npz"
+  ],
+  "sample_grid_sha256": [
+    "45ee4217c6c01efd41cd211d12059bf76dbf86830567956806164b83085af5c2",
+    "45ee4217c6c01efd41cd211d12059bf76dbf86830567956806164b83085af5c2",
+    "45ee4217c6c01efd41cd211d12059bf76dbf86830567956806164b83085af5c2"
+  ],
+  "plot_script": "benchmarks/plot_sheared_recovery_diagnostic.py",
+  "plot_script_sha256": "8428003df1caf8238ef0d6a87dfd60ae02d3c85fc13c70f99351d2c7f8144120",
+  "figure": "figures/vmex_sheared_a_ns17_diagnostic.png",
+  "figure_sha256": "5f3864af5f33230a4e50d4c38af6b321578568a80bcd55f1ccb435f0132e7d6e",
+  "vmex_commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+  "ns": 17,
+  "sample_count": 96,
+  "series": [
+    "lambda_zero_projection",
+    "cold_terminal",
+    "projected_terminal"
+  ],
+  "metrics": [
+    "field_relative_l2",
+    "current_relative_l2",
+    "gradp_relative_l2",
+    "force_pressure_scale",
+    "native_flux_label_minus_reference_max_abs"
+  ],
+  "all_solver_roots_certified": false
+}

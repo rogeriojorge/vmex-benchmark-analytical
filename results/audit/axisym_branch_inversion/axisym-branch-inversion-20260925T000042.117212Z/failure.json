@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "status": "failed",
+  "failure_class": "nested_jax_compiler_options",
+  "error_type": "ValueError",
+  "message": "A runtime setup call attempted to attach compiler options inside a traced field-evaluation function. The diagnostic was changed to build each parameter runtime before tracing.",
+  "script": "benchmarks/audit_axisymmetric_branch_inversion.py",
+  "follow_up": "A corrected run uses materialized runtimes as JIT inputs; see the next timestamped audit directory."
+}

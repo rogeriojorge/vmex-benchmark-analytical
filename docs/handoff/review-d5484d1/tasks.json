@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "authoritative_plan": "plan_next.md",
+  "note": "Dependencies are minimum start conditions. Later exits require the measurement/root/response gates specified in the plan; direct-reference branches can proceed earlier.",
+  "tasks": [
+    {
+      "id": "T0",
+      "depends_on": [],
+      "title": "Portable tests and record compatibility",
+      "deliverables": [
+        "clean reference CI",
+        "schema-1/schema-2 regression",
+        "imported-source verification"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T1",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Native-knot and checkpointed measurement",
+      "deliverables": [
+        "displaced-chart test",
+        "streamed cell statistics",
+        "interruption test",
+        "control-state measurements"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T2",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Residual and constraint diagnosis",
+      "deliverables": [
+        "history-independence test",
+        "missing NS129 cell",
+        "physical error decomposition",
+        "constrained response"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T3",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Exact-family equilibrium sensitivities",
+      "deliverables": [
+        "signed scaled input tangent",
+        "axisymmetric nonzero and null responses",
+        "sheared-current null"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T4",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Recovery breadth",
+      "deliverables": [
+        "sheared A",
+        "genuine LASYM field route",
+        "both closures",
+        "native cross-code comparison"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T5",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Exact-field and downstream interfaces",
+      "deliverables": [
+        "exact-flow and tangent tests",
+        "derivative regularity",
+        "scoped diagnostics"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T6",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Exterior/coupled root and bounded polish",
+      "deliverables": [
+        "vacuum operator fixture",
+        "strict coupled root",
+        "optional scoped polish"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T7",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Optimization and goal-oriented refinement",
+      "deliverables": [
+        "direct exact-family/chart pilot",
+        "verified transverse response",
+        "calibrated adjoint defect estimate"
+      ],
+      "status": "planned_after_review"
+    },
+    {
+      "id": "T8",
+      "depends_on": [
+        "T0"
+      ],
+      "title": "Figures, performance and final handoff",
+      "deliverables": [
+        "immutable figure provenance",
+        "cost to accuracy",
+        "updated capability matrix",
+        "current logbook"
+      ],
+      "status": "planned_after_review"
+    }
+  ]
+}

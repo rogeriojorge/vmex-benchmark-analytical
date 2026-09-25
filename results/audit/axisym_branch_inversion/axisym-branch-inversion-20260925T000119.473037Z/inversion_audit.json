@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "evidence": "saved_branch_state_coordinate_inversion_audit",
+  "status": "diagnostic_field_reconstruction_check",
+  "accepted_derivative": false,
+  "source": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.0",
+    "distribution_version": "0.11.0",
+    "version_source": "checkout_pyproject",
+    "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "source_response_report": "results/vmex/response_runs/axisym-root-response-20260924T232219.753772Z/response.json",
+  "source_response_report_sha256": "4151a9a9c8ff25ad6d349f457eeeebc4d260a8f294a849bbddb64b49a2c7150a",
+  "source_response_arrays_sha256": "3fa34a565c46402336870a4b6e78dd63d75b8ed0a7c6963fabba9f41fedf2f5c",
+  "ns": 65,
+  "centered_steps": [
+    0.001,
+    0.0003,
+    0.0001
+  ],
+  "newton_iteration_counts": [
+    8,
+    12,
+    24
+  ],
+  "point_count": 4,
+  "base_valid_points": {
+    "8": 4,
+    "12": 4,
+    "24": 4
+  },
+  "branch_rows": [
+    {
+      "step": 0.001,
+      "newton_iterations": 8,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0008167546490418465,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.006142418911539842
+    },
+    {
+      "step": 0.001,
+      "newton_iterations": 12,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0008167546490418465,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.006142418911539842
+    },
+    {
+      "step": 0.001,
+      "newton_iterations": 24,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0008167546490418465,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.006142418911539842
+    },
+    {
+      "step": 0.0003,
+      "newton_iterations": 8,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0008260031449793066,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.006033662653137187
+    },
+    {
+      "step": 0.0003,
+      "newton_iterations": 12,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0008260031449793066,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.006033662653137187
+    },
+    {
+      "step": 0.0003,
+      "newton_iterations": 24,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0008260031449793066,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.006033662653137187
+    },
+    {
+      "step": 0.0001,
+      "newton_iterations": 8,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0009032444009559457,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.005915082564575564
+    },
+    {
+      "step": 0.0001,
+      "newton_iterations": 12,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0009032444009559457,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.005915082564575564
+    },
+    {
+      "step": 0.0001,
+      "newton_iterations": 24,
+      "valid_plus": 4,
+      "valid_minus": 4,
+      "point_count": 4,
+      "B_branch_fd_l2_over_fixed_scale": 0.0009032444009559457,
+      "B_branch_fd_minus_jvp_over_fixed_scale": 0.005915082564575564
+    }
+  ],
+  "stepwise_fd_reconstruction_changes": {
+    "0.001": {
+      "fd_iter8_vs_iter12_over_fixed_scale": 0.0,
+      "fd_iter24_vs_iter12_over_fixed_scale": 0.0
+    },
+    "0.0003": {
+      "fd_iter8_vs_iter12_over_fixed_scale": 0.0,
+      "fd_iter24_vs_iter12_over_fixed_scale": 0.0
+    },
+    "0.0001": {
+      "fd_iter8_vs_iter12_over_fixed_scale": 0.0,
+      "fd_iter24_vs_iter12_over_fixed_scale": 0.0
+    }
+  },
+  "fixed_scale": "FIELD_T/LENGTH_M = 1 T/m per parameter unit",
+  "saved_arrays": {
+    "path": "inversion_audit_ns65.npz",
+    "sha256": "5b9209aa0ff462e1322059eaa96f707c515ac07c728539a0fd7cf67c9300d2e1"
+  },
+  "script": "benchmarks/audit_axisymmetric_branch_inversion.py",
+  "script_sha256": "8061994754c1c918c8b058ee24fd575ca297d56adedbc142a09bd0d2bc2bd107",
+  "command": "python benchmarks/audit_axisymmetric_branch_inversion.py",
+  "elapsed_seconds": 5.327795917051844,
+  "host_peak_rss_mib": 903.0625
+}

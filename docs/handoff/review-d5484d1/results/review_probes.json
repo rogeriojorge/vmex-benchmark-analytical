@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "solver_executed": false,
+  "benchmark_suite_executed": false,
+  "environment": {
+    "python": "3.13.5",
+    "numpy": "2.3.5",
+    "scipy": "1.17.0",
+    "platform": "Linux"
+  },
+  "probes": {
+    "knot_partition": {
+      "status": "passed",
+      "meaning": "synthetic quadrature example, not VMEX data",
+      "native_knot": 0.375,
+      "reference_crossing": 0.3477804933833538,
+      "reference_label_displacement": -0.027219506616646183,
+      "exact_integral": 0.08844916428089962,
+      "rows": [
+        {
+          "order": 2,
+          "reference_partition_absolute_error": 7.157188680592674e-06,
+          "crossing_partition_absolute_error": 1.2208226526921884e-08
+        },
+        {
+          "order": 3,
+          "reference_partition_absolute_error": 7.747907356109307e-07,
+          "crossing_partition_absolute_error": 6.938893903907228e-17
+        },
+        {
+          "order": 4,
+          "reference_partition_absolute_error": 8.066918180532623e-07,
+          "crossing_partition_absolute_error": 5.551115123125783e-17
+        },
+        {
+          "order": 6,
+          "reference_partition_absolute_error": 2.514663164504549e-07,
+          "crossing_partition_absolute_error": 8.326672684688674e-17
+        },
+        {
+          "order": 8,
+          "reference_partition_absolute_error": 8.14847141289432e-08,
+          "crossing_partition_absolute_error": 6.938893903907228e-17
+        }
+      ]
+    },
+    "grid_counts": {
+      "status": "passed",
+      "meaning": "source-contract arithmetic reproduced without importing driver",
+      "rows": [
+        {
+          "ns": 33,
+          "order": 2,
+          "reviewed_hardcoded_count": 64,
+          "derived_count": 64,
+          "reviewed_count_is_valid": true
+        },
+        {
+          "ns": 33,
+          "order": 4,
+          "reviewed_hardcoded_count": 128,
+          "derived_count": 128,
+          "reviewed_count_is_valid": true
+        },
+        {
+          "ns": 65,
+          "order": 2,
+          "reviewed_hardcoded_count": 64,
+          "derived_count": 128,
+          "reviewed_count_is_valid": false
+        },
+        {
+          "ns": 65,
+          "order": 4,
+          "reviewed_hardcoded_count": 128,
+          "derived_count": 256,
+          "reviewed_count_is_valid": false
+        },
+        {
+          "ns": 129,
+          "order": 2,
+          "reviewed_hardcoded_count": 64,
+          "derived_count": 256,
+          "reviewed_count_is_valid": false
+        },
+        {
+          "ns": 129,
+          "order": 4,
+          "reviewed_hardcoded_count": 128,
+          "derived_count": 512,
+          "reviewed_count_is_valid": false
+        }
+      ]
+    },
+    "exact_flow": {
+      "status": "passed",
+      "meaning": "exact magnetic-field-line flow, not a particle orbit or VMEX trace",
+      "rows": [
+        {
+          "stretches": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "equation_max_abs": 4.440892098500626e-16,
+          "tension_max_abs": 2.220446049250313e-16,
+          "closure_max_abs": 2.220446049250313e-16,
+          "group_property_max_abs": 1.1796119636642288e-16,
+          "tangent_max_abs": 6.938893903907228e-17,
+          "volume_preservation_error": 2.220446049250313e-16,
+          "dop853_trajectory_max_abs": 9.7488683792335e-13
+        },
+        {
+          "stretches": [
+            1.224744871391589,
+            0.7071067811865476,
+            1.0
+          ],
+          "equation_max_abs": 6.661338147750939e-16,
+          "tension_max_abs": 3.3306690738754696e-16,
+          "closure_max_abs": 1.6653345369377348e-16,
+          "group_property_max_abs": 2.220446049250313e-16,
+          "tangent_max_abs": 2.220446049250313e-16,
+          "volume_preservation_error": 0.0,
+          "dop853_trajectory_max_abs": 9.154343949546728e-13
+        },
+        {
+          "stretches": [
+            1.224744871391589,
+            0.7071067811865476,
+            1.2
+          ],
+          "equation_max_abs": 6.38378239159465e-16,
+          "tension_max_abs": 4.440892098500626e-16,
+          "closure_max_abs": 1.6653345369377348e-16,
+          "group_property_max_abs": 1.1102230246251565e-16,
+          "tangent_max_abs": 2.220446049250313e-16,
+          "volume_preservation_error": 2.220446049250313e-16,
+          "dop853_trajectory_max_abs": 8.262140971382337e-13
+        }
+      ]
+    },
+    "derivative_scaling": {
+      "status": "passed",
+      "unscaled_concatenated_relative_error": 5e-10,
+      "boundary_block_relative_error": 0.5,
+      "dimensionless_block_scaled_relative_error": 0.35355339059327373,
+      "meaning": "illustration of dimensionally incompatible aggregate norms"
+    },
+    "regularity": {
+      "status": "passed",
+      "geometry_class": "C2 piecewise cubic",
+      "field_class": "C1, piecewise smooth",
+      "second_field_derivative_left": 0.0,
+      "second_field_derivative_right": -2.3999999999997126,
+      "limiting_jump": -2.4000000000000004,
+      "meaning": "local Cartesian model illustrating derivative loss; not a toroidal equilibrium"
+    },
+    "streaming": {
+      "status": "passed",
+      "sample_count": 1031,
+      "batch_size": 127,
+      "final_batch_size": 15,
+      "relative_norm": 0.0010047060492658143,
+      "batch_vs_stream_difference": 0.0,
+      "error_max_norm": 0.004097258631123689,
+      "meaning": "sufficient statistics check; production reductions should control summation error"
+    }
+  },
+  "script_sha256": "838a2ef4d36fe93194371519fb2ab9e3a2aaa73a92b6ded54ffb90c5718ef909"
+}
