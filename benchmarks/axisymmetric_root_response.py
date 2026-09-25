@@ -54,6 +54,8 @@ def _parser():
     parser.add_argument("--frozen-steps", type=float, nargs="+",
                         default=(1e-3, 3e-4, 1e-4, 3e-5, 1e-5, 3e-6))
     parser.add_argument("--expected-vmex", default=PINNED_VMEX)
+    parser.add_argument("--tangent-step", type=float,
+                        help="input-tangent FD step for the root tangent (default: FD step nearest 3e-4)")
     parser.add_argument("--output-parent", type=Path,
                         default=ROOT/"results/vmex/response_runs")
     return parser
@@ -253,7 +255,7 @@ def _score_response(actual, expected, fixed_scale, parameter_scale=None):
 
 
 def _run_rung(ns, steps, frozen_steps, output, source, base_parameters,
-              base_input_artifact):
+              base_input_artifact, tangent_step=None):
     from vmex.core.statephysics import volume_average_beta
     start = perf_counter()
     base_input_path = ROOT/"inputs/input.integer_axisymmetric_current"
@@ -282,7 +284,7 @@ def _run_rung(ns, steps, frozen_steps, output, source, base_parameters,
     fit_records = {}
     for name in PARAMETERS:
         index = PARAMETER_INDEX[name]
-        for step in sorted(set((*steps, 3e-5))):
+        for step in sorted(set((*steps, 3e-5, *(() if tangent_step is None else (tangent_step,))))):
             plus_parameters = np.asarray(base_parameters, dtype=float).copy()
             minus_parameters = plus_parameters.copy()
             plus_parameters[index] += step
@@ -310,7 +312,10 @@ def _run_rung(ns, steps, frozen_steps, output, source, base_parameters,
                 "profile_degree": plus_degrees,
             }
 
-    tangent_step = min(steps, key=lambda value: abs(value-3e-4))
+    # Historical default: the FD step nearest 3e-4.  The profile-fit input map
+    # is only converged below about 1e-4 (C1), so an explicit small step can be given.
+    if tangent_step is None:
+        tangent_step = min(steps, key=lambda value: abs(value-3e-4))
     tangents = [input_tangents[(name, tangent_step)] for name in PARAMETERS]
     tangent_batch = jax.tree.map(lambda *values: jnp.stack(values), *tangents)
     tangent_started = perf_counter()
@@ -586,7 +591,7 @@ def main(argv=None):
             rung_input_path = output/f"base_input_ns{ns}.indata"
             rung_input.to_indata(rung_input_path)
             rung_records.append(_run_rung(ns, args.fd_steps, args.frozen_steps, output, source,
-                                          base_parameters, rung_input_path))
+                                          base_parameters, rung_input_path, args.tangent_step))
     except Exception as error:
         write_json(output/"failure.json", {
             "schema": 1, "run_id": run_id, "status": "failed",

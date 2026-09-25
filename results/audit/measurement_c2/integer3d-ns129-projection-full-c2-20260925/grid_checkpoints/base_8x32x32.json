@@ -1,0 +1,59 @@
+{
+  "grid_id": "base_8x32x32",
+  "nradial": 8,
+  "ntheta": 32,
+  "nphi_one_period": 32,
+  "theta_shift_fraction": 0.0,
+  "phi_shift_fraction": 0.0,
+  "radial_rule": "gauss",
+  "radial_cells": null,
+  "radial_order": null,
+  "sampling_score_seconds": 42.666414791950956,
+  "samples_artifact": null,
+  "sample_count": 8192,
+  "sample_measure": "full_torus_physical_volume",
+  "physical_volume_m3": 0.26710400427019015,
+  "exact_volume_m3": 0.2671040042701901,
+  "volume_relative_error": 2.0782597918339444e-16,
+  "angular_measure": "one field period with exact NFP replication to full torus",
+  "reference_jacobian_orientation_consistent": true,
+  "reference_jacobian_sign": -1,
+  "native_jacobian_min_abs_m3": 0.0018170701952969007,
+  "native_jacobian_max_abs_m3": 0.020347816126564968,
+  "native_jacobian_condition_max": 115.9154254655965,
+  "route_A": {
+    "field_relative_l2": 5.445082491517835e-06,
+    "current_relative_l2": 0.0022627940368978557,
+    "gradp_relative_l2": 9.754654799404355e-07,
+    "force_pressure_scale": 0.024118655597995208,
+    "force_fixed_magnetic_scale": 0.010748176562765827,
+    "field_max_abs_T": 4.9277187598186025e-05,
+    "current_max_abs_A_per_m2": 83464.45445434035,
+    "force_max_abs_Pa_per_m": 79472.48519279582,
+    "divergence_max_abs_per_m": 4.3933952511437686e-13
+  },
+  "route_B": {
+    "field_relative_l2": 5.4450824915205795e-06,
+    "current_relative_l2": 0.0022627940368976683,
+    "gradp_relative_l2": 9.754654793276754e-07,
+    "force_pressure_scale": 0.024118655597993074,
+    "force_fixed_magnetic_scale": 0.010748176562764876,
+    "field_max_abs_T": 4.9277187598186025e-05,
+    "current_max_abs_A_per_m2": 83464.4544543417,
+    "force_max_abs_Pa_per_m": 79472.48519279595,
+    "divergence_max_abs_per_m": 4.3933952511437686e-13
+  },
+  "route_A_B_difference": {
+    "field": 4.274887072311461e-16,
+    "current": 5.017624629898263e-14,
+    "gradp": 1.0182890646008359e-13,
+    "force": 3.9719779275099473e-13
+  },
+  "coordinate_inversion": {
+    "position_backward_error_max_m": 7.952832160537328e-16,
+    "position_backward_error_rms_m": 1.801139548206e-16,
+    "inverse_jacobian_identity_max_abs": 5.10702591327572e-13,
+    "s_native_minus_reference_max_abs": 3.090516059282844e-07,
+    "s_native_minus_reference_rms": 5.0524299319291944e-08
+  }
+}

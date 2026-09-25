@@ -1,0 +1,75 @@
+{
+  "grid_id": "target_native_knots_and_cell_interiors",
+  "status": "measured",
+  "native_s_targets": [
+    0.00390625,
+    0.007812421875,
+    0.007812578125,
+    0.01171875,
+    0.499999921875,
+    0.500000078125,
+    0.50390625,
+    0.992187421875,
+    0.992187578125,
+    0.99609375
+  ],
+  "native_radial_mesh_points": 129,
+  "n_theta": 8,
+  "n_phi_one_period": 8,
+  "sampling_score_seconds": 19.668958458001725,
+  "samples_artifact": {
+    "path": "grid_checkpoints/target_native_knots_and_cell_interiors_samples.npz",
+    "sha256": "6060f6794995b7e12cdcf4a5e602d20d375d3d6e12a395bacc88ca55c5906052"
+  },
+  "sample_count": 640,
+  "sample_measure": "targeted_equal_weight_point_diagnostic",
+  "physical_volume_m3": null,
+  "exact_volume_m3": null,
+  "volume_relative_error": null,
+  "angular_measure": "one field period with exact NFP replication to full torus",
+  "reference_jacobian_orientation_consistent": true,
+  "reference_jacobian_sign": -1,
+  "native_jacobian_min_abs_m3": 0.0008279320368244754,
+  "native_jacobian_max_abs_m3": 0.020606458295706405,
+  "native_jacobian_condition_max": 258.3797899287104,
+  "route_A": {
+    "field_relative_l2": 0.00010363744294843155,
+    "current_relative_l2": 0.011378354437120817,
+    "gradp_relative_l2": 1.1908473995562356e-05,
+    "force_pressure_scale": 0.12798182801184282,
+    "force_fixed_magnetic_scale": 0.05401563242831223,
+    "field_max_abs_T": 0.000374864349124349,
+    "current_max_abs_A_per_m2": 156199.97414317421,
+    "force_max_abs_Pa_per_m": 150075.66569647111,
+    "divergence_max_abs_per_m": 4.1061856994190133e-13
+  },
+  "route_B": {
+    "field_relative_l2": 0.00010363744294843872,
+    "current_relative_l2": 0.011378354437120479,
+    "gradp_relative_l2": 1.1908473995249394e-05,
+    "force_pressure_scale": 0.12798182801183847,
+    "force_fixed_magnetic_scale": 0.054015632428310416,
+    "field_max_abs_T": 0.000374864349124349,
+    "current_max_abs_A_per_m2": 156199.97414317404,
+    "force_max_abs_Pa_per_m": 150075.6656965443,
+    "divergence_max_abs_per_m": 4.0302236916679723e-13
+  },
+  "route_A_B_difference": {
+    "field": 3.6366894565841594e-16,
+    "current": 5.0872232443341265e-14,
+    "gradp": 9.652088926170468e-14,
+    "force": 5.444878977376238e-13
+  },
+  "coordinate_inversion": {
+    "position_backward_error_max_m": 6.280369834735101e-16,
+    "position_backward_error_rms_m": 1.500160041641669e-16,
+    "inverse_jacobian_identity_max_abs": 4.3942627314663696e-13,
+    "s_native_minus_reference_max_abs": 1.3519991099997242e-06,
+    "s_native_minus_reference_rms": 2.4201852010359845e-07
+  },
+  "samples_metadata": {
+    "full_sample_count": 640,
+    "retained_sample_count": 640,
+    "selection": "uniform_index_spacing_with_endpoints"
+  }
+}

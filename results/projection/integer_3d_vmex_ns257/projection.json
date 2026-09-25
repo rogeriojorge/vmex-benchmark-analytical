@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "evidence": "analytic_projection",
+  "status": "passed",
+  "vmex_commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+  "case": "integer_3d",
+  "ns": 257,
+  "angular_fit_grid": 64,
+  "no_nonlinear_solve": true,
+  "lambda_zero_surface_certificate": "results/projection/integer_3d_surface.json",
+  "field_path": "projected state -> WOUT surface field",
+  "elapsed_seconds": 9.573294436995639,
+  "max_B_relative_surface_l2": 2.2134998268004047e-06,
+  "rows": [
+    {
+      "index": 32,
+      "B_relative_surface_l2": 2.2134998268004047e-06,
+      "label_max_over_edge": 6.039613253960852e-14
+    },
+    {
+      "index": 64,
+      "B_relative_surface_l2": 7.269461622915382e-07,
+      "label_max_over_edge": 5.929479129918036e-12
+    },
+    {
+      "index": 128,
+      "B_relative_surface_l2": 2.456653756577046e-07,
+      "label_max_over_edge": 9.342961959646345e-10
+    },
+    {
+      "index": 192,
+      "B_relative_surface_l2": 1.9294881318140738e-07,
+      "label_max_over_edge": 2.076201965905966e-08
+    },
+    {
+      "index": 256,
+      "B_relative_surface_l2": 6.862162975931383e-07,
+      "label_max_over_edge": 2.0531524924649602e-07
+    }
+  ]
+}

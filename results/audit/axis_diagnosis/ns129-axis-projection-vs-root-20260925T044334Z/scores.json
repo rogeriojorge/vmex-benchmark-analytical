@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "run_id": "ns129-axis-projection-vs-root-20260925T044334Z",
+  "metric": "point_cloud_uniform_weights_screening",
+  "deck_sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab",
+  "states_npz_sha256": "ca2c2fe8933237d434f0d9fa0869a44308f2224e1f0b13f97111a5d64dfe4d6e",
+  "points_npz_sha256": "d9bd1d55700c5c24607ec06c137096f32e45ea7f20396c08e80093ce4f6d0ccc",
+  "points": 896,
+  "states": {
+    "projection": {
+      "state_sha256": "694579fc3fadb5cb1f682f349d5317f55f841fe682032319050ecd77ad855e9e",
+      "all_valid": true,
+      "valid_count": 896,
+      "B_relative_l2": 0.0001809728352997155,
+      "max_flux_label_error": 1.352034764993005e-06
+    },
+    "zero_root": {
+      "state_sha256": "fd5cb9dd8de198378fdc1ab1288cb629454670f2b7f70f8192e0dcff8a1ed32e",
+      "all_valid": true,
+      "valid_count": 896,
+      "B_relative_l2": 0.0001807031184771137,
+      "max_flux_label_error": 4.593844826594751e-06
+    }
+  },
+  "pairwise": {
+    "projection_minus_zero_root_relative_l2": 0.00014488258823541062
+  },
+  "arrays": {
+    "path": "fields.npz",
+    "sha256": "e79360e466925062f99eb9e7367c935815468fb7528d8383bce69d91bc5eacd7"
+  },
+  "elapsed_seconds": 57.52686791692395
+}

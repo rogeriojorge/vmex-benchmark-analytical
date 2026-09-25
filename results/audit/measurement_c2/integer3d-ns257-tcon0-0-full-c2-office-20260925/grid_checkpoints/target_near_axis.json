@@ -1,0 +1,69 @@
+{
+  "grid_id": "target_near_axis",
+  "status": "measured",
+  "native_s_targets": [
+    1e-08,
+    1e-06,
+    0.0001,
+    0.01
+  ],
+  "native_radial_mesh_points": 257,
+  "n_theta": 8,
+  "n_phi_one_period": 8,
+  "sampling_score_seconds": 4.738367467012722,
+  "samples_artifact": {
+    "path": "grid_checkpoints/target_near_axis_samples.npz",
+    "sha256": "aed7796225803327de7bc0a49f83a5541711daece3e984fb00fe3685ae69f303"
+  },
+  "sample_count": 256,
+  "sample_measure": "targeted_equal_weight_point_diagnostic",
+  "physical_volume_m3": null,
+  "exact_volume_m3": null,
+  "volume_relative_error": null,
+  "angular_measure": "one field period with exact NFP replication to full torus",
+  "reference_jacobian_orientation_consistent": true,
+  "reference_jacobian_sign": -1,
+  "native_jacobian_min_abs_m3": 1.3528096514568211e-06,
+  "native_jacobian_max_abs_m3": 0.0013998750712106178,
+  "native_jacobian_condition_max": 160025.0547135613,
+  "route_A": {
+    "field_relative_l2": 0.00014615216713734225,
+    "current_relative_l2": 0.009563076919163792,
+    "gradp_relative_l2": 6.041764488319951e-05,
+    "force_pressure_scale": 1.4108449983585147,
+    "force_fixed_magnetic_scale": 0.044214456299861316,
+    "field_max_abs_T": 0.00021625780525547414,
+    "current_max_abs_A_per_m2": 118902.07208316139,
+    "force_max_abs_Pa_per_m": 106277.97379008959,
+    "divergence_max_abs_per_m": 6.985037548368211e-14
+  },
+  "route_B": {
+    "field_relative_l2": 0.00014615216713714273,
+    "current_relative_l2": 0.009563076919166634,
+    "gradp_relative_l2": 6.0417644887347205e-05,
+    "force_pressure_scale": 1.4108449983590392,
+    "force_fixed_magnetic_scale": 0.04421445629987788,
+    "field_max_abs_T": 0.0002162578052573382,
+    "current_max_abs_A_per_m2": 118902.07208315618,
+    "force_max_abs_Pa_per_m": 106277.97379006098,
+    "divergence_max_abs_per_m": 7.032048554567183e-14
+  },
+  "route_A_B_difference": {
+    "field": 3.465655429883241e-16,
+    "current": 2.574536256713231e-12,
+    "gradp": 6.217134386692688e-13,
+    "force": 3.827907713841367e-10
+  },
+  "coordinate_inversion": {
+    "position_backward_error_max_m": 3.378928710310476e-14,
+    "position_backward_error_rms_m": 7.059693135078992e-15,
+    "inverse_jacobian_identity_max_abs": 3.86593024259696e-09,
+    "s_native_minus_reference_max_abs": 7.296614888963049e-07,
+    "s_native_minus_reference_rms": 1.3521065785252244e-07
+  },
+  "samples_metadata": {
+    "full_sample_count": 256,
+    "retained_sample_count": 256,
+    "selection": "uniform_index_spacing_with_endpoints"
+  }
+}
