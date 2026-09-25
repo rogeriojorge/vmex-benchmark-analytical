@@ -459,7 +459,7 @@ The supplied ten mathematical tests pass. The sheared surface prototype executed
 | C3 | in progress | Full-flux lambda verified (1.6e-10); projection ladder NS17-65 radial-limited; recovery solves next |
 | C4 | pointwise certified (2026-09-25) | NS129 axisymmetric c and null delta pass root/linear/transpose/FD gates on 4 pointwise observables (delta JVP 1.57e-6 with matched input tangent); volume norms await the axis-row fix |
 | C5 | partial | Exact flow done; LASYM basis control passes (round-off); asymmetric Solov'ev running; closures and interfaces remain |
-| C6 | planned | Needs C0, C1 |
+| C6 | started | MGRID exact-field fixture passes (2nd order, bitwise round trip); NESTOR, virtual casing and coupled roots remain |
 | C7 | direct stage closed | No substantive C_J/C_B tradeoff (bound-driven); solver-verified stage needs C4 |
 | C8 | planned | Continuous |
 
@@ -606,3 +606,7 @@ Angular refinement and shifts change nothing at 9 digits; the radial Gauss/midpo
 **Root-accuracy tests, both negative:** (a) `observe_root_refinement.py --no-host-solve --passes 3` from the root with a TCON0=0 NS129 deck (`results/audit/axis_diagnosis/decks/`): residual 3.23e-6, first step rejected, unchanged, not certified. (b) FTOL 1e-14 host solve from the same seed (run `integer3d-ns129-tcon0-0-ftol1e-14-20260925`): capped at 30000, IER 2, FSQ 1.29e-9 / 1.28e-9 / 2.1e-13; the physical state degrades (96-point B 3.28e-5, J 1.07e-2; patched-evaluator near-axis J O(1), `state-ladder-pinned_copy-20260925T113909Z`). The host floor at this resolution is FSQ ~1e-9, and pushing past it moves the state away from the exact field.
 
 **Status:** open solver-side near-axis defect with a reproducer (seed, deck, the two negative tests). Candidate mechanisms, unverified: the discrete m=1 constraint / axis closure in the force operator, and first-cell conditioning. Not pursued further without a new hypothesis. Away from the first two or three cells the zero-TCON0 NS129/257 roots meet the pointwise gates.
+
+### C6 block, 2026-09-25: first exact exterior-operator fixture
+
+`tests/test_exterior_fixtures.py` (skipped without VMEX): B = B0 R0/R e_phi + a grad(R^2 - 2Z^2) (harmonic potential plus toroidal circulation; source-free, checked independently by finite differences). The table is built by pinned VMEX `tabulate_cartesian_field` (NFP 2, kp 8), round-tripped bit for bit through `write_mgrid`/`read_mgrid`, and evaluated with `MgridField` trilinear interpolation at 400 held-out points. Relative errors 6.90e-4, 1.63e-4, 4.13e-5, 1.08e-5 for ir = jz = 17, 33, 65, 129; observed orders 2.08, 1.98, 1.94. **Pass (operator-level MGRID fixture).** It does not test NESTOR, virtual casing or a coupled free-boundary root. **Next C6:** NESTOR normal-field cancellation on a known exterior harmonic field, then virtual-casing target-distance refinement against the same oracle.
