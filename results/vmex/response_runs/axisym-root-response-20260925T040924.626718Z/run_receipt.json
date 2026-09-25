@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "run_id": "axisym-root-response-20260925T040924.626718Z",
+  "status": "running",
+  "benchmark_branch": "t0-t1-d5484d1",
+  "upstream_pr": null,
+  "source": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.0",
+    "distribution_version": "0.10.0",
+    "version_source": "checkout_pyproject",
+    "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "input_sha256": "fc3e7591846aa18bb2365a2db731e865baa5d569ea5bfe4c9392bd71b7fc6852",
+  "ns_rungs": [
+    129
+  ],
+  "fd_steps": [
+    0.0003,
+    0.0001,
+    3e-05
+  ],
+  "frozen_path_steps": [
+    0.0001,
+    1e-05
+  ],
+  "script_sha256": "2eda1dee7ff2ee86204985522a51c9a840028d3f42bcd5eedb8d4685a7cbad15",
+  "command": "python benchmarks/axisymmetric_root_response.py --ns 129 --fd-steps 0.0003 0.0001 3e-05 --frozen-steps 0.0001 1e-05"
+}

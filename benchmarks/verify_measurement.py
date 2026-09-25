@@ -51,6 +51,9 @@ from measurement import (
 
 
 PINNED_VMEX = "b5f5267efc0795c4a49a224e321e9b370975c14c"
+# route_A_B_difference uses short names; TARGETS uses score names.
+ROUTE_KEY = {"field_relative_l2": "field", "current_relative_l2": "current",
+             "gradp_relative_l2": "gradp", "force_pressure_scale": "force"}
 SHIFTED = DEFAULT_GRID_SHIFT
 FULL_GRIDS = [
     ("legacy96", 3, 8, 4, 0.0, 0.0, "gauss"),
@@ -496,7 +499,7 @@ def _fine_spread(rows):
         resolved = False
     for row in fine:
         for metric, limit in TARGETS.items():
-            if row["route_A_B_difference"][metric] > 0.1*limit:
+            if row["route_A_B_difference"][ROUTE_KEY[metric]] > 0.1*limit:
                 resolved = False
     return spread, resolved
 
@@ -809,7 +812,7 @@ def main(argv=None):
     targeted_route_agreement = (
         args.profile == "smoke" or
         targeted_sampling_complete and all(
-            all(row["route_A_B_difference"][metric] <= 0.1*target
+            all(row["route_A_B_difference"][ROUTE_KEY[metric]] <= 0.1*target
                 for metric, target in TARGETS.items())
             for row in targeted_rows
         )

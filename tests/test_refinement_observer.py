@@ -163,3 +163,33 @@ def test_exact_tangents_use_length_and_field_scales():
     scaled = exact_field_parameter_tangents(case, 2.0*point, (2, 3), length_m=2.0, field_t=3.0)
     assert np.all(np.isfinite(unit)) and np.linalg.norm(unit) > 0
     np.testing.assert_allclose(scaled, 3.0*unit, rtol=1e-12, atol=1e-14)
+
+
+def test_weak_stress_moment_matches_strong_force_and_detects_pressure_defect():
+    from numpy.polynomial.legendre import leggauss
+    from analytic import label_at_s, surface
+    from measurement import cube_bump_test_field, integer_exact_fields, weak_stress_moment
+    case = cases()["integer_3d"]
+    center = np.asarray(surface(case, float(label_at_s(case, 0.3)), 0.4, 0.2), dtype=float)
+    h = 0.02
+    q, w = leggauss(12)
+    grid = np.stack(np.meshgrid(q, q, q, indexing="ij"), axis=-1).reshape(-1, 3)
+    weights = (w[:, None, None]*w[None, :, None]*w[None, None, :]).ravel()*h**3
+    x = center + h*grid
+    B, curl, gradp, _, label = integer_exact_fields(case, x)
+    assert np.all(label < 0.9*case.edge)  # test cube lies inside the plasma
+    # Dimensionless reference: curl B = J (mu0 = 1); p from the same label.
+    p = case.pressure_slope*(label - case.edge)
+    J = curl
+    force = np.cross(J, B) - gradp
+    for component in range(3):
+        v, grad_v = cube_bump_test_field(x, center, h, component)
+        weak = weak_stress_moment(B, p, grad_v, weights, mu0=1.0)
+        strong = float(np.sum(weights*np.sum(v*force, axis=-1)))
+        scale = float(np.sum(weights*np.abs(v[:, component])*np.linalg.norm(gradp, axis=-1)))
+        assert abs(weak["moment"]) < 1e-8*scale and abs(strong) < 1e-8*scale
+        # A pressure defect epsilon*x_k is detected with the expected moment.
+        epsilon = 1e-3*float(np.max(np.linalg.norm(gradp, axis=-1)))
+        defect = weak_stress_moment(B, p + epsilon*x[:, component], grad_v, weights, mu0=1.0)
+        expected = -epsilon*float(np.sum(weights*v[:, component]))
+        assert defect["moment"] == pytest.approx(expected, rel=1e-8)

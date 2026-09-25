@@ -1,0 +1,116 @@
+{
+  "schema": 2,
+  "run_id": "integer3d-ns129-tcon0-default-reproduce-20260925",
+  "parent_run_id": "integer3d-ns129-zero-t0t1-20260924",
+  "status": "scored_diagnostic",
+  "evidence": "vmex_fixed_boundary_diagnostic",
+  "input_file": "inputs/input.integer_3d_iota",
+  "input_sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab",
+  "seed_sha256": "62058a03f1409f81a963862f07da493974f7a121cfecbe955f9a5717936eb590",
+  "source": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.0",
+    "distribution_version": "0.10.0",
+    "version_source": "checkout_pyproject",
+    "commit": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "controls": {
+    "requested": {
+      "ns": 129,
+      "niter": 3000,
+      "ftol": "1e-10",
+      "tcon0": "default",
+      "keep_terminal": true
+    },
+    "effective": {
+      "ns_array": [
+        129
+      ],
+      "ftol_array": [
+        1e-10
+      ],
+      "niter_array": [
+        3000
+      ],
+      "tcon0": 1.0
+    }
+  },
+  "start_time_utc": "2026-09-25T03:46:37.952832+00:00",
+  "environment": {
+    "python": "3.13.7",
+    "platform": {
+      "system": "Darwin",
+      "release": "25.6.0",
+      "machine": "arm64"
+    },
+    "jax": "0.11.0",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "devices": [
+      "cpu:0"
+    ],
+    "host_peak_rss_mib": 2653.203125,
+    "device_memory_peak_mib": null
+  },
+  "artifacts": {
+    "input_copy": {
+      "path": "input.indata",
+      "sha256": "7a7b0cdb0c31774fa0497efd99be3874c25bbf52a3f27dd7420fd6027d05deab"
+    },
+    "wout": {
+      "path": "wout.nc",
+      "sha256": "640f5ebb02b7874c93d5b27af61825bc544bc9bec83ec927bd16ddef74598c71"
+    },
+    "point_cloud": {
+      "path": "point_cloud.npz",
+      "sha256": "5a251d28f102258c8a31ec8997c463d8788c23f191c9c658de5332d11f7a87f4"
+    },
+    "solver_observations": {
+      "path": "vmex_observations.npz",
+      "sha256": "90266ce626d7ec74263c5541ac1678e7380119bb23573f60367ca3eac182f812"
+    },
+    "native_scores": {
+      "path": "native_scores.json",
+      "sha256": "b2d17481b6e7ab68926f173dd46f246791e3e9be9040e075cb27c8bab6e22142"
+    }
+  },
+  "representation_resolved": true,
+  "measurement_resolved": false,
+  "root_certified": false,
+  "accepted": false,
+  "solve_seconds": 8.324478291906416,
+  "solver_converged": true,
+  "iterations": 420,
+  "ier_flag": 11,
+  "fsqr": 9.051702322176343e-11,
+  "fsqz": 9.767740683496527e-11,
+  "fsql": 9.960852378464298e-11,
+  "scalars": {
+    "wb": 0.0030129061514747777,
+    "volume_p": 0.2671040042701832,
+    "betatotal": 0.035087725840271096
+  },
+  "end_time_utc": "2026-09-25T03:46:46.648019+00:00",
+  "field_path": "native_clebsch_cartesian",
+  "native_sample_and_score_seconds": 8.75059029192198,
+  "pointwise_thresholds_met": false,
+  "native_score": {
+    "schema": 2,
+    "evidence": "physical_samples_vs_analytic",
+    "case": "integer_3d",
+    "sample_count": 96,
+    "quadrature_volume_m3": 0.13355538723879923,
+    "field_relative_l2": 0.00012991445967962915,
+    "current_relative_l2": 0.0029205815104453945,
+    "gradp_relative_l2": 0.009703554414645292,
+    "force_rms_N_m3": 6190.4464123787675,
+    "force_fixed_magnetic_scale": 0.007779144388628171,
+    "force_pressure_scale": 0.017448788911969285,
+    "field_max_abs_T": 0.0002522838690342734,
+    "surface_label_max_over_edge": 1.3766765505351941e-14,
+    "native_flux_label_minus_reference_max_abs": 0.005337737621137373,
+    "native_flux_label_minus_reference_rms": 0.0023926171045556607
+  }
+}
