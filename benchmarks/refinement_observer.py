@@ -68,8 +68,15 @@ def _map(function, *trees):
                           for name in FIELDS})
 
 
+def _as_jax(tree):
+    """The pinned projector updates leaves with ``.at``; NumPy leaves fail on 3-D decks."""
+    import jax.numpy as jnp
+    return type(tree)(**{name: jnp.asarray(getattr(tree, name)) for name in FIELDS})
+
+
 def residual_record(implicit, cfg, params, frozen, mask, state) -> dict:
     """Raw and preconditioned residual norms of ``state`` in operator ``frozen``."""
+    frozen, mask, state = _as_jax(frozen), _as_jax(mask), _as_jax(state)
     project = implicit._dof_projector(cfg, mask)
     z = project(state)
     record = {"frozen_state_sha256": tree_hash(frozen),
@@ -155,6 +162,7 @@ def observe_refinement(implicit, cfg, params, state, mask, *, measure_defects=Tr
     Returns ``(refined_state, record)``.  The memo ``_LAST_REFINED`` is neither
     read nor written; the record says so by comparing its entry before/after.
     """
+    state, mask = _as_jax(state), _as_jax(mask)
     memo_before = implicit._LAST_REFINED.get(cfg)
     before, before_vectors = residual_record(implicit, cfg, params, state, mask, state)
     trace = []
