@@ -455,12 +455,12 @@ The supplied ten mathematical tests pass. The sheared surface prototype executed
 | T0 (carried) | done | Reference CI green at 05e9473; import/schema repair; NS129 zero-TCON run exists; preconditioned single-grid history test passed. Not reassigned. |
 | C0 | done (2026-09-24) | `refinement_observer.py` + tests: raw host state, one uncached `_refined_state`, per-step true linear defects, memo-hit probe; eq.(3) response metric and x/L_star fix with nonunit/duplicate tests; `capture_execution_source` before runs; derivative gate on root certificate |
 | C1 | done (2026-09-24) | Zero-weight base: certified root 6.2e-14 after a second pass, same operator; first pass stalls on a too-long accurate Newton step. Default branch: eq.(2) defect is O(h^2), branch FD is the base linear response; null response E_B,delta = 2.93e-4 (point cloud) is physical, not an operator defect |
-| C2 | planned | Needs C0 |
-| C3 | planned | Reference-only work can start |
-| C4 | planned | Needs C0-C2 |
-| C5 | planned | Needs C0 |
+| C2 | bounded failure recorded (2026-09-24) | NS129 zero and default TCON0 volume-scored: both fail at the axis cell; zero better everywhere; mid and edge meet gates for zero |
+| C3 | in progress | Full-flux lambda verified (1.6e-10); projection ladder NS17-65 radial-limited; recovery solves next |
+| C4 | partial | c certified pointwise at NS129; delta null below 1e-5 by branch FD; null JVP blocked by the input tangent |
+| C5 | partial | Exact-flow tests done; LASYM, closures and interfaces remain |
 | C6 | planned | Needs C0, C1 |
-| C7 | planned | Direct-family stage can start |
+| C7 | direct stage closed | No substantive C_J/C_B tradeoff (bound-driven); solver-verified stage needs C4 |
 | C8 | planned | Continuous |
 
 ## 17. Continuing logbook
@@ -525,3 +525,24 @@ The supplied ten mathematical tests pass. The sheared surface prototype executed
 **Repaired driver at NS129 (its own 4 fixed points):** root 1.75e-13; tangent linear residuals 2.0e-13 and 1.2e-11; transpose duality 2.9e-11 (c) and 4.7e-9 (delta); derivative gate open. For c, the JVP relative error to the exact response is 1.636e-5, and branch FD minus JVP is 2.7e-8, 5.4e-9 and 3.5e-9 at h = 3e-4, 1e-4, 3e-5. **Nonzero c response: certified as a 4-point pointwise response at NS129** (root, linear, transpose, stable FD window, 1e-3 gate); it is not a volume norm. For delta, branch FD gives E 1.01e-6 / 1.32e-6 / 1.52e-6, but the JVP gives 4.69e-5 with a constant FD-minus-JVP of 6.0e-3 across h. That matches the input-tangent error found in C1(b): the tangent uses the h=3e-4 profile-fit q, 2.2e-4 away from its limit, and a near-null direction of A amplifies it. **The null JVP is not accepted.**
 
 **Next:** recompute the delta tangent with a converged input tangent (the existing `full_input_derivatives` map, or q from matched small h), then repeat the NS129 duality/FD check; extend both responses to a resolved volume quadrature once C2's near-axis issue is understood.
+
+### C2 block, 2026-09-24: NS129 integer-3D volume scoring (zero vs default TCON0)
+
+**States:** reproduced from the recorded input `inputs/input.integer_3d_iota` (SHA-256 `7a7b0cdb...`) and seed `results/projection/integer_3d_vmex_ns129/seed.npz` with `BENCH_FTOL=1e-10 BENCH_TCON0={0,default} python benchmarks/run_vmex.py inputs/input.integer_3d_iota 129 3000 <seed> --keep-terminal` (runs `integer3d-ns129-tcon0-{0,default}-reproduce-20260925`; source captures in `results/vmex/source_captures/`). The original run's WOUT was gitignored on another machine. The zero run reproduces the saved record (50 iterations, same FSQ, identical 96-point cloud, B observations within 4.9e-12); the default run reproduces 420 iterations and its recorded scores. Each measurement stores the scored `spectral_state.npz`.
+
+**Command:** `python benchmarks/verify_measurement.py --input inputs/input.integer_3d_iota --wout <run>/wout.nc --state-id <id> --output-parent results/audit/measurement_c2 --profile full`. Zero run `integer3d-ns129-tcon0-0-full-c2-v3-20260925`: every grid checkpoint completed, then the final spread crashed on a key mismatch (route-difference short keys vs TARGETS names). Fixed with `ROUTE_KEY`; `interruption.json` lists the 12 completed grids, and its `measurement.json` still reads "running" as written, superseded by the receipt. Two earlier attempts (wrong `--input` location and wrong legacy-sample format) left `measurement_failed` records. Default run `integer3d-ns129-tcon0-default-full-c2-20260925`: completed, `measurement_diagnostic`, not resolved.
+
+**Results (route A; route B agrees to about 1e-13), B / J / force-over-grad-p:**
+
+| grid | zero TCON0 | default TCON0 |
+|---|---|---|
+| legacy96 | 1.08e-6 / 1.80e-5 / 1.94e-4 | 1.30e-4 / 2.92e-3 / 1.74e-2 |
+| full 16x64x64 Gauss | 1.94e-5 / 2.82e-3 / 2.99e-2 | 2.26e-4 / 1.02e-1 / 1.13 |
+| full midpoint | 1.52e-5 / 2.24e-3 / 2.40e-2 | 4.95e-4 / 7.69e-2 / 0.863 |
+| near axis (s 1e-8..1e-2) | 3.06e-4 / 9.88e-3 / 1.46 | 9.53e-4 / 9.63e-2 / 14.6 |
+| native knots and cells | 9.53e-5 / 9.46e-3 / 0.106 | 9.25e-4 / 1.08e-1 / 1.26 |
+| near edge | 9.58e-7 / 2.51e-5 / 2.18e-4 | 8.86e-5 / 3.34e-2 / 0.268 |
+
+Angular refinement and shifts change nothing at 9 digits; the radial Gauss/midpoint spread remains. For the zero state, the B error is constant at 3.5e-4 as s -> 0 and the J error peaks at 1-2e-2 in the first two or three native cells (s <= 0.012), while s = 0.5 and 0.99 give B ~9.4e-7 and J 7e-6..2.5e-5. **Outcome:** a bounded failure of volume recovery for both states, localized at the magnetic axis. Zero TCON0 is better than the default on every grid of this case (the opposite of the sheared-A NS17 outcome), so this is still not a global default recommendation. The 96-point legacy cloud missed the axis entirely.
+
+**Next:** diagnose the axis defect in this state: axis position (R/Z m=0 at j=0) versus the exact axis, the lambda axis-row closure, and m=1 near-axis regularity. Compare the exact axis field with the native s->0 limit. Then a weak-stress moment near the axis (`measurement.weak_stress_moment`) to see whether the defect appears in B/p stresses or only in the numerical curl.
