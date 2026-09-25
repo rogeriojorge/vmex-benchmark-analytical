@@ -1,0 +1,93 @@
+{
+  "schema": 2,
+  "evidence": "desc_coordinate_comparison",
+  "status": "solved",
+  "chart": "base",
+  "parameters": {
+    "case": "integer_3d",
+    "amplitude": 0.1,
+    "m": 2,
+    "n": 0,
+    "resolution": 12,
+    "nfp": 2,
+    "prescribed_iota": 2.0,
+    "maxiter": 100
+  },
+  "desc_version": "0.17.3+27.g4f48720be",
+  "scipy_version": "1.15.3",
+  "numpy_version": "2.2.6",
+  "jax_version": "0.6.2",
+  "jax_devices": [
+    "TFRT_CPU_0"
+  ],
+  "device_request": {
+    "backend": "cpu",
+    "gpu_id": null
+  },
+  "source": {
+    "repository": "PlasmaControl/DESC",
+    "version": "0.17.3+27.g4f48720be",
+    "distribution_version": "0.17.3+27.g4f48720be",
+    "version_source": "installed_distribution",
+    "commit": "4f48720beac3d4169e9165923d730445118bc2de",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sample_sha256": "88a5d1f41cb33cc25c50754c34cbaeab079a14f30caf44aeb0642934c4169755",
+  "projected": {
+    "schema": 2,
+    "evidence": "physical_samples_vs_analytic",
+    "case": "integer_3d",
+    "sample_count": 96,
+    "quadrature_volume_m3": 0.13355538723879923,
+    "field_relative_l2": 2.391795153582942e-07,
+    "current_relative_l2": 7.450382709334409e-06,
+    "gradp_relative_l2": 1.8671018328916806e-07,
+    "force_rms_N_m3": 30.1567452541798,
+    "force_fixed_magnetic_scale": 3.789608373868405e-05,
+    "force_pressure_scale": 8.500173447265421e-05,
+    "field_max_abs_T": 8.693976931375999e-07,
+    "surface_label_max_over_edge": 1.3766765505351941e-14,
+    "native_flux_label_minus_reference_max_abs": 7.507731569766918e-08,
+    "native_flux_label_minus_reference_rms": 1.6310969654898687e-08,
+    "max_coordinate_inversion_m": 2.220446049250313e-16,
+    "min_sampled_jacobian": 0.004032674746785415,
+    "max_force_residual_Pa_per_m": 176.09214324434288
+  },
+  "projected_artifact": "desc_integer_base_L12_projection.npz",
+  "spectral_width_projected": 0.10700458502308613,
+  "elapsed_projection_s": 61.658331111015286,
+  "solver": {
+    "success": true,
+    "message": "`gtol` condition satisfied. (gtol=1.00e-08)",
+    "iterations": 5,
+    "cost": 1.1272462021625634e-15,
+    "optimality": 4.468947749782844e-09
+  },
+  "solved": {
+    "schema": 2,
+    "evidence": "physical_samples_vs_analytic",
+    "case": "integer_3d",
+    "sample_count": 96,
+    "quadrature_volume_m3": 0.13355538723879923,
+    "field_relative_l2": 7.612287996395171e-08,
+    "current_relative_l2": 1.141292258231976e-06,
+    "gradp_relative_l2": 1.0001283900452322e-05,
+    "force_rms_N_m3": 0.04662436494413025,
+    "force_fixed_magnetic_scale": 5.858990495470763e-08,
+    "force_pressure_scale": 1.3141842249663145e-07,
+    "field_max_abs_T": 2.6591730060383014e-07,
+    "surface_label_max_over_edge": 1.3766765505351941e-14,
+    "native_flux_label_minus_reference_max_abs": 7.015956426603687e-06,
+    "native_flux_label_minus_reference_rms": 2.0282682425130838e-06,
+    "max_coordinate_inversion_m": 2.220446049250313e-16,
+    "min_sampled_jacobian": 0.0040328092185487625,
+    "max_force_residual_Pa_per_m": 0.2105422286549583
+  },
+  "solved_artifact": "desc_integer_base_L12_solved.npz",
+  "equilibrium_artifact": "desc_integer_base_L12.h5",
+  "spectral_width_solved": 0.10700626550622835,
+  "elapsed_solve_s": 299.4554348399979,
+  "elapsed_total_s": 361.11377133600763,
+  "max_rss_mib": 17026.3046875
+}

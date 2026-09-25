@@ -2,6 +2,36 @@
 
 Exact toroidal equilibria, physical-field checks and a staged benchmark of VMEX's derivatives, diagnostics and free-boundary interfaces.
 
+## What the exact solutions found
+
+The equilibria here are known exactly, including B, J and the flux surfaces at the magnetic axis. Scoring codes against the exact answer, rather than against a finer run of themselves, exposed two VMEX defects that resolution studies had missed.
+
+| Code | Defect | Fix |
+|---|---|---|
+| VMEX field evaluator | Near the axis the evaluator copied the first flux surface into the axis row. Axis B was only first-order accurate, and the near-axis current error stayed at 1e-2 however many surfaces were used. | [uwplasma/vmex#452](https://github.com/uwplasma/vmex/pull/452) (merged). Axis B error at NS129: 3.5e-4 → 9.0e-7. |
+| VMEX derivatives | The Newton refinement that anchors equilibrium derivatives stopped after one pass, leaving an uncertified state (1.2e-7 against a 1e-11 tolerance). | [uwplasma/vmex#453](https://github.com/uwplasma/vmex/pull/453) (open). One call now reaches 6.2e-14. |
+
+![VMEX fixes found with exact solutions](figures/highlight_upstream_fixes.png)
+
+## How VMEX, VMEC2000, VMEC++ and DESC compare
+
+All three VMEC-type codes read the same generated input deck. Every output is scored by the same script ([benchmarks/score_wout_exact.py](benchmarks/score_wout_exact.py)) against the exact solution. DESC runs at its own spectral resolution.
+
+- **Same equations, same answer.** VMEX and VMEC2000 give identical equilibria on every case, including the ones where both fail. VMEC++ agrees wherever it converges. VMEX's gain is not a different solution of the same equations.
+- **Where VMEX is more accurate: reading fields out of an equilibrium.** From one VMEC2000 equilibrium, VMEX's continuous field gives J 10–70× more accurately than the standard WOUT output between s = 0.25 and 0.75, and about 2.5× near the edge. On the first few surfaces next to the axis it is worse; that remaining near-axis error is an open item.
+- **Hard cases.** From a cold start, none of the VMEC-type codes reaches the integer 3-D or sheared-A equilibria (flux-surface errors of 10–50%). VMEX does reach integer 3-D when seeded from the exact state. VMEC++ writes no output on those cases and crashes on the asymmetric deck.
+- **DESC is the most accurate code here, especially at the axis.** Integer 3-D converges spectrally (volume J error 1.5e-3 at M=6 down to 1.9e-6 at M=12). Its axis offset shrinks at the same rate. It recovers sheared A, although it hit its iteration cap there. No DESC defect was found.
+
+![Code parity on shared decks](figures/highlight_code_parity.png)
+
+![Reading B and J from one equilibrium](figures/highlight_field_routes.png)
+
+![Hard cases across codes](figures/highlight_hard_cases.png)
+
+**Open:** VMEX near-axis current in solved states (about 1e-2 in the first cells, after #452); VMEX recovery of sheared A; the VMEC++ asymmetric-input crash (not yet reported upstream).
+
+Code versions: VMEX `3b73d6f` (main, with #452), VMEC2000 from STELLOPT `3e1439d`, VMEC++ 0.5.2, DESC `4f48720`. Per-run receipts, logs and scores are under [results/cross_code](results/cross_code) and [results/desc](results/desc); the figures are drawn from saved records only ([manifest](figures/highlight_manifest.json)).
+
 The primary references are [Landreman's analytical equilibria](https://arxiv.org/abs/2609.26742), their [supplementary implementation](https://github.com/landreman/analytic_3d_equilibria), and an explicitly derived asymmetric Solov'ev case. The implementation plan and continuing logbook are in [plan.md](plan.md). Start a local implementation session with [AGENT_PROMPT.md](AGENT_PROMPT.md).
 
 ## Current VMEX results (continuation of 05e9473, September 2026)

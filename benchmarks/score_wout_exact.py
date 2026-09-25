@@ -140,10 +140,17 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None):
     th8, ze8 = 2*np.pi*np.arange(16)/16, 2*np.pi*np.arange(8)/(8*int(w.nfp))
     for j in sorted({1, 2, max(3, ns//16), ns//4, ns//2, 3*ns//4, ns-2}):
         row = {"j": j, "s": float(s_mesh[j])}
+        has_current = np.ndim(np.asarray(getattr(w, "currumnc", 0.0))) == 2
         if not bool(w.lasym):
-            xyz, Jw = wout_current(w, j, th8, ze8)
-            Bx, Jx = exact_B_J(case, xyz)
-            row["J_wout_relative_l2"] = float(np.linalg.norm(Jw-Jx)/np.linalg.norm(Jx))
+            if has_current:
+                xyz, Jw = wout_current(w, j, th8, ze8)
+                Bx, Jx = exact_B_J(case, xyz)
+                row["J_wout_relative_l2"] = float(np.linalg.norm(Jw-Jx)/np.linalg.norm(Jx))
+            else:
+                # Some producers (VMEC++ 0.5.2) write no current harmonics.
+                row["J_wout_relative_l2"] = None
+                xyz = positions(w, j, th8, ze8)
+                Bx, Jx = exact_B_J(case, xyz)
             if native is not None:
                 pts = jnp.asarray(xyz)
                 Bn = np.asarray(native.B(pts))
@@ -190,7 +197,7 @@ def main(argv=None):
         record["B_relative_near_axis"], record["iota_max_abs_error"], max(record["fsq"])), flush=True)
     for r in record["routes"]:
         print("   j=%d s=%.4f  J_wout %.2e  J_native %s  B_native %s" % (
-            r["j"], r["s"], r.get("J_wout_relative_l2", float("nan")),
+            r["j"], r["s"], r.get("J_wout_relative_l2") if r.get("J_wout_relative_l2") is not None else float("nan"),
             "%.2e" % r["J_native_relative_l2"] if "J_native_relative_l2" in r else "-",
             "%.2e" % r["B_native_relative_l2"] if "B_native_relative_l2" in r else "-"))
 

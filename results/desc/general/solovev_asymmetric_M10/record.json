@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "evidence": "desc_exact_case_everywhere",
+  "case": "solovev_asymmetric",
+  "resolution": {
+    "L": 12,
+    "M": 10,
+    "N": 0,
+    "NFP": 1,
+    "sym": false
+  },
+  "profile_fit_errors": {
+    "pressure": 1.254552017826427e-13,
+    "iota": 1.1638299620940964e-15,
+    "enclosed_current": 1.2430218505214551e-13
+  },
+  "desc_version": "0.17.3+27.g4f48720be",
+  "jax": "0.6.2",
+  "python": "3.10.12",
+  "script_sha256": "bc4c5ecd3069d978862e71c5786c0c26475eb7dd0e83aba4487c5b00ab5dc340",
+  "nested_initial_guess": true,
+  "projection": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 1.8546220265946553e-05,
+        "J_relative_l2": 0.5000000001594731,
+        "gradp_relative_l2": 8.124955982220848e-11,
+        "force_over_gradp": 39967.67570304979,
+        "min_abs_sqrt_g": 1.6405955430117594e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 0.00018546220150726634,
+        "J_relative_l2": 0.5000000159327856,
+        "gradp_relative_l2": 7.998680184000831e-12,
+        "force_over_gradp": 3996.7678338549167,
+        "min_abs_sqrt_g": 1.64059553798382e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 0.0018546208625224098,
+        "J_relative_l2": 0.5000015932451174,
+        "gradp_relative_l2": 1.2573082714999489e-12,
+        "force_over_gradp": 399.67941881630605,
+        "min_abs_sqrt_g": 0.00016405950351866633
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 0.018545057243571465,
+        "J_relative_l2": 0.5001594173292365,
+        "gradp_relative_l2": 8.273962692938581e-13,
+        "force_over_gradp": 39.99430428300398,
+        "min_abs_sqrt_g": 0.0016405447239796166
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.055607514374406274,
+        "J_relative_l2": 0.5014415475622301,
+        "gradp_relative_l2": 5.346035430187699e-13,
+        "force_over_gradp": 13.40264241423624,
+        "min_abs_sqrt_g": 0.00492040760406684
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.12944416114417245,
+        "J_relative_l2": 0.508038913037479,
+        "gradp_relative_l2": 7.324168536187828e-12,
+        "force_over_gradp": 5.898953642802933,
+        "min_abs_sqrt_g": 0.011466197800731808
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.1825914754187889,
+        "J_relative_l2": 0.5165735201878847,
+        "gradp_relative_l2": 2.308474281054929e-10,
+        "force_over_gradp": 4.30942871338707,
+        "min_abs_sqrt_g": 0.01618939951577276
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.13096665357934345,
+        "J_relative_l2": 0.5083486476748723,
+        "gradp_relative_l2": 9.959836960099529e-11,
+        "force_over_gradp": 5.847989641841957,
+        "min_abs_sqrt_g": 8.69438865075774e-05
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.13083809687108824,
+        "J_relative_l2": 0.5083309541301674,
+        "gradp_relative_l2": 9.490454223682252e-11,
+        "force_over_gradp": 5.853296807642255,
+        "min_abs_sqrt_g": 0.0005126845572078049
+      }
+    }
+  },
+  "solver": {
+    "success": true,
+    "message": "`gtol` condition satisfied. (gtol=1.00e-08)",
+    "iterations": 12,
+    "solve_seconds": 68.62556287000189
+  },
+  "solved": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 1.7941521407953607e-09,
+        "J_relative_l2": 2.7908752434005073e-08,
+        "gradp_relative_l2": 1.9192367660770435e-05,
+        "force_over_gradp": 0.002192067842208029,
+        "min_abs_sqrt_g": 1.6405953327355592e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 1.7941626674649078e-09,
+        "J_relative_l2": 2.7908404193987086e-08,
+        "gradp_relative_l2": 1.9192322312005333e-06,
+        "force_over_gradp": 0.00021920262494681063,
+        "min_abs_sqrt_g": 1.6405934144297803e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 1.7952058903083164e-09,
+        "J_relative_l2": 2.787948807704019e-08,
+        "gradp_relative_l2": 1.9187786915082247e-07,
+        "force_over_gradp": 2.18833848059617e-05,
+        "min_abs_sqrt_g": 0.00016405737569662773
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 1.8645548203333704e-09,
+        "J_relative_l2": 2.5555695888831273e-08,
+        "gradp_relative_l2": 1.832480046604952e-08,
+        "force_over_gradp": 1.8626280267984312e-06,
+        "min_abs_sqrt_g": 0.001640332016290403
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 1.6698210595399202e-09,
+        "J_relative_l2": 2.1279315547065797e-08,
+        "gradp_relative_l2": 5.42203656432409e-09,
+        "force_over_gradp": 5.12147106120722e-07,
+        "min_abs_sqrt_g": 0.0049186250401493485
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 1.404580381726495e-09,
+        "J_relative_l2": 1.6962546611690943e-08,
+        "gradp_relative_l2": 1.962467179986904e-09,
+        "force_over_gradp": 1.7449410989576445e-07,
+        "min_abs_sqrt_g": 0.011460539017813994
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 8.94520147376667e-10,
+        "J_relative_l2": 1.903600365786204e-07,
+        "gradp_relative_l2": 2.517441464615928e-09,
+        "force_over_gradp": 8.069822607770529e-07,
+        "min_abs_sqrt_g": 0.01618894510682522
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 1.260691322362455e-09,
+        "J_relative_l2": 5.054699671563286e-08,
+        "gradp_relative_l2": 2.156716877310963e-09,
+        "force_over_gradp": 3.847623720448189e-07,
+        "min_abs_sqrt_g": 8.694328511139712e-05
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 1.2570020538343386e-09,
+        "J_relative_l2": 3.4190880763168744e-08,
+        "gradp_relative_l2": 1.9469950758138387e-09,
+        "force_over_gradp": 3.3241767639809484e-07,
+        "min_abs_sqrt_g": 0.0005126636293339179
+      }
+    }
+  },
+  "equilibrium_artifact": {
+    "path": "desc_solovev_asymmetric_M10.h5",
+    "sha256": "cfd2a4498f18366592cd781fc5dabeeb7fdd7070a973087cb42ecc7c634cca3a"
+  },
+  "elapsed_seconds": 194.22672219900414
+}

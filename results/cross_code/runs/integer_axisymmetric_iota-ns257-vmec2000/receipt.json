@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "run_id": "integer_axisymmetric_iota-ns257-vmec2000",
+  "case_deck": "input.integer_axisymmetric_iota",
+  "deck_sha256": "ac375f762942b7053d09f1852ca11ae1c05261b5439676e9557ab383f9d14ced",
+  "ladder": {
+    "ns_array": [
+      17,
+      33,
+      65,
+      129,
+      257
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-12,
+      1e-12,
+      1e-12,
+      1e-14
+    ],
+    "niter_per_stage": 30000
+  },
+  "code": "vmec2000",
+  "started_utc": "2026-09-25T17:24:45.430991+00:00",
+  "runner_sha256": "cb39c5e9778c9273e2206859e4350783eaacf11e1d0d412a6e5c0f654dd9d012",
+  "host": "Rogerio-macmini-2025",
+  "code_identity": {
+    "repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
+    "binary_sha256": "8ba1188465be8a76bcdf8ff481ab3e03ca6b125eab7a22958e92f39db710c42e",
+    "commit": "ee175502dec1766c60c2027e1df5c74c343d9794",
+    "tracked_tree_clean": false
+  },
+  "command": [
+    "/Users/rogerio/bin/xvmec2000",
+    "input.integer_axisymmetric_iota_ns257"
+  ],
+  "wall_seconds": 8.975088875042275,
+  "returncode": 0,
+  "wout": {
+    "path": "wout_integer_axisymmetric_iota_ns257.nc",
+    "sha256": "4cc054579bc9b3e94eb71415c7321d7c6dd4a7c53d6f8ce4f8ac53c0f99193a4"
+  },
+  "status": "wout_written"
+}

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "run_id": "sheared_A_iota-ns33-vmec2000",
+  "case_deck": "input.sheared_A_iota",
+  "deck_sha256": "0064a64d3f73982f27026f1e6e5c80b9404f95ee2807432b1b8a9e21000bcf81",
+  "ladder": {
+    "ns_array": [
+      17,
+      33
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-14
+    ],
+    "niter_per_stage": 30000
+  },
+  "code": "vmec2000",
+  "started_utc": "2026-09-25T18:53:05.476370+00:00",
+  "runner_sha256": "cb39c5e9778c9273e2206859e4350783eaacf11e1d0d412a6e5c0f654dd9d012",
+  "host": "Rogerio-macmini-2025",
+  "code_identity": {
+    "repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
+    "binary_sha256": "8ba1188465be8a76bcdf8ff481ab3e03ca6b125eab7a22958e92f39db710c42e",
+    "commit": "ee175502dec1766c60c2027e1df5c74c343d9794",
+    "tracked_tree_clean": false
+  },
+  "command": [
+    "/Users/rogerio/bin/xvmec2000",
+    "input.sheared_A_iota_ns33"
+  ],
+  "wall_seconds": 220.31270224996842,
+  "returncode": 0,
+  "wout": {
+    "path": "wout_sheared_A_iota_ns33.nc",
+    "sha256": "111db72c522aa5c5d5f097e6cacbfb8b3a04a63c8cd2e88e798e078f80c3e854"
+  },
+  "status": "wout_written"
+}

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "run_id": "integer_axisymmetric_iota-ns129-vmex",
+  "case_deck": "input.integer_axisymmetric_iota",
+  "deck_sha256": "b8ab3d0b82bcc6bd397f945f6c66886097e7cbfbec79b4e262e99018a158a97e",
+  "ladder": {
+    "ns_array": [
+      17,
+      33,
+      65,
+      129
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-12,
+      1e-12,
+      1e-14
+    ],
+    "niter_per_stage": 30000
+  },
+  "code": "vmex",
+  "started_utc": "2026-09-25T17:23:15.638418+00:00",
+  "runner_sha256": "cb39c5e9778c9273e2206859e4350783eaacf11e1d0d412a6e5c0f654dd9d012",
+  "host": "Rogerio-macmini-2025",
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "commit": "3b73d6f88b832aaa6c63dc7574feb7de9e80d064",
+    "tracked_tree_clean": true
+  },
+  "command": [
+    "/Users/rogerio/base_env/bin/python3",
+    "-m",
+    "vmex",
+    "input.integer_axisymmetric_iota_ns129"
+  ],
+  "wall_seconds": 17.220589624950662,
+  "returncode": 0,
+  "wout": {
+    "path": "wout_integer_axisymmetric_iota_ns129.nc",
+    "sha256": "7c51eb85a06a54c548eedcda8bbfc48f4133ef34326f9dcd7778c01100e37781"
+  },
+  "status": "wout_written"
+}

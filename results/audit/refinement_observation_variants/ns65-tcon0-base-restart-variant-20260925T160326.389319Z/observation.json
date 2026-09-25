@@ -1,0 +1,351 @@
+{
+  "schema": 1,
+  "run_id": "ns65-tcon0-base-restart-variant-20260925T160326.389319Z",
+  "question": "C0/C1 single-pass refinement observation",
+  "command": "python benchmarks/observe_root_refinement.py --deck results/audit/axisym_branch_tcon0/axisym-tcon0-branch-20260925T010824.995851Z/input_delta_ns65_base.indata --ns 65 --label ns65-tcon0-base-restart-variant --skip-memo-probe --output-parent /private/tmp/claude-503/-Users-rogerio-local/fd8e7c95-44b0-4da8-872a-a162a9efe11a/scratchpad/restart",
+  "execution_source_sha256": "f9f4aca8e929118838b305a42482fdfbeb855c379f38c2b9b11a9bd4d5b7f162",
+  "deck": {
+    "path": "results/audit/axisym_branch_tcon0/axisym-tcon0-branch-20260925T010824.995851Z/input_delta_ns65_base.indata",
+    "sha256": "7a75525e3efcd626f96811bec3c243b3dc8911f0832bcb2249cc46c9c4142deb"
+  },
+  "jax": "0.11.0",
+  "vmex_distribution": "0.10.0",
+  "devices_used": [
+    "cpu:0"
+  ],
+  "effective": {
+    "ns": 65,
+    "ftol": 1e-12,
+    "niter": 10000,
+    "refine_tol": 1e-11,
+    "tcon0": 0.0,
+    "ncurr": 1
+  },
+  "params_sha256": "7304f4ab31a9711173c705e633c1c8b25a5877f041a4c8fac6d4b1db7f80baae",
+  "raw_host": {
+    "host_returned": true,
+    "converged": true,
+    "iterations": 1091,
+    "ier_flag": 11,
+    "fsqr_fsqz_fsql": [
+      9.982863454489994e-13,
+      4.705302558622449e-13,
+      2.5201332026634834e-14
+    ],
+    "raw_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+    "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+    "seconds": 4.592032584012486
+  },
+  "observations": {
+    "raw_host": {
+      "observer": "single_pass_uncached_refined_state",
+      "observer_vmex_pin": "b5f5267efc0795c4a49a224e321e9b370975c14c",
+      "memo_untouched": true,
+      "refine_tol": 1e-11,
+      "input_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+      "output_state_sha256": "1222ece1fe0c29ccdc2a9a6ebd35051d749a6edb62d6a49e25f7ca502d3d8182",
+      "state_changed": true,
+      "correction_norm": 0.07823120503150004,
+      "attempted_steps": 11,
+      "trace": [
+        {
+          "kind": "block_factorization",
+          "at_state_sha256": "4c2bd83def43faeacb02360a465bafe2e81e4e9b5f9666d534e3fefff80132db"
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "4c2bd83def43faeacb02360a465bafe2e81e4e9b5f9666d534e3fefff80132db",
+          "output_sha256": "12a4ae7cd768798f16166a4d75739e6f9c7585b70d652a621a2b7f3d29a267d9",
+          "trial_preconditioned_residual": 0.0002441003225914566,
+          "reported_linear_relative_residual": 1.2190561755678534e-08,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 8.857007331351567e-07,
+            "correction_norm": 0.07721669366820808,
+            "true_linear_defect_over_residual": 2.7512138844889303e-06,
+            "merit_directional_derivative_over_residual_sq": -1.000000003055944
+          },
+          "distance_to_returned_over_state": 0.00013162131985739025,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "12a4ae7cd768798f16166a4d75739e6f9c7585b70d652a621a2b7f3d29a267d9",
+          "output_sha256": "ac79b13eb7838f80856ce038f2dfb4a5ffc21e377213a467f0a8653a8909383c",
+          "trial_preconditioned_residual": 4.986414185653666e-07,
+          "reported_linear_relative_residual": 0.0015672024218294884,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 0.000706822701690555,
+            "correction_norm": 0.002524489040220043,
+            "true_linear_defect_over_residual": 0.0015672024440755849,
+            "merit_directional_derivative_over_residual_sq": -0.999997543899067
+          },
+          "distance_to_returned_over_state": 0.0004443475963824291,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "ac79b13eb7838f80856ce038f2dfb4a5ffc21e377213a467f0a8653a8909383c",
+          "output_sha256": "485353dea86106af1804246caaff48ddaa28d4040460364a45af0e4916efe707",
+          "trial_preconditioned_residual": 2.5157197261248585e-07,
+          "reported_linear_relative_residual": 0.18922081426476986,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 1.9532818460585185e-06,
+            "correction_norm": 0.0014833584578117182,
+            "true_linear_defect_over_residual": 0.18922083679100707,
+            "merit_directional_derivative_over_residual_sq": -0.9641954896756584
+          },
+          "distance_to_returned_over_state": 0.0002736655516492074,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "485353dea86106af1804246caaff48ddaa28d4040460364a45af0e4916efe707",
+          "output_sha256": "61f615f3b641babe05a983b428aa7ea86fbe7f26f034e42361ffef8bd085aa4c",
+          "trial_preconditioned_residual": 1.1907360288328809e-07,
+          "reported_linear_relative_residual": 0.17229121701513894,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 1.0377206378845693e-06,
+            "correction_norm": 0.0013526139803918306,
+            "true_linear_defect_over_residual": 0.17229122292384405,
+            "merit_directional_derivative_over_residual_sq": -0.9703157736142669
+          },
+          "distance_to_returned_over_state": 0.00010393254047603556,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "gcrot_newton_step",
+          "input_sha256": "4c2bd83def43faeacb02360a465bafe2e81e4e9b5f9666d534e3fefff80132db",
+          "output_sha256": "12b1a64d2df3f218716fc11a731be59c1c21e2eaaad4f481789b7380cb735d12",
+          "trial_preconditioned_residual": 0.00024328954605593703,
+          "reported_linear_relative_residual": 0.00034533152259396077,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "preconditioned",
+            "input_residual_norm": 5.517960204485733e-07,
+            "correction_norm": 0.07691824962773658,
+            "true_linear_defect_over_residual": 0.00034532466956506836,
+            "merit_directional_derivative_over_residual_sq": -0.9999998804011644
+          },
+          "distance_to_returned_over_state": 0.00018109101869715348,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "gcrot_newton_step",
+          "input_sha256": "12b1a64d2df3f218716fc11a731be59c1c21e2eaaad4f481789b7380cb735d12",
+          "output_sha256": "a1f58a75ae42d370f3153c6db79607da213a94db9dc00f3116197d7996f20505",
+          "trial_preconditioned_residual": 1.3172251827068067e-07,
+          "reported_linear_relative_residual": 2.218729019674445e-06,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "preconditioned",
+            "input_residual_norm": 0.00024328954605593703,
+            "correction_norm": 0.0008330150606427467,
+            "true_linear_defect_over_residual": 2.2187322852343907e-06,
+            "merit_directional_derivative_over_residual_sq": -0.9999999999944711
+          },
+          "distance_to_returned_over_state": 0.00020514729381086475,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "gcrot_newton_step",
+          "input_sha256": "a1f58a75ae42d370f3153c6db79607da213a94db9dc00f3116197d7996f20505",
+          "output_sha256": "b397875c3b8de8b7f4f3e5260d5cd6945faff58f84fa7b5c75ed60a5a7a21d0a",
+          "trial_preconditioned_residual": 3.1415924082549396e-07,
+          "reported_linear_relative_residual": 0.0003656093292123779,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "preconditioned",
+            "input_residual_norm": 1.3172251827068067e-07,
+            "correction_norm": 0.0015244504910791492,
+            "true_linear_defect_over_residual": 0.00036560976816548335,
+            "merit_directional_derivative_over_residual_sq": -0.999999870801977
+          },
+          "distance_to_returned_over_state": 1.7830994650471653e-05,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_factorization",
+          "at_state_sha256": "61f615f3b641babe05a983b428aa7ea86fbe7f26f034e42361ffef8bd085aa4c"
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "61f615f3b641babe05a983b428aa7ea86fbe7f26f034e42361ffef8bd085aa4c",
+          "output_sha256": "075ce4c3cbe052fdd0ac1d063185843aca3c3b94402e71906fea22253c339c69",
+          "trial_preconditioned_residual": 5.040709563095339e-08,
+          "reported_linear_relative_residual": 2.9900325358875907e-10,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 4.4176257345900363e-07,
+            "correction_norm": 0.0008168567457108236,
+            "true_linear_defect_over_residual": 5.056460997740515e-06,
+            "merit_directional_derivative_over_residual_sq": -1.0000000141136907
+          },
+          "distance_to_returned_over_state": 1.2255718068188701e-06,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "075ce4c3cbe052fdd0ac1d063185843aca3c3b94402e71906fea22253c339c69",
+          "output_sha256": "aaf6bb511f28b47dd8737948c2b6ad38a4fcfb66ebedb92fa9418982c4fa1f1f",
+          "trial_preconditioned_residual": 7.013328888011665e-12,
+          "reported_linear_relative_residual": 5.524580499963534e-08,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 1.9548894442711937e-07,
+            "correction_norm": 9.70353267706042e-06,
+            "true_linear_defect_over_residual": 9.750725928457116e-06,
+            "merit_directional_derivative_over_residual_sq": -0.9999999917332217
+          },
+          "distance_to_returned_over_state": 5.453420999211459e-09,
+          "accepted_as_returned_state": false
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "aaf6bb511f28b47dd8737948c2b6ad38a4fcfb66ebedb92fa9418982c4fa1f1f",
+          "output_sha256": "42fb74352237de30509df1e8c4a1c4ba9f6f0a33f94a257cfc11ced21450ffec",
+          "trial_preconditioned_residual": 6.201248796622746e-14,
+          "reported_linear_relative_residual": 2.3186817341720814e-08,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 2.7302127719356543e-11,
+            "correction_norm": 4.336942901192409e-08,
+            "true_linear_defect_over_residual": 0.07378334698980402,
+            "merit_directional_derivative_over_residual_sq": -0.9993509404874651
+          },
+          "distance_to_returned_over_state": 4.178817343467954e-19,
+          "accepted_as_returned_state": true
+        },
+        {
+          "kind": "block_newton_step",
+          "input_sha256": "42fb74352237de30509df1e8c4a1c4ba9f6f0a33f94a257cfc11ced21450ffec",
+          "output_sha256": "1257b78c7469b8bd18c54a2772a7bbd07305c78f7af001a97a056b45d7fbf732",
+          "trial_preconditioned_residual": 6.687320918421484e-14,
+          "reported_linear_relative_residual": 5.839837197908749e-07,
+          "finite": true,
+          "defect": {
+            "linearized_formulation": "raw",
+            "input_residual_norm": 5.33450609320248e-12,
+            "correction_norm": 2.0914752705679437e-11,
+            "true_linear_defect_over_residual": 0.4612000571591282,
+            "merit_directional_derivative_over_residual_sq": -0.9971308597894836
+          },
+          "distance_to_returned_over_state": 2.629892826711357e-12,
+          "accepted_as_returned_state": false
+        }
+      ],
+      "returned_trial_indices": [
+        11
+      ],
+      "residual_before_refinement_operator": {
+        "frozen_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+        "preconditioned": {
+          "norm": 5.517960204485733e-07,
+          "blocks": {
+            "R_cos": 2.7018901084495378e-08,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 1.471914045979092e-08,
+            "L_cos": 0.0,
+            "L_sin": 5.509375409891702e-07
+          }
+        },
+        "raw": {
+          "norm": 8.857007331351567e-07,
+          "blocks": {
+            "R_cos": 7.301370291144056e-07,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 5.012686985386617e-07,
+            "L_cos": 0.0,
+            "L_sin": 9.767254348064796e-09
+          }
+        }
+      },
+      "residual_after_refinement_operator": {
+        "frozen_state_sha256": "c4058b251a88ace90d4b80204b4bacf5393badc5056d5e1cbf839c98350a1a31",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "1222ece1fe0c29ccdc2a9a6ebd35051d749a6edb62d6a49e25f7ca502d3d8182",
+        "preconditioned": {
+          "norm": 6.201248796622746e-14,
+          "blocks": {
+            "R_cos": 3.9671722837689854e-16,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.3645388729918236e-16,
+            "L_cos": 0.0,
+            "L_sin": 6.201076816780612e-14
+          }
+        },
+        "raw": {
+          "norm": 5.33450609320248e-12,
+          "blocks": {
+            "R_cos": 4.547099076357975e-12,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.789390401859542e-12,
+            "L_cos": 0.0,
+            "L_sin": 1.2101000483635062e-14
+          }
+        }
+      },
+      "residual_after_refrozen_operator": {
+        "frozen_state_sha256": "1222ece1fe0c29ccdc2a9a6ebd35051d749a6edb62d6a49e25f7ca502d3d8182",
+        "dof_mask_sha256": "11bd8f05939dfd544aa49a4bd72b60a90ee8fcbe90c3c6b86fb9b8c947f3b6c6",
+        "state_sha256": "1222ece1fe0c29ccdc2a9a6ebd35051d749a6edb62d6a49e25f7ca502d3d8182",
+        "preconditioned": {
+          "norm": 6.201248796622746e-14,
+          "blocks": {
+            "R_cos": 3.9671722837689854e-16,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.3645388729918236e-16,
+            "L_cos": 0.0,
+            "L_sin": 6.201076816780612e-14
+          }
+        },
+        "raw": {
+          "norm": 5.33450609320248e-12,
+          "blocks": {
+            "R_cos": 4.547099076357975e-12,
+            "R_sin": 0.0,
+            "Z_cos": 0.0,
+            "Z_sin": 2.789390401859542e-12,
+            "L_cos": 0.0,
+            "L_sin": 1.2101000483635062e-14
+          }
+        }
+      },
+      "status": {
+        "host_returned": true,
+        "refinement_attempted": true,
+        "root_certified": true,
+        "response_certified": false
+      },
+      "seconds": 69.16045433399267,
+      "derivative_gate": {
+        "root_certified": true,
+        "derivative_may_be_accepted": true,
+        "reason": null
+      }
+    }
+  },
+  "arrays": {
+    "path": "observation_arrays.npz",
+    "sha256": "69a8eeb683b813c11a9bbcfa79d8bde965971c19385c0c93412a93b90c36cc55"
+  },
+  "elapsed_seconds": 73.96183158399072,
+  "peak_host_rss_mib": 1879.171875
+}

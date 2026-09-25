@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "run_id": "solovev_symmetric_iota-ns129-vmex",
+  "case_deck": "input.solovev_symmetric_iota",
+  "deck_sha256": "18aef4b8c8d95def61533fb60003c35056836592060248c8375afe918e9a1eed",
+  "ladder": {
+    "ns_array": [
+      17,
+      33,
+      65,
+      129
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-12,
+      1e-12,
+      1e-14
+    ],
+    "niter_per_stage": 30000
+  },
+  "code": "vmex",
+  "started_utc": "2026-09-25T17:38:14.184840+00:00",
+  "runner_sha256": "cb39c5e9778c9273e2206859e4350783eaacf11e1d0d412a6e5c0f654dd9d012",
+  "host": "Rogerio-macmini-2025",
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "commit": "3b73d6f88b832aaa6c63dc7574feb7de9e80d064",
+    "tracked_tree_clean": true
+  },
+  "command": [
+    "/Users/rogerio/base_env/bin/python3",
+    "-m",
+    "vmex",
+    "input.solovev_symmetric_iota_ns129"
+  ],
+  "wall_seconds": 4.524514832999557,
+  "returncode": 0,
+  "wout": {
+    "path": "wout_solovev_symmetric_iota_ns129.nc",
+    "sha256": "dc04797117c2fe1b2a6993cdb0cd3c31ecce6bacce7b56d59e2b4400aaa5e0c9"
+  },
+  "status": "wout_written"
+}
