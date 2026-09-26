@@ -30,7 +30,7 @@ DESC is run at its own spectral resolution and scored by evaluating its fields a
 ## Main results
 
 - VMEX, VMEC2000 and VMEC++ give the same equilibrium from the same input. VMEX's improvements are elsewhere: in how fields are read out, and in its derivatives.
-- The exact solutions exposed two VMEX defects that resolution studies had missed. Fixes: [uwplasma/vmex#452](https://github.com/uwplasma/vmex/pull/452) (field at the axis, merged) and [#453](https://github.com/uwplasma/vmex/pull/453) (derivative refinement, in review).
+- The exact solutions exposed two VMEX defects that resolution studies had missed. Fixes: [uwplasma/vmex#452](https://github.com/uwplasma/vmex/pull/452) (field at the axis) and [#453](https://github.com/uwplasma/vmex/pull/453) (derivative refinement), both merged.
 - VMEX's continuous field gives J 10–70× more accurately than the standard WOUT output file, except within a few surfaces of the axis.
 - DESC is the most accurate code in this comparison, including at the axis, and it recovers the cases where the VMEC-type codes fail from a cold start.
 
@@ -52,7 +52,7 @@ VMEX evaluates B and J between its radial surfaces by interpolating Fourier coef
 
 *The exact solution projected onto VMEX's representation, with no solve, so only the evaluator is tested. Integer 3-D case.*
 
-### 3. VMEX fix: refinement before derivatives (#453, in review)
+### 3. VMEX fix: refinement before derivatives (#453, merged)
 
 Before computing derivatives, VMEX refines the equilibrium with Newton steps until the force residual is below `refine_tol`. When the first step overshot, the refinement stopped early and derivatives were taken at an unconverged state. It now restarts from its best point, at most twice. On the case below one call goes from 1e-7 to 6e-14.
 
