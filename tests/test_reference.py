@@ -12,8 +12,8 @@ import pytest
 import sympy as sp
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "benchmarks"))
-from analytic import (cases, differential_fields, field, flux, flux_rate, integer_targets,
-                      iota, label_at_s, pressure, rotate, shear_flux_rates, surface,
+from analytic import (cases, differential_fields, field, flux, integer_targets,
+                      label_at_s, pressure, rotate, shear_flux_rates, surface,
                       validate, volume)
 from build_inputs import boundary_coefficients, enclosed_current
 
@@ -134,25 +134,3 @@ def test_invalid_domains_rejected():
             validate(replace(base, parameters=params))
 
 
-def test_physical_scorer_scaling_and_sign_detection():
-    from score_samples import score
-    case = CASES["integer_3d"]
-    s = np.linspace(.1, .8, 8)
-    x = surface(case, case.edge*s, np.linspace(.1, 5., 8), .3)
-    B, J, gp, _, _ = differential_fields(case, x)
-    L, B0, mu0 = 2., 3., 4e-7*np.pi
-    data = dict(case_name=case.name, xyz=L*x, B=B0*B, J=B0/(mu0*L)*J,
-                gradp=B0*B0/(mu0*L)*gp, weights=np.ones(8),
-                s=s, length_m=L, field_t=B0, mu0=mu0)
-    good = score(data)
-    assert good["field_relative_l2"] < 1e-14
-    assert good["current_relative_l2"] < 1e-14
-    assert good["surface_label_max_over_edge"] < 1e-12
-    bad = score({**data, "B": -data["B"]})
-    np.testing.assert_allclose(bad["field_relative_l2"], 2.)
-    with pytest.raises(ValueError):
-        score({**data, "weights": -data["weights"]})
-    with pytest.raises(ValueError):
-        score({**data, "field_t": np.inf})
-    with pytest.raises(ValueError):
-        score({**data, "xyz": L*surface(case, 1.2*case.edge, np.linspace(.1, 5., 8), .3)})

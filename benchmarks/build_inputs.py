@@ -6,7 +6,6 @@ Both prescribed-iota and prescribed-current inputs are generated. Field/sign
 recovery is a required local gate before accepting either closure.
 """
 import json
-from pathlib import Path
 
 import jax
 jax.config.update("jax_enable_x64", True)

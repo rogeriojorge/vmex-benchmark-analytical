@@ -54,14 +54,6 @@ def main():
                           "J_axis": a["J_relative_l2"],
                           "B_mid": r["solved"]["rings"]["0.7"]["B_relative_l2"],
                           "J_mid": r["solved"]["rings"]["0.7"]["J_relative_l2"], "record_sha256": sha(rec)})
-    for rec in sorted((ROOT/"results/desc/axis_volume").glob("integer_3d_base_L*.json")):
-        r = json.loads(rec.read_text())
-        v, a = r["volume"]["gauss"], r["rings"]["0.0001"]
-        desc_rows.append({"code": "desc", "case": "integer_3d", "M": r["desc_resolution"]["M"],
-                          "solver_success": True, "B_volume": v["B_relative_l2"], "J_volume": v["J_relative_l2"],
-                          "force_volume": v["force_over_gradp"], "B_axis": a["B_relative_l2"],
-                          "J_axis": a["J_relative_l2"], "flux_label_error_axis": a["flux_label_error_max"],
-                          "record_sha256": sha(rec)})
     out = ROOT/"results/cross_code/summary.json"
     out.write_text(json.dumps({"schema": 1, "vmec_family": rows, "desc": desc_rows}, indent=2)+"\n")
     for r in rows:

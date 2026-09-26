@@ -1,7 +1,7 @@
 """Exact MHD references, in dimensionless units with mu0 = 1.
 
-Landreman, arXiv:2609.26742v1, sections 2-3; plan.md gives the additional
-stretch and asymmetric Solov'ev derivations. Angles in surface() are the
+Integer and sheared families: Landreman, arXiv:2609.26742v1, sections 2-3.
+The Solov'ev cases are derived in ``solovev_field``. Angles in surface() are the
 physical cylindrical phi and a counterclockwise R-Z parameter theta.
 The latter need not be a straight-field-line angle.
 """
@@ -99,6 +99,13 @@ def sheared_field(x, eps, S, lam):
 
 
 def solovev_field(x, R0, b, g, chi, F0):
+    """Solov'ev field with psi = b U^2 + g Z^2 + 2 h U Z, U = R^2 - R0^2, h = chi sqrt(b g).
+
+    Grad-Shafranov: Delta* psi = 8 b R^2 + 2 g, matched by p'(psi) = -8 b and
+    F^2 = F0^2 - 4 g psi (so F F' = -2 g).  The cross term 2 h U Z is annihilated
+    by Delta*; it only tilts the surfaces, giving an up-down asymmetric exact
+    equilibrium for chi != 0 (nested surfaces need |chi| < 1).
+    """
     R = jnp.hypot(x[..., 0], x[..., 1])
     Z, U = x[..., 2], R*R-R0*R0
     h = chi*jnp.sqrt(b*g)

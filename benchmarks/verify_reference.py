@@ -2,7 +2,6 @@
 import importlib.metadata
 import json
 import platform
-from pathlib import Path
 import sys
 
 import jax
