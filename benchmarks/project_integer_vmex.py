@@ -20,11 +20,12 @@ from analytic import ROOT, cases, field, surface
 ARGS = sys.argv[1:]
 CASE = ARGS.pop(ARGS.index("--case")+1) if "--case" in ARGS else "integer_3d"
 SOLVE = "--solve" in ARGS  # also run VMEX from the projection and write its WOUT
-ARGS = [a for a in ARGS if a not in ("--case", "--solve")]
+FTOL = float(ARGS.pop(ARGS.index("--ftol")+1)) if "--ftol" in ARGS else 1e-12
+ARGS = [a for a in ARGS if a not in ("--case", "--solve", "--ftol")]
 NS = int(ARGS[0]) if ARGS else 33
 VOLUME = ARGS[1:] == ["--volume"]
 if len(ARGS) > 2 or (len(ARGS) == 2 and not VOLUME) or NS < 5:
-    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5 [--volume]] [--case NAME] [--solve]")
+    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5 [--volume]] [--case NAME] [--solve [--ftol F]]")
 GRID = 64
 
 
@@ -93,7 +94,7 @@ def main():
         from vmex.core.errors import VmecConvergenceError
         from vmex.core.solver import solve
         try:  # tcon0 = 0: no spectral-condensation force at the exact root
-            result = solve(inp, resolution_from_input(inp, ns=NS), initial_state=state, ftol=1e-12,
+            result = solve(inp, resolution_from_input(inp, ns=NS), initial_state=state, ftol=FTOL,
                            max_iterations=30000, mode="jit", tcon0=0.0)
         except VmecConvergenceError as error:
             raise SystemExit(f"seeded solve unconverged: fsq {error.fsq} after {error.iteration}")
