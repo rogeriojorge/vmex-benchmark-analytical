@@ -10,8 +10,8 @@ Boozer Jacobian ~ 1/B^2 is <B^3>/<B^2> (field-line average with weight dl/B), an
 R0 = Boozer R_00 of the first surface in the file (neo_jax.driver.compute_reference).
 We store eps^{3/2}/R0^2 and multiply by NEO's rt0 when comparing.
 
-    python benchmarks/ripple_reference.py reference   # real-space convergence ladder
-    python benchmarks/ripple_reference.py neo [NS]    # VMEX -> booz_xform_jax -> NEO_JAX
+    python benchmarks/ripple_reference.py reference [CASE ...]   # real-space ladder
+    python benchmarks/ripple_reference.py neo CASE=WOUT ...       # WOUT -> booz_xform_jax -> NEO_JAX
 """
 from dataclasses import replace
 import json
@@ -91,9 +91,9 @@ def nemov(q, h, npitch):
     return np.pi/(8*np.sqrt(2))*L/mean_grad**2*total*(hi-lo)/npitch
 
 
-def reference():
+def reference(names):
     out = {}
-    for name in CASES:
+    for name in names:
         case = cases()[name]
         for s in S_VALUES:
             label = float(label_at_s(case, s))
@@ -117,56 +117,36 @@ def reference():
     return out
 
 
-def neo(ns):
+def neo(runs):
+    """NEO_JAX on CASE=WOUT pairs, with NEO's own accuracy ladder."""
     import vmex
-    from build_inputs import boundary_coefficients, fit_profiles
     from neo_jax import NeoConfig
     from neo_jax.driver import compute_reference
     from neo_jax.io import booz_xform_to_boozerdata
     from neo_jax.pipeline import booz_xform_from_vmec_wout, run_boozer_to_neo
     out = {}
-    for name in CASES:
-        case = cases()[name]
-        rows, ntor, *_ = boundary_coefficients(case)
-        polp, poli, *_ = fit_profiles(case)
-        mu0 = 4e-7*np.pi
-        lines = ["&INDATA", "LFREEB=F", f"LASYM={'T' if case.lasym else 'F'}", f"NFP={case.nfp}",
-                 "MPOL=13", f"NTOR={ntor}", f"NS_ARRAY=17 {ns}", "FTOL_ARRAY=1e-12 1e-15",
-                 "NITER_ARRAY=20000 60000", "NSTEP=200", "DELT=0.5", "GAMMA=0",
-                 "PMASS_TYPE='power_series'", f"PHIEDGE={float(flux(case, case.edge)):.17e}",
-                 "AM="+" ".join(f"{x/mu0:.17e}" for x in polp.coef), "NCURR=0",
-                 "PIOTA_TYPE='power_series'", "AI="+" ".join(f"{x:.17e}" for x in poli.coef)]
-        for m, n, rc, rs, zc, zs in rows:
-            for key, value in (("RBC", rc), ("ZBS", zs), ("RBS", rs), ("ZBC", zc)):
-                if (case.lasym or key in ("RBC", "ZBS")) and abs(value) > 2e-15:
-                    lines.append(f"{key}({int(n)},{int(m)})={value:.17e}")
-        OUT.mkdir(parents=True, exist_ok=True)
-        deck = OUT / f"input.{name}_ns{ns}"
-        deck.write_text("\n".join(lines+["/"])+"\n")
-        inp = vmex.VmecInput.from_file(deck)
-        t0, path = perf_counter(), OUT / f"wout_{name}_ns{ns}.nc"
-        if not path.exists():
-            vmex.write_wout(path, vmex.wout_from_result(inp, vmex.solve_multigrid(inp)))
+    for run in runs:
+        name, path = run.split("=")
         wout = vmex.read_wout(path)
-        booz = booz_xform_from_vmec_wout(wout, mboz=48, nboz=48, surfaces=list(S_VALUES))
-        config = NeoConfig(theta_n=200, phi_n=200, npart=150, acc_req=1e-3, nstep_max=5000,
-                           nstep_min=1000, multra=2, rational_surface_policy="approximate")
-        res = run_boozer_to_neo(booz, config=config, use_jax=True)
+        booz = booz_xform_from_vmec_wout(wout, mboz=40, nboz=40, surfaces=[0.02, *S_VALUES, 0.98])
         rt0 = compute_reference(booz_xform_to_boozerdata(booz))["rt0"]
-        for i, s in enumerate(S_VALUES):
-            out[f"{name}/s={s}"] = dict(case=name, s=float(np.asarray(booz["s_b"])[i]), ns=ns,
-                                         eps32=float(res[i].epsilon_effective), rt0=rt0,
-                                         fsqr=float(wout.fsqr), seconds=perf_counter()-t0)
-            print(name, s, out[f"{name}/s={s}"], flush=True)
+        rows = []
+        for acc, npart in ((0.02, 40), (0.002, 120)):
+            config = NeoConfig(acc_req=acc, npart=npart, nstep_max=5000, theta_n=128, phi_n=128,
+                               rational_surface_policy="approximate")
+            eps = np.asarray(run_boozer_to_neo(booz, config=config).epsilon_effective)
+            rows.append(dict(acc_req=acc, npart=npart, eps32_over_R0sq=[float(x) if np.isfinite(x) else None for x in eps/rt0**2]))
+        out[name] = dict(wout=path, s=np.asarray(booz["s_b"]).tolist(), rt0=rt0, lasym=bool(wout.lasym),
+                         fsqr=float(wout.fsqr), fsqz=float(wout.fsqz), ladder=rows)
+        print(name, rows, flush=True)
     return out
 
 
 if __name__ == "__main__":
     if sys.argv[1] == "reference":
-        key, result = "reference", reference()
+        key, result = "reference", reference(sys.argv[2:] or CASES)
     else:
-        ns = int(sys.argv[2]) if len(sys.argv) > 2 else 65
-        key, result = f"neo_vmex_ns{ns}", neo(ns)
+        key, result = "neo_vmex", neo(sys.argv[2:])
     path = OUT / "ripple_reference.json"
     data = json.loads(path.read_text()) if path.exists() else {}
-    path.write_text(json.dumps({**data, key: result}, indent=2, allow_nan=False)+"\n")
+    path.write_text(json.dumps({**data, key: {**data.get(key, {}), **result}}, indent=2, allow_nan=False)+"\n")
