@@ -19,11 +19,12 @@ from analytic import ROOT, cases, field, surface
 
 ARGS = sys.argv[1:]
 CASE = ARGS.pop(ARGS.index("--case")+1) if "--case" in ARGS else "integer_3d"
-ARGS = [a for a in ARGS if a != "--case"]
+SOLVE = "--solve" in ARGS  # also run VMEX from the projection and write its WOUT
+ARGS = [a for a in ARGS if a not in ("--case", "--solve")]
 NS = int(ARGS[0]) if ARGS else 33
 VOLUME = ARGS[1:] == ["--volume"]
 if len(ARGS) > 2 or (len(ARGS) == 2 and not VOLUME) or NS < 5:
-    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5 [--volume]] [--case NAME]")
+    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5 [--volume]] [--case NAME] [--solve]")
 GRID = 64
 
 
@@ -88,6 +89,13 @@ def main():
         max_B_relative_surface_l2=max_B, rows=rows), indent=2, allow_nan=False)+"\n")
     np.savez_compressed(out / "seed.npz", **{name: np.asarray(getattr(state, name)) for name in
         ("R_cos", "R_sin", "Z_cos", "Z_sin", "L_cos", "L_sin")})
+    if SOLVE:
+        from vmex.core.solver import solve
+        result = solve(inp, resolution_from_input(inp, ns=NS), initial_state=state, ftol=1e-14,
+                       max_iterations=30000, mode="jit", verbose=True)
+        vmex.write_wout(out / f"wout_{CASE}_seeded_ns{NS}.nc", vmex.wout_from_result(inp, result))
+        print({"seeded_solve": dict(iterations=int(result.iterations), fsq=[float(result.fsqr),
+               float(result.fsqz), float(result.fsql)])})
     if VOLUME:
         from native_samples import sample_native
         from score_samples import score
