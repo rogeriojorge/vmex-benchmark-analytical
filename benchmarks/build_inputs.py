@@ -6,6 +6,7 @@ Both prescribed-iota and prescribed-current inputs are generated. Field/sign
 recovery is a required local gate before accepting either closure.
 """
 import json
+import sys
 
 import jax
 jax.config.update("jax_enable_x64", True)
@@ -21,7 +22,9 @@ MU0 = 4e-7*np.pi  # Fixed convention, recorded; not an unspecified CODATA consta
 MAX_M = 12
 MAX_N = 12
 FIT_GRID = 128
-STRONG_BOUNDARY_RESOLUTION = {"sheared_B": (16, 96), "sheared_C": (24, 100)}
+STRONG_BOUNDARY_RESOLUTION = {"sheared_B": (16, 96), "sheared_C": (24, 100),
+                              **dict.fromkeys(("sheared_issan", "sheared_issan_tau",
+                                               "sheared_issan_tau_mirror"), (16, 24))}
 PROFILE_DEGREES = (8, 12, 16, 20)
 PROFILE_TOL = 1e-8
 OUT = ROOT / "inputs"
@@ -101,8 +104,10 @@ def fit_profiles(case):
 
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
-    records = []
-    for case in cases().values():
+    names = sys.argv[1:] or list(cases())  # e.g. build_inputs.py sheared_issan_tau
+    old = json.loads((OUT/"manifest.json").read_text())["records"] if sys.argv[1:] else []
+    records = [r for r in old if r["case"] not in names]
+    for case in (cases()[name] for name in names):
         validate(case)
         validate_sheared_surface_chart_sampled(case)
         max_m, max_n = STRONG_BOUNDARY_RESOLUTION.get(case.name, (MAX_M, MAX_N))

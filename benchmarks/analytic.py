@@ -1,6 +1,7 @@
 """Exact MHD references, in dimensionless units with mu0 = 1.
 
-Integer and sheared families: Landreman, arXiv:2609.26742v1, sections 2-3.
+Integer and sheared families: Landreman, arXiv:2609.26742v1, sections 2-3;
+their tau != 0 non-stellarator-symmetric extensions: Issan et al., arXiv:2610.07304v1.
 The Solov'ev cases are derived in ``solovev_field``. Angles in surface() are the
 physical cylindrical phi and a counterclockwise R-Z parameter theta.
 The latter need not be a straight-field-line angle.
@@ -27,6 +28,7 @@ class Case:
     lasym: bool = False
     phase: float = 0.0
     zshift: float = 0.0
+    tau: float = 0.0  # breaks stellarator symmetry; tau -> -tau is the mirror image
 
     @property
     def edge(self):
@@ -35,7 +37,7 @@ class Case:
     @property
     def pressure_slope(self):
         if self.family == "integer":
-            return -2 * self.parameters[2]**2
+            return -2 * self.parameters[2]**2/(1-self.tau**2)
         if self.family == "sheared":
             return -1 / self.parameters[2]**2
         return -8 * self.parameters[1]
@@ -49,11 +51,13 @@ def cases():
 
 def validate(case):
     p = np.asarray(case.parameters)
-    if not np.isfinite(p).all() or case.edge <= 0:
+    if not np.isfinite([*p, case.tau]).all() or case.edge <= 0:
         raise ValueError("Parameters must be finite and edge label positive.")
     if case.family == "integer":
         a, b, c, delta = p
-        if min(a, b, c) <= 0 or abs((a*a-b*b)/(4*c*c))+np.sqrt(delta) >= 0.5:
+        if case.tau and (abs(case.tau) >= 1 or c != 1 or abs(a*a+b*b-2) > 1e-12):
+            raise ValueError("tau needs |tau| < 1, c = 1 and a^2 + b^2 = 2 (arXiv:2610.07304).")
+        if min(a, b, c) <= 0 or (1-case.tau**2)*abs((a*a-b*b)/(4*c*c))+np.sqrt(delta) >= 0.5:
             raise ValueError("Integer pressure torus leaves its smooth domain.")
     elif case.family == "sheared":
         eps, S, lam, delta = p
@@ -67,8 +71,8 @@ def validate(case):
             raise ValueError("Solov'ev torus reaches R=0 or F=0.")
     else:
         raise ValueError(f"Unknown family {case.family}.")
-    if not case.lasym and (case.phase != 0 or case.zshift != 0):
-        raise ValueError("A shifted symmetry origin requires the full Fourier basis.")
+    if not case.lasym and (case.phase != 0 or case.zshift != 0 or case.tau != 0):
+        raise ValueError("A shifted symmetry origin or tau requires the full Fourier basis.")
 
 
 def rotate(x, angle, xp=jnp):
@@ -76,21 +80,21 @@ def rotate(x, angle, xp=jnp):
     return xp.stack((c*x[..., 0]-s*x[..., 1], s*x[..., 0]+c*x[..., 1], x[..., 2]), -1)
 
 
-def integer_field(x, a, b, c):
+def integer_field(x, a, b, c, tau=0.):
     X, Y, Z = x[..., 0], x[..., 1], x[..., 2]
-    q = (X/a)**2 + (Y/b)**2
-    f = jnp.sqrt(2*q-q*q-4*(Z/c)**2)
-    B = jnp.stack(((2*Z*X/c-a/b*f*Y)/q,
-                   (2*Z*Y/c+b/a*f*X)/q, c*(1-q)), -1)
-    Ha = (a*a+b*b)/2 - (a*a-b*b)**2/(8*c*c)
-    H = (X*X+Y*Y+4*Z*Z+jnp.sum(B*B, -1))/2
-    return B, (H-Ha)/(2*c*c)
+    q, z, w = (X/a)**2 + (Y/b)**2, Z/c, 1-tau*tau
+    f = jnp.sqrt(2*q-q*q-4*z*z-4*tau*q*z)
+    B = jnp.stack((((2*z+tau*q)*X-a/b*f*Y)/q,
+                   ((2*z+tau*q)*Y+b/a*f*X)/q, c*(1-q-2*tau*z)), -1)
+    Ha = (a*a+b*b)/2 - w*(a*a-b*b)**2/(8*c*c) - tau*tau/(2*w)
+    H = (w*(X*X+Y*Y+4*Z*Z)+jnp.sum(B*B, -1))/2 + 2*tau*c*Z
+    return B, w*(H-Ha)/(2*c*c)
 
 
-def sheared_field(x, eps, S, lam):
+def sheared_field(x, eps, S, lam, tau=0.):
     w, wc = x[..., 0]+1j*x[..., 1], x[..., 0]-1j*x[..., 1]
     K = wc*jnp.sqrt(1+eps/wc**2)
-    phase = w*K+jnp.pi/2-S
+    phase = w*K+jnp.pi/2-S+1j*tau
     factor = jnp.exp(-1j*lam*x[..., 2])
     xy = 1j*factor*jnp.sin(phase)/(2*K)
     bz = jnp.real(factor*jnp.cos(phase))/lam
@@ -119,7 +123,8 @@ def solovev_field(x, R0, b, g, chi, F0):
 def field(case, xyz):
     local = rotate(jnp.asarray(xyz)-jnp.array([0., 0., case.zshift]), -case.phase)
     functions = {"integer": integer_field, "sheared": sheared_field, "solovev": solovev_field}
-    B, psi = functions[case.family](local, *case.parameters[:-1])
+    tau = (case.tau,) if case.family != "solovev" else ()
+    B, psi = functions[case.family](local, *case.parameters[:-1], *tau)
     return rotate(B, case.phase), psi
 
 
@@ -127,10 +132,10 @@ def pressure(case, xyz):
     return case.pressure_slope*(field(case, xyz)[1]-case.edge)
 
 
-def shear_chart(k, theta, t, eps, S, lam, xp=np):
+def shear_chart(k, theta, t, eps, S, lam, tau=0., xp=np):
     """Explicit chart; t is NOT cylindrical phi. theta = -chi of the paper."""
     X, Y = -k*xp.cos(theta), -k*xp.sin(theta)
-    nu = eps/2*xp.sin(2*t)
+    nu = eps/2*xp.sin(2*t)+tau
     sigma = S+xp.arctan(xp.tanh(nu)*Y/xp.sqrt(1-Y*Y))
     sigma -= xp.arcsin(X/xp.sqrt(xp.cosh(nu)**2-Y*Y))
     h = xp.sqrt(4*sigma*sigma+eps*eps)
@@ -150,7 +155,7 @@ def validate_sheared_surface_chart_sampled(case, *, ntheta=64, nt=1025):
     eps, S, lam, edge = case.parameters
     theta, t = np.broadcast_arrays(2*np.pi*np.arange(ntheta)[:, None]/ntheta,
                                     np.linspace(0, 2*np.pi, nt)[None, :])
-    xyz = shear_chart(np.sqrt(2*edge), theta, t, eps, S, lam)
+    xyz = shear_chart(np.sqrt(2*edge), theta, t, eps, S, lam, case.tau)
     phi = np.unwrap(np.arctan2(xyz[..., 1], xyz[..., 0]), axis=-1)
     if (not np.isfinite(xyz).all() or
         np.min(np.hypot(xyz[..., 0], xyz[..., 1])) <= 0 or
@@ -169,7 +174,8 @@ def surface(case, label, theta, phi):
     phi0 = np.mod(phi-case.phase, 2*np.pi)
     if case.family == "integer":
         a, b, c, _ = case.parameters
-        u0 = -(a*a-b*b)/(4*c*c)
+        w = np.sqrt(1-case.tau**2)
+        u0 = -w*w*(a*a-b*b)/(4*c*c)
         beta = 2*phi0+theta
         u, v = u0+np.sqrt(label)*np.cos(beta), np.sqrt(label)*np.sin(beta)
         ell = np.sqrt((1+np.sqrt(1-4*(u*u+v*v)))/2)
@@ -177,17 +183,20 @@ def surface(case, label, theta, phi):
         ct, st = E*np.cos(phi0)-C*np.sin(phi0), A*np.sin(phi0)-D*np.cos(phi0)
         norm = np.hypot(ct, st)
         ct, st = ct/norm, st/norm
-        xyz = np.stack((A*ct+C*st, D*ct+E*st, c*(v*(ct*ct-st*st)-2*u*st*ct)), -1)
+        c2, s2 = ct*ct-st*st, 2*st*ct  # cos, sin of 2 zeta; then shift by asin(tau)
+        c2, s2 = w*c2-case.tau*s2, w*s2+case.tau*c2
+        xyz = np.stack(((A*ct+C*st)/w, (D*ct+E*st)/w,
+                        c*(v*c2-u*s2-case.tau/2)/(w*w)), -1)
     elif case.family == "sheared":
         eps, S, lam, _ = case.parameters
         lo = np.floor(phi0/(np.pi/2))*(np.pi/2)
         hi = lo+np.pi/2
         for _ in range(54):
             mid = (lo+hi)/2
-            x = shear_chart(np.sqrt(2*label), theta, mid, eps, S, lam)
+            x = shear_chart(np.sqrt(2*label), theta, mid, eps, S, lam, case.tau)
             cross = x[..., 0]*np.sin(phi0)-x[..., 1]*np.cos(phi0)
             lo, hi = np.where(cross > 0, mid, lo), np.where(cross > 0, hi, mid)
-        xyz = shear_chart(np.sqrt(2*label), theta, (lo+hi)/2, eps, S, lam)
+        xyz = shear_chart(np.sqrt(2*label), theta, (lo+hi)/2, eps, S, lam, case.tau)
     else:
         R0, b, g, chi, _, _ = case.parameters
         U = np.sqrt(label/b)/np.sqrt(1-chi*chi)*np.cos(theta)
@@ -197,14 +206,14 @@ def surface(case, label, theta, phi):
     return rotate(xyz, case.phase, np)+np.array([0., 0., case.zshift])
 
 
-def shear_flux_rates(k, eps, S, lam, n=512, xp=np):
+def shear_flux_rates(k, eps, S, lam, tau=0., n=512, xp=np):
     """Q'(k)/k and poloidal A'(k)/k, regular at k=0; iota magnitude=A'/Q'."""
     k = xp.asarray(k)[..., None]
     u = xp.arange(n)*2*xp.pi/n
     c = xp.sqrt(1-k*k*xp.sin(u)**2)
     sigma = S+xp.arcsin(k*xp.cos(u)/c)
     q = xp.pi/lam*xp.mean(1/(xp.sqrt(4*sigma*sigma+eps*eps)*c), -1)
-    nu = eps/2*xp.sin(2*u)
+    nu = eps/2*xp.sin(2*u)+tau
     sigma = S+xp.arcsin(k/xp.cosh(nu))
     h = xp.sqrt(4*sigma*sigma+eps*eps)
     g = (h+eps*xp.cos(2*u))/2
@@ -217,9 +226,9 @@ def flux_rate(case, label):
     label = np.asarray(label)
     if case.family == "integer":
         a, b, c, _ = case.parameters
-        return np.full_like(label, np.pi*a*b*c, dtype=float)
+        return np.full_like(label, np.pi*a*b*c/(1-case.tau**2), dtype=float)
     if case.family == "sheared":
-        return shear_flux_rates(np.sqrt(2*label), *case.parameters[:-1])[0]
+        return shear_flux_rates(np.sqrt(2*label), *case.parameters[:-1], case.tau)[0]
     R0, b, g, chi, F0, _ = case.parameters
     return np.pi*np.sqrt(F0*F0-4*g*label)/(2*np.sqrt(b*g)*np.sqrt(1-chi*chi)
               *np.sqrt(R0**4-label/(b*(1-chi*chi))))
@@ -250,35 +259,34 @@ def iota(case, label):
         return np.zeros_like(label, dtype=float)-2.
     if case.family == "solovev":
         return -2*np.pi/flux_rate(case, label)
-    q, a = shear_flux_rates(np.sqrt(2*np.asarray(label)), *case.parameters[:-1])
+    q, a = shear_flux_rates(np.sqrt(2*np.asarray(label)), *case.parameters[:-1], case.tau)
     return -a/q
 
 
 def volume(case):
     if case.family == "integer":
-        a, b, c, delta = case.parameters
-        return 2*np.pi**2*a*b*c*delta
+        return integer_targets(*case.parameters, case.tau)["volume"]
     if case.family == "solovev":
         _, b, g, chi, _, edge = case.parameters
         return np.pi**2*edge/(np.sqrt(b*g)*np.sqrt(1-chi*chi))
-    return shear_averages(*case.parameters)["volume"]
+    return shear_averages(*case.parameters, case.tau)["volume"]
 
 
-def integer_targets(a, b, c, delta, xp=np):
-    Ha = (a*a+b*b)/2-(a*a-b*b)**2/(8*c*c)
-    return {"volume": 2*xp.pi**2*a*b*c*delta, "toroidal_flux": xp.pi*a*b*c*delta,
-            "mean_B2": Ha+c*c*delta, "mean_pressure": c*c*delta,
-            "beta": 2*c*c*delta/(Ha+c*c*delta)}
+def integer_targets(a, b, c, delta, tau=0., xp=np):
+    w = 1-tau*tau
+    Ha, p = (a*a+b*b)/2-w*(a*a-b*b)**2/(8*c*c), c*c*delta/w
+    return {"volume": 2*xp.pi**2*a*b*c*delta/w**1.5, "toroidal_flux": xp.pi*a*b*c*delta/w,
+            "mean_B2": Ha+p, "mean_pressure": p, "beta": 2*p/(Ha+p)}
 
 
-def shear_averages(eps, S, lam, delta, nr=80, nt=256):
+def shear_averages(eps, S, lam, delta, tau=0., nr=80, nt=256):
     """Independent finite-radius pressure and field-energy quadratures."""
     n, w = leggauss(nr)
     d, alpha = np.arcsin(np.sqrt(2*delta)), np.pi*n/2
     xi = (d*np.sin(alpha))[:, None]
     weights = (d*np.pi/2*np.cos(alpha)*w)[:, None]
     t = np.arange(nt)[None, :]*2*np.pi/nt
-    nu = eps/2*np.sin(2*t)
+    nu = eps/2*np.sin(2*t)+tau
     f = np.cosh(nu)**2-np.sin(xi)**2
     u = np.arcsin(np.sqrt(np.maximum(0., (2*delta-np.sin(xi)**2)/f)))
     du = u-np.sin(2*u)/2

@@ -40,7 +40,8 @@ def test_asymmetric_grad_shafranov_identity_symbolically():
     assert sp.simplify(sp.diff(psi, R, 2)-sp.diff(psi, R)/R+sp.diff(psi, Z, 2)-8*b*R**2-2*g) == 0
 
 
-@pytest.mark.parametrize("name", ["integer_3d_stretched", "sheared_A", "solovev_asymmetric"])
+@pytest.mark.parametrize("name", ["integer_3d_stretched", "sheared_A", "solovev_asymmetric",
+                                  "integer_3d_tau", "sheared_issan_tau"])
 def test_volume_from_boundary_integral(name):
     case = CASES[name]
     n = 256
@@ -53,7 +54,8 @@ def test_volume_from_boundary_integral(name):
     np.testing.assert_allclose(actual, volume(case), rtol=2e-10)
 
 
-@pytest.mark.parametrize("name", ["integer_3d", "sheared_A", "solovev_asymmetric"])
+@pytest.mark.parametrize("name", ["integer_3d", "sheared_A", "solovev_asymmetric",
+                                  "integer_3d_tau", "sheared_issan_tau"])
 def test_flux_from_independent_cross_section_quadrature(name):
     case = CASES[name]
     n, w = leggauss(32)
