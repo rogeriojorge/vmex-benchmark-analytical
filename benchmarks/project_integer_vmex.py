@@ -90,9 +90,13 @@ def main():
     np.savez_compressed(out / "seed.npz", **{name: np.asarray(getattr(state, name)) for name in
         ("R_cos", "R_sin", "Z_cos", "Z_sin", "L_cos", "L_sin")})
     if SOLVE:
+        from vmex.core.errors import VmecConvergenceError
         from vmex.core.solver import solve
-        result = solve(inp, resolution_from_input(inp, ns=NS), initial_state=state, ftol=1e-14,
-                       max_iterations=30000, mode="jit", verbose=True)
+        try:  # tcon0 = 0: no spectral-condensation force at the exact root
+            result = solve(inp, resolution_from_input(inp, ns=NS), initial_state=state, ftol=1e-12,
+                           max_iterations=30000, mode="jit", tcon0=0.0)
+        except VmecConvergenceError as error:
+            raise SystemExit(f"seeded solve unconverged: fsq {error.fsq} after {error.iteration}")
         vmex.write_wout(out / f"wout_{CASE}_seeded_ns{NS}.nc", vmex.wout_from_result(inp, result))
         print({"seeded_solve": dict(iterations=int(result.iterations), fsq=[float(result.fsqr),
                float(result.fsqz), float(result.fsql)])})
