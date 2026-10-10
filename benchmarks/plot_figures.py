@@ -260,10 +260,100 @@ def fig_issan():
     return save(fig, "issan_cases.png")
 
 
+def fig_asymmetric():
+    """VMEX on the exact non-symmetric equilibria: surfaces, current routes and the resonant offset."""
+    runs = load("results/asymmetric/summary.json")["runs"]
+    fig, axes = plt.subplots(1, 3, figsize=(13, 3.4))
+    for key, color, ls, label in (("integer_3d_ns65", MUTED, "--", "$\\tau_0=0$, ns 65"),
+                                  ("integer_3d_ns129", MUTED, "-", "$\\tau_0=0$, ns 129"),
+                                  ("integer_3d_full_basis_ns65", INK, ":", "$\\tau_0=0$, full basis, ns 65"),
+                                  ("integer_3d_tau_ns65", AFTER, "--", "$\\tau_0=0.5$, ns 65"),
+                                  ("integer_3d_tau_ns129", AFTER, "-", "$\\tau_0=0.5$, ns 129"),
+                                  ("integer_3d_tau_mirror_ns65", "#eb6834", ":", "$\\tau_0=-0.5$, ns 65")):
+        s_, err = np.asarray(runs[key]["surfaces"]).T
+        axes[0].semilogy(s_, err, ls, color=color, lw=1.4, label=label)
+    axes[0].legend(fontsize=7, frameon=False)
+    style(axes[0], "s", "flux-label error", "surfaces (family A)")
+    for key, color in (("integer_3d_ns129", MUTED), ("integer_3d_tau_ns129", AFTER)):
+        r = runs[key]["routes"]
+        s_ = [x["s"] for x in r]
+        axes[1].semilogy(s_, [x["J_wout_relative_l2"] for x in r], "s--", color=color, ms=4, lw=1)
+        axes[1].semilogy(s_, [x["J_native_relative_l2"] for x in r], "o-", color=color, ms=4, lw=1.4)
+    axes[1].plot([], [], "s--", color=INK, label="WOUT current")
+    axes[1].plot([], [], "o-", color=INK, label="native field")
+    axes[1].legend(fontsize=8, frameon=False)
+    style(axes[1], "s", "J error", "current, ns 129 (grey $\\tau_0=0$, blue 0.5)")
+    for k, (key, color) in enumerate((("integer_3d_ns65", MUTED), ("integer_3d_tau_ns65", AFTER))):
+        modes = runs[key]["label_spectrum"]["32"]["modes"]
+        axes[2].bar(np.arange(3)+0.38*k, [m[2] for m in modes], 0.36, color=color)
+        for i, m in enumerate(modes):
+            axes[2].text(i+0.38*k, m[2]*1.15, f"({abs(m[0])},{abs(m[1])})", ha="center", fontsize=7, color=INK)
+    axes[2].set_yscale("log")
+    axes[2].set_xticks([0.19, 1.19, 2.19], ["1st", "2nd", "3rd"])
+    style(axes[2], "largest harmonics (m, n) at s = 0.5", "amplitude", "label error: resonant with $\\iota=2$")
+    fig.tight_layout()
+    return save(fig, "asymmetric_vmex.png")
+
+
+def fig_chain():
+    """Boozer transform, effective ripple and virtual casing without stellarator symmetry."""
+    runs = load("results/asymmetric/summary.json")["runs"]
+    booz = load("results/boozer/solovev_asymmetric.json")
+    ripple = load("results/ripple/ripple_reference.json")["reference"]
+    vc = load("results/asymmetric/external.json")["virtual_casing"]
+    fig, axes = plt.subplots(1, 3, figsize=(13, 3.4))
+    for r, color in zip(booz, (GRID, MUTED, INK)):
+        axes[0].semilogy([x["s"] for x in r["surfaces"]], [x["modB_relative_max"] for x in r["surfaces"]],
+                         "o-", color=color, lw=1.2, label=f"asym. Solov'ev, mboz {r['mboz']}")
+    t = runs["integer_3d_tau_ns65"]["boozer"]
+    axes[0].semilogy([x["s"] for x in t], [x["modB_relative_max"] for x in t], "s-", color=AFTER, label="family A, $\\tau_0=0.5$")
+    axes[0].legend(fontsize=7, frameon=False)
+    style(axes[0], "s", "max |B| error", "booz_xform_jax vs exact |B|")
+    for case, color, mk in (("sheared_issan", MUTED, "o"), ("sheared_issan_tau", AFTER, "s"),
+                            ("sheared_issan_tau_mirror", "#eb6834", "x")):
+        rows = [v for k, v in ripple.items() if k.startswith(case + "/")]
+        axes[1].plot([r["s"] for r in rows], [r["eps32_over_R0sq"] for r in rows], mk+"-", color=color, lw=1.2,
+                     label={"sheared_issan": "$\\tau_1=0$", "sheared_issan_tau": "$\\tau_1=0.4$",
+                            "sheared_issan_tau_mirror": "$\\tau_1=-0.4$"}[case])
+    axes[1].legend(fontsize=8, frameon=False)
+    style(axes[1], "s", "$\\epsilon_{eff}^{3/2}/R_0^2$", "exact field, Nemov formula (family B)")
+    grid = vc["on_surface_Bn_relative"]["grid"]
+    for case, color in (("integer_3d", MUTED), ("integer_3d_tau", AFTER), ("sheared_issan", GRID),
+                        ("sheared_issan_tau", "#eb6834")):
+        axes[2].semilogy(range(3), vc["on_surface_Bn_relative"][case], "o-", color=color, lw=1.2, label=case)
+    axes[2].set_xticks(range(3), grid)
+    axes[2].legend(fontsize=7, frameon=False)
+    style(axes[2], "source grid", "B$\\cdot$n error on the boundary", "virtual casing vs Biot-Savart of exact J")
+    fig.tight_layout()
+    return save(fig, "asymmetric_chain.png")
+
+
+def movie_tau():
+    """Flux surfaces of both Issan families as tau breaks stellarator symmetry (GIF)."""
+    from matplotlib.animation import FuncAnimation, PillowWriter
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3.2))
+    theta, taus = np.linspace(0, 2*np.pi, 181), np.concatenate((np.linspace(0, .6, 13), np.linspace(.6, -.6, 25)[1:],
+                                                                np.linspace(-.6, 0, 13)[1:]))
+
+    def draw(tau):
+        for ax, base, title in ((axes[0], "integer_3d_tau", "family A"), (axes[1], "sheared_issan_tau", "family B")):
+            ax.clear()
+            case = replace(cases()[base], tau=float(tau))
+            for s in (0.1, 0.4, 0.7, 1.0):
+                for phi, color in ((0., AFTER), (np.pi/4, "#eb6834")):
+                    xyz = np.asarray(surface(case, float(label_at_s(case, s)), theta, np.full_like(theta, phi)))
+                    ax.plot(np.hypot(xyz[:, 0], xyz[:, 1]), xyz[:, 2], color=color, lw=1.4 if s == 1 else .7)
+            ax.set(xlim=(0.55, 1.4), ylim=(-0.5, 0.5), aspect="equal")
+            style(ax, "R", "Z" if ax is axes[0] else "", f"{title}, $\\tau={tau:+.2f}$")
+    FuncAnimation(fig, draw, taus).save(FIG/"issan_tau.gif", PillowWriter(fps=8), dpi=80)
+    plt.close(fig)
+    return "issan_tau.gif"
+
+
 def main():
     summary = load("results/cross_code/summary.json")
     outputs = [fig_cases(), fig_parity(summary), fig_readout(), fig_axis_row(), fig_refinement(),
-               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan()]
+               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan(), fig_asymmetric(), fig_chain(), movie_tau()]
     manifest = {"generator": "benchmarks/plot_figures.py",
                 "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "inputs": INPUTS,
                 "outputs": {n: hashlib.sha256((FIG/n).read_bytes()).hexdigest() for n in outputs}}

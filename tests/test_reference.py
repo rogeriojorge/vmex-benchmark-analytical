@@ -136,3 +136,25 @@ def test_invalid_domains_rejected():
             validate(replace(base, parameters=params))
 
 
+
+
+@pytest.mark.parametrize("base", ["integer_3d_tau", "sheared_issan_tau"])
+def test_tau_mirror_is_a_rotation_about_x_with_B_reversed(base):
+    """tau -> -tau maps (x, y, z) -> (x, -y, -z) and B -> -S B: an exact mirror pair."""
+    case, mirror = CASES[base], CASES[base + "_mirror"]
+    S = np.array([1., -1., -1.])
+    x = surface(case, case.edge*np.linspace(.1, .9, 12), np.linspace(0, 6, 12), np.linspace(0, 3, 12))
+    B, psi = field(case, x)
+    Bm, psim = field(mirror, x*S)
+    np.testing.assert_allclose(psim, psi, atol=1e-15)
+    np.testing.assert_allclose(Bm, -np.asarray(B)*S, atol=1e-13)
+
+
+def test_issan_paper_values():
+    """Quoted values of Issan et al.: family B volume and beta, iota with tau1."""
+    from analytic import iota, shear_averages
+    B = CASES["sheared_issan"]
+    avg = shear_averages(*B.parameters)
+    np.testing.assert_allclose([avg["volume"], avg["beta"]], [1.76, 0.245], rtol=3e-3)
+    np.testing.assert_allclose(-iota(B, B.edge*0.5), 2.80, atol=0.01)
+    np.testing.assert_allclose(-iota(replace(B, tau=0.5, lasym=True), B.edge*0.5), 2.55, atol=0.01)
