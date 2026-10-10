@@ -66,7 +66,7 @@ def wout_current(w, j, theta, zeta):
     def series(cos_name, sin_name, angle, weight=None, row=j):
         """sum(c cos + s sin), or with ``weight`` its angle derivative times weight."""
         c = np.asarray(getattr(w, cos_name))[row] if cos_name else 0.
-        s = np.asarray(getattr(w, sin_name))[row] if sin_name and asym else 0.
+        s = np.asarray(getattr(w, sin_name))[row] if sin_name and (asym or not cos_name) else 0.
         if weight is None:
             return np.sum(c*np.cos(angle)+s*np.sin(angle), -1)
         return np.sum(weight*(s*np.cos(angle)-c*np.sin(angle)), -1)
