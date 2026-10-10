@@ -328,6 +328,42 @@ def fig_chain():
     return save(fig, "asymmetric_chain.png")
 
 
+def fig_vmex_readme():
+    """One figure for the VMEX README: exact cases, then VMEX's current and surfaces against them."""
+    runs = load("results/asymmetric/summary.json")["runs"]
+    fig, axes = plt.subplots(1, 3, figsize=(12.5, 3.4), gridspec_kw={"width_ratios": (1, 1.2, 1.2)})
+    theta = np.linspace(0, 2*np.pi, 241)
+    for base, tau, dz in (("integer_3d_tau", 0.5, 0.0), ("sheared_issan_tau", 0.4, 0.0)):
+        for sign, color in ((-1, "#eb6834"), (0, MUTED), (1, AFTER)):
+            case = replace(cases()[base], tau=sign*tau)
+            xyz = np.asarray(surface(case, case.edge, theta, np.zeros_like(theta)))
+            shift = 0.0 if base.startswith("integer") else 0.75
+            axes[0].plot(np.hypot(xyz[:, 0], xyz[:, 1]) + shift, xyz[:, 2], color=color, lw=1.3)
+    axes[0].set_aspect("equal")
+    axes[0].set_ylim(-0.55, 0.4)
+    axes[0].text(0.95, -0.47, "family A", ha="center", fontsize=8, color=INK)
+    axes[0].text(1.7, -0.47, "family B", ha="center", fontsize=8, color=INK)
+    style(axes[0], "R", "Z", "exact boundaries, $\\tau=0$ and $\\pm\\tau$")
+    for key, color, name in (("integer_3d_ns129", MUTED, "symmetric"), ("integer_3d_tau_ns129", AFTER, "$\\tau_0=0.5$")):
+        r = runs[key]["routes"]
+        s_ = [x["s"] for x in r]
+        axes[1].semilogy(s_, [x["J_wout_relative_l2"] for x in r], "s--", color=color, ms=4, lw=1)
+        axes[1].semilogy(s_, [x["J_native_relative_l2"] for x in r], "o-", color=color, ms=4, lw=1.4, label=name)
+    axes[1].plot([], [], "s--", color=INK, ms=4, label="from WOUT")
+    axes[1].legend(fontsize=8, frameon=False)
+    style(axes[1], "s", "J error", "native field (solid) vs WOUT, ns 129")
+    for key, color, ls, label in (("integer_3d_ns65", MUTED, "--", "symmetric, ns 65"),
+                                  ("integer_3d_ns129", MUTED, "-", "symmetric, ns 129"),
+                                  ("integer_3d_tau_ns65", AFTER, "--", "$\\tau_0=\\pm0.5$, ns 65"),
+                                  ("integer_3d_tau_ns129", AFTER, "-", "$\\tau_0=0.5$, ns 129")):
+        s_, err = np.asarray(runs[key]["surfaces"]).T
+        axes[2].semilogy(s_, err, ls, color=color, lw=1.4, label=label)
+    axes[2].legend(fontsize=7, frameon=False)
+    style(axes[2], "s", "flux-label error", "surfaces: resonant offset at $\\tau\\neq0$")
+    fig.tight_layout()
+    return save(fig, "vmex_readme.png")
+
+
 def movie_tau():
     """Flux surfaces of both Issan families as tau breaks stellarator symmetry (GIF)."""
     from matplotlib.animation import FuncAnimation, PillowWriter
@@ -353,7 +389,7 @@ def movie_tau():
 def main():
     summary = load("results/cross_code/summary.json")
     outputs = [fig_cases(), fig_parity(summary), fig_readout(), fig_axis_row(), fig_refinement(),
-               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan(), fig_asymmetric(), fig_chain(), movie_tau()]
+               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan(), fig_asymmetric(), fig_chain(), fig_vmex_readme(), movie_tau()]
     manifest = {"generator": "benchmarks/plot_figures.py",
                 "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "inputs": INPUTS,
                 "outputs": {n: hashlib.sha256((FIG/n).read_bytes()).hexdigest() for n in outputs}}
