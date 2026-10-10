@@ -1,6 +1,7 @@
 """Reproduce sampled identities and quadrature checks; does not import VMEX."""
 import importlib.metadata
 import json
+from dataclasses import replace
 import platform
 import sys
 
@@ -57,6 +58,16 @@ for name, case in cases().items():
                          row.get("beta_quadrature_relative_change", 0) < 2e-9)
     result["cases"].append(row)
     print(f"{name:34s} force={row['force_rms_over_gradp_rms']:.2e} FD={row['real_fd_dB_relative']:.2e} pass={row['passed']}")
+# Issan et al. (arXiv:2610.07304) Figs. 3, 6, 7: volume, beta and iota against
+# the symmetry-breaking parameter, from the closed forms and quadratures above.
+taus = np.linspace(-0.6, 0.6, 25)
+A, B = cases()["integer_3d"], cases()["sheared_issan"]
+result["issan_scan"] = {"tau": taus.tolist(), "family_A": {
+    str(eps): [integer_targets(np.sqrt(1+eps), np.sqrt(1-eps), 1., A.edge, t) for t in taus]
+    for eps in (0.25, 0.5, 0.75)}, "family_B": {
+    str(eps): [shear_averages(eps, *B.parameters[1:], t) for t in taus] for eps in (0.6, 1.2, 1.8)},
+    "family_B_iota": {str(t): [float(-iota(replace(B, tau=t, lasym=True), B.edge*x))
+                               for x in np.linspace(0.02, 1, 25)] for t in (0., 0.25, 0.5)}}
 result["passed"] = all(r["passed"] for r in result["cases"])
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps(result, indent=2, allow_nan=False)+"\n")

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import jax
@@ -228,10 +229,41 @@ def fig_hard_cases(summary):
     return save(fig, "hard_cases.png")
 
 
+def fig_issan():
+    """Issan et al. families without stellarator symmetry: surfaces and closed-form scans."""
+    scan = load("results/reference/identities.json")["issan_scan"]
+    fig, axes = plt.subplots(1, 4, figsize=(14, 3.3), gridspec_kw={"width_ratios": (1, 1, 1.2, 1.2)})
+    theta = np.linspace(0, 2*np.pi, 241)
+    tone = {-1: "#eb6834", 0: MUTED, 1: AFTER}
+    for ax, base, tau, title in ((axes[0], "integer_3d_tau", 0.5, "family A, $\\tau_0=0,\\pm0.5$"),
+                                 (axes[1], "sheared_issan_tau", 0.4, "family B, $\\tau_1=0,\\pm0.4$")):
+        for sign in (-1, 0, 1):
+            case = replace(cases()[base], tau=sign*tau)
+            xyz = np.asarray(surface(case, case.edge, theta, np.zeros_like(theta)))
+            ax.plot(np.hypot(xyz[:, 0], xyz[:, 1]), xyz[:, 2], color=tone[sign], lw=1.4)
+        ax.set_aspect("equal")
+        style(ax, "R", "Z" if ax is axes[0] else "", title)
+    tau = np.asarray(scan["tau"])
+    for fam, ls in (("family_A", "-"), ("family_B", "--")):
+        for k, (eps, rows) in enumerate(scan[fam].items()):
+            axes[2].plot(tau, [r["beta"] for r in rows], ls, color=(AFTER, INK, "#eb6834")[k], lw=1.3,
+                         label=f"{fam[-1]}, $\\epsilon={eps}$")
+    axes[2].plot([0], [0.245], "o", mfc="none", color=INK, label="paper, B, $\\epsilon=1.2$")
+    axes[2].legend(fontsize=7, frameon=False, ncol=2)
+    style(axes[2], "$\\tau$", "volume-averaged $\\beta$", "even in $\\tau$ (paper Figs. 3, 7)")
+    x = np.linspace(0.02, 1, 25)
+    for k, (t, iota_) in enumerate(scan["family_B_iota"].items()):
+        axes[3].plot(x, iota_, color=(MUTED, AFTER, "#eb6834")[k], lw=1.4, label=f"$|\\tau_1|={t}$")
+    axes[3].legend(fontsize=8, frameon=False)
+    style(axes[3], "$\\psi/\\delta$", "$\\iota$", "family B transform (paper Fig. 6)")
+    fig.tight_layout()
+    return save(fig, "issan_cases.png")
+
+
 def main():
     summary = load("results/cross_code/summary.json")
     outputs = [fig_cases(), fig_parity(summary), fig_readout(), fig_axis_row(), fig_refinement(),
-               fig_integer_3d(summary), fig_hard_cases(summary)]
+               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan()]
     manifest = {"generator": "benchmarks/plot_figures.py",
                 "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "inputs": INPUTS,
                 "outputs": {n: hashlib.sha256((FIG/n).read_bytes()).hexdigest() for n in outputs}}
