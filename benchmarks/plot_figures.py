@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker
 import numpy as np
 
-from analytic import cases, label_at_s, surface
+from analytic import cases, field, label_at_s, surface
 
 ROOT = Path(__file__).resolve().parents[1]
 FIG = ROOT/"figures"
@@ -65,23 +65,6 @@ def save(fig, name):
     fig.savefig(FIG/name, dpi=160, bbox_inches="tight", facecolor="white")
     plt.close(fig)
     return name
-
-
-def fig_cases():
-    fig, axes = plt.subplots(1, 3, figsize=(11, 3.3))
-    theta = np.linspace(0, 2*np.pi, 241)
-    for ax, name, phis in ((axes[0], "integer_3d", (0.0, np.pi/4)), (axes[1], "sheared_A", (0.0, np.pi/4)),
-                           (axes[2], "solovev_asymmetric", (0.0,))):
-        case = cases()[name]
-        for k, phi in enumerate(phis):
-            for s in (0.1, 0.4, 0.7, 1.0):
-                xyz = np.asarray(surface(case, float(label_at_s(case, s)), theta, np.full_like(theta, phi)))
-                R, Z = np.hypot(xyz[:, 0], xyz[:, 1]), xyz[:, 2]
-                ax.plot(R, Z, color=(AFTER if k == 0 else "#eb6834"), lw=1.6 if s == 1.0 else 0.8)
-        ax.set_aspect("equal")
-        style(ax, "R", "Z" if ax is axes[0] else "", NAMES[name])
-    fig.tight_layout()
-    return save(fig, "exact_cases.png")
 
 
 def fig_parity(summary):
@@ -364,6 +347,45 @@ def fig_vmex_readme():
     return save(fig, "vmex_readme.png")
 
 
+def fig_3d():
+    """Exact boundaries in 3-D, coloured by the exact |B|."""
+    from matplotlib import cm
+    fig = plt.figure(figsize=(14, 3.8))
+    th, ph = np.meshgrid(np.linspace(0, 2*np.pi, 61), np.linspace(0, 2*np.pi, 121), indexing="ij")
+    for k, (name, title) in enumerate((("integer_3d", "Landreman integer, $\\iota=2$"),
+                                       ("sheared_A", "Landreman sheared"),
+                                       ("integer_3d_tau", "Issan A, $\\tau_0=0.5$"),
+                                       ("sheared_issan_tau", "Issan B, $\\tau_1=0.4$"))):
+        case = cases()[name]
+        xyz = np.asarray(surface(case, case.edge, th, ph))
+        modB = np.linalg.norm(np.asarray(field(case, xyz.reshape(-1, 3))[0]), axis=-1).reshape(th.shape)
+        ax = fig.add_subplot(1, 4, k+1, projection="3d")
+        ax.plot_surface(*np.moveaxis(xyz, -1, 0), facecolors=cm.plasma((modB-modB.min())/np.ptp(modB)),
+                        rstride=1, cstride=1, linewidth=0, antialiased=False, shade=False)
+        ax.set_box_aspect((1, 1, 0.45))
+        ax.set_axis_off()
+        ax.set_title(title, color=INK, fontsize=10)
+    fig.subplots_adjust(wspace=-0.1)
+    return save(fig, "exact_3d.png")
+
+
+def fig_losses():
+    """Alpha losses in family A: the mirror pair loses the same fraction."""
+    runs = load("results/trace/family_A_alpha_losses.json")
+    fig, ax = plt.subplots(figsize=(5.2, 3.3))
+    for key, color, label in (("integer_3d", MUTED, "$\\tau_0=0$"), ("integer_3d_tau", AFTER, "$\\tau_0=0.5$"),
+                              ("integer_3d_tau_mirror", "#eb6834", "$\\tau_0=-0.5$")):
+        r = runs[key]
+        t, f = np.asarray(r["times"]), np.asarray(r["loss_fraction"])
+        band = np.sqrt(np.maximum(f*(1-f), 0)/r["n"])
+        ax.semilogx(t, f, color=color, lw=1.6, label=f"{label}: {100*r['final']:.1f} $\\pm$ {100*r['sigma']:.1f} %")
+        ax.fill_between(t, f-band, f+band, color=color, alpha=0.2, lw=0)
+    ax.legend(fontsize=8, frameon=False, loc="upper left")
+    style(ax, "time [s]", "lost fraction", "500 alphas from s = 0.25, ARIES-CS size")
+    fig.tight_layout()
+    return save(fig, "alpha_losses.png")
+
+
 def movie_tau():
     """Flux surfaces of both Issan families as tau breaks stellarator symmetry (GIF)."""
     from matplotlib.animation import FuncAnimation, PillowWriter
@@ -388,8 +410,8 @@ def movie_tau():
 
 def main():
     summary = load("results/cross_code/summary.json")
-    outputs = [fig_cases(), fig_parity(summary), fig_readout(), fig_axis_row(), fig_refinement(),
-               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan(), fig_asymmetric(), fig_chain(), fig_vmex_readme(), movie_tau()]
+    outputs = [fig_parity(summary), fig_readout(), fig_axis_row(), fig_refinement(),
+               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan(), fig_asymmetric(), fig_chain(), fig_vmex_readme(), fig_3d(), fig_losses(), movie_tau()]
     manifest = {"generator": "benchmarks/plot_figures.py",
                 "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "inputs": INPUTS,
                 "outputs": {n: hashlib.sha256((FIG/n).read_bytes()).hexdigest() for n in outputs}}
