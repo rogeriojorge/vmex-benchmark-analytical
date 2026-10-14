@@ -40,7 +40,8 @@ def test_asymmetric_grad_shafranov_identity_symbolically():
     assert sp.simplify(sp.diff(psi, R, 2)-sp.diff(psi, R)/R+sp.diff(psi, Z, 2)-8*b*R**2-2*g) == 0
 
 
-@pytest.mark.parametrize("name", ["integer_3d_stretched", "sheared_A", "solovev_asymmetric"])
+@pytest.mark.parametrize("name", ["integer_3d_stretched", "sheared_A", "solovev_asymmetric",
+                                  "integer_3d_tau", "sheared_issan_tau"])
 def test_volume_from_boundary_integral(name):
     case = CASES[name]
     n = 256
@@ -53,7 +54,8 @@ def test_volume_from_boundary_integral(name):
     np.testing.assert_allclose(actual, volume(case), rtol=2e-10)
 
 
-@pytest.mark.parametrize("name", ["integer_3d", "sheared_A", "solovev_asymmetric"])
+@pytest.mark.parametrize("name", ["integer_3d", "sheared_A", "solovev_asymmetric",
+                                  "integer_3d_tau", "sheared_issan_tau"])
 def test_flux_from_independent_cross_section_quadrature(name):
     case = CASES[name]
     n, w = leggauss(32)
@@ -134,3 +136,25 @@ def test_invalid_domains_rejected():
             validate(replace(base, parameters=params))
 
 
+
+
+@pytest.mark.parametrize("base", ["integer_3d_tau", "sheared_issan_tau"])
+def test_tau_mirror_is_a_rotation_about_x_with_B_reversed(base):
+    """tau -> -tau maps (x, y, z) -> (x, -y, -z) and B -> -S B: an exact mirror pair."""
+    case, mirror = CASES[base], CASES[base + "_mirror"]
+    S = np.array([1., -1., -1.])
+    x = surface(case, case.edge*np.linspace(.1, .9, 12), np.linspace(0, 6, 12), np.linspace(0, 3, 12))
+    B, psi = field(case, x)
+    Bm, psim = field(mirror, x*S)
+    np.testing.assert_allclose(psim, psi, atol=1e-15)
+    np.testing.assert_allclose(Bm, -np.asarray(B)*S, atol=1e-13)
+
+
+def test_issan_paper_values():
+    """Quoted values of Issan et al.: family B volume and beta, iota with tau1."""
+    from analytic import iota, shear_averages
+    B = CASES["sheared_issan"]
+    avg = shear_averages(*B.parameters)
+    np.testing.assert_allclose([avg["volume"], avg["beta"]], [1.76, 0.245], rtol=3e-3)
+    np.testing.assert_allclose(-iota(B, B.edge*0.5), 2.80, atol=0.01)
+    np.testing.assert_allclose(-iota(replace(B, tau=0.5, lasym=True), B.edge*0.5), 2.55, atol=0.01)

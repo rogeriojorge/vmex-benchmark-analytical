@@ -152,7 +152,7 @@ def main():
     axisymmetric = case.family == "solovev" or args.case.endswith("axisymmetric")
     N = args.N if args.N is not None else (0 if axisymmetric else args.M)
     L = args.L if args.L is not None else args.M+2
-    sym = {"true": True, "false": False}.get(args.sym, not args.case.endswith("asymmetric"))
+    sym = {"true": True, "false": False}.get(args.sym, not case.lasym)
     args.output_dir.mkdir(parents=True, exist_ok=False)
     t0 = time.perf_counter()
     eq, fit_errors = build(case, args.M, N, L, sym)

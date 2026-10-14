@@ -1,0 +1,115 @@
+{
+ "virtual_casing": {
+  "source": "https://github.com/uwplasma/virtual_casing_jax/pull/21",
+  "relation": "compute_internal_B = plasma-current field; reference: Biot-Savart of the exact J = curl B over the plasma volume",
+  "off_surface_max_relative": {
+   "grid": [
+    "12x24",
+    "16x32",
+    "24x48"
+   ],
+   "tau=0": [
+    0.00011,
+    7.3e-06,
+    2.3e-08
+   ],
+   "tau=0.5": [
+    8.5e-06,
+    4.3e-07,
+    3.5e-09
+   ]
+  },
+  "on_surface_Bn_relative": {
+   "grid": [
+    "8x16",
+    "16x32",
+    "32x64"
+   ],
+   "integer_3d_tau": [
+    0.00084,
+    2.1e-05,
+    2.1e-05
+   ],
+   "sheared_issan_tau": [
+    0.12,
+    0.022,
+    0.00062
+   ],
+   "sheared_issan": [
+    0.023,
+    0.0071,
+    0.00016
+   ],
+   "integer_3d": [
+    0.0012,
+    0.00017,
+    0.00017
+   ]
+  },
+  "mirror_off_surface": 5.5e-16
+ },
+ "coils": {
+  "source": "https://github.com/rogeriojorge/coils-for-new-landreman/pull/1",
+  "Bn_over_B_mean_max": {
+   "integer_3d_tau": [
+    0.00014,
+    0.0006
+   ],
+   "integer_3d_tau_mirror": [
+    0.00011,
+    0.0005
+   ],
+   "sheared_issan_tau": [
+    0.00038,
+    0.0032
+   ],
+   "sheared_issan_tau_mirror": [
+    0.00037,
+    0.0031
+   ]
+  },
+  "free_boundary_lcfs_mm_mean_max": {
+   "integer_3d_tau": {
+    "fixed": [
+     0.58,
+     0.94
+    ],
+    "finite_beta": [
+     3.4,
+     15
+    ],
+    "p0": [
+     13,
+     28
+    ]
+   },
+   "sheared_issan_tau": {
+    "fixed": [
+     2.4,
+     3.4
+    ],
+    "finite_beta": [
+     11,
+     54
+    ],
+    "p0": [
+     29,
+     79
+    ]
+   }
+  }
+ },
+ "neo_jax": {
+  "source": "https://github.com/uwplasma/NEO_JAX/pull/7",
+  "asymmetric_solovev_floor": [
+   4.3e-06,
+   8.4e-06,
+   1.4e-05
+  ],
+  "mirror_relative": [
+   0.0046,
+   0.0013,
+   0.0027
+  ]
+ }
+}

@@ -61,25 +61,22 @@ def wout_current(w, j, theta, zeta):
     T, P = T.ravel(), P.ravel()
     ang, angn = T[:, None]*xm-P[:, None]*xn, T[:, None]*xmn-P[:, None]*xnn
 
-    def cos_sum(name, angle, row=j):
-        return np.sum(np.asarray(getattr(w, name))[row]*np.cos(angle), -1)
+    asym = bool(w.lasym)
 
-    def sin_sum(name, angle, row=j):
-        return np.sum(np.asarray(getattr(w, name))[row]*np.sin(angle), -1)
+    def series(cos_name, sin_name, angle, weight=None, row=j):
+        """sum(c cos + s sin), or with ``weight`` its angle derivative times weight."""
+        c = np.asarray(getattr(w, cos_name))[row] if cos_name else 0.
+        s = np.asarray(getattr(w, sin_name))[row] if sin_name and (asym or not cos_name) else 0.
+        if weight is None:
+            return np.sum(c*np.cos(angle)+s*np.sin(angle), -1)
+        return np.sum(weight*(s*np.cos(angle)-c*np.sin(angle)), -1)
 
-    R, Z = cos_sum("rmnc", ang), sin_sum("zmns", ang)
-    Ru = np.sum(-xm*np.asarray(w.rmnc)[j]*np.sin(ang), -1)
-    Zu = np.sum(xm*np.asarray(w.zmns)[j]*np.cos(ang), -1)
-    Rv = np.sum(xn*np.asarray(w.rmnc)[j]*np.sin(ang), -1)
-    Zv = np.sum(-xn*np.asarray(w.zmns)[j]*np.cos(ang), -1)
-    Ju, Jv = cos_sum("currumnc", angn), cos_sum("currvmnc", angn)
-    gm = np.asarray(w.gmnc)
-    upper = min(j+1, gm.shape[0]-1)
-    sqrtg = np.sum(0.5*(gm[j]+gm[upper])*np.cos(angn), -1)
-    if bool(w.lasym):
-        R, Z = R+sin_sum("rmns", ang), Z+cos_sum("zmnc", ang)
-        Ju, Jv = Ju+sin_sum("currumns", angn), Jv+sin_sum("currvmns", angn)
-        raise NotImplementedError("LASYM WOUT current route: derivative terms not added")
+    R, Z = series("rmnc", "rmns", ang), series("zmnc" if asym else None, "zmns", ang)
+    Ru, Zu = series("rmnc", "rmns", ang, xm), series("zmnc" if asym else None, "zmns", ang, xm)
+    Rv, Zv = series("rmnc", "rmns", ang, -xn), series("zmnc" if asym else None, "zmns", ang, -xn)
+    Ju, Jv = series("currumnc", "currumns", angn), series("currvmnc", "currvmns", angn)
+    upper = min(j+1, np.asarray(w.gmnc).shape[0]-1)
+    sqrtg = 0.5*(series("gmnc", "gmns", angn)+series("gmnc", "gmns", angn, row=upper))
     eR = np.stack((np.cos(P), np.sin(P), 0*P), -1)
     ep = np.stack((-np.sin(P), np.cos(P), 0*P), -1)
     ez = np.stack((0*P, 0*P, 1+0*P), -1)
@@ -136,30 +133,29 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None):
     # Current and field routes at identical points of native surfaces:
     # the standard WOUT current versus VMEX's continuous native field.
     route_rows = []
-    native = native_field(w, deck) if deck is not None and not bool(w.lasym) else None
+    native = native_field(w, deck) if deck is not None else None
     th8, ze8 = 2*np.pi*np.arange(16)/16, 2*np.pi*np.arange(8)/(8*int(w.nfp))
     for j in sorted({1, 2, max(3, ns//16), ns//4, ns//2, 3*ns//4, ns-2}):
         row = {"j": j, "s": float(s_mesh[j])}
         has_current = np.ndim(np.asarray(getattr(w, "currumnc", 0.0))) == 2
-        if not bool(w.lasym):
-            if has_current:
-                xyz, Jw = wout_current(w, j, th8, ze8)
-                Bx, Jx = exact_B_J(case, xyz)
-                row["J_wout_relative_l2"] = float(np.linalg.norm(Jw-Jx)/np.linalg.norm(Jx))
-            else:
-                # Some producers (VMEC++ 0.5.2) write no current harmonics.
-                row["J_wout_relative_l2"] = None
-                xyz = positions(w, j, th8, ze8)
-                Bx, Jx = exact_B_J(case, xyz)
-            if native is not None:
-                pts = jnp.asarray(xyz)
-                Bn = np.asarray(native.B(pts))
-                # gradB[p, i, j] = dB_i/dx_j here; the transposed order gives exactly -J
-                # (checked against the exact current on the axisymmetric case).
-                gB = np.asarray(native.gradB(pts))
-                Jn = np.stack([gB[:, 2, 1]-gB[:, 1, 2], gB[:, 0, 2]-gB[:, 2, 0], gB[:, 1, 0]-gB[:, 0, 1]], -1)/MU0
-                row["B_native_relative_l2"] = float(np.linalg.norm(Bn-Bx)/np.linalg.norm(Bx))
-                row["J_native_relative_l2"] = float(np.linalg.norm(Jn-Jx)/np.linalg.norm(Jx))
+        if has_current:
+            xyz, Jw = wout_current(w, j, th8, ze8)
+            Bx, Jx = exact_B_J(case, xyz)
+            row["J_wout_relative_l2"] = float(np.linalg.norm(Jw-Jx)/np.linalg.norm(Jx))
+        else:
+            # Some producers (VMEC++ 0.5.2) write no current harmonics.
+            row["J_wout_relative_l2"] = None
+            xyz = positions(w, j, th8, ze8)
+            Bx, Jx = exact_B_J(case, xyz)
+        if native is not None:
+            pts = jnp.asarray(xyz)
+            Bn = np.asarray(native.B(pts))
+            # gradB[p, i, j] = dB_i/dx_j here; the transposed order gives exactly -J
+            # (checked against the exact current on the axisymmetric case).
+            gB = np.asarray(native.gradB(pts))
+            Jn = np.stack([gB[:, 2, 1]-gB[:, 1, 2], gB[:, 0, 2]-gB[:, 2, 0], gB[:, 1, 0]-gB[:, 0, 1]], -1)/MU0
+            row["B_native_relative_l2"] = float(np.linalg.norm(Bn-Bx)/np.linalg.norm(Bx))
+            row["J_native_relative_l2"] = float(np.linalg.norm(Jn-Jx)/np.linalg.norm(Jx))
         route_rows.append(row)
     iota_w = np.asarray(w.iotaf)
     iota_x = np.asarray([float(iota(case, float(label_at_s(case, s)))) for s in s_mesh])

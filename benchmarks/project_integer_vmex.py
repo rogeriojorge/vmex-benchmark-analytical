@@ -17,11 +17,15 @@ from vmex.core.transforms import physical_to_internal_scale
 
 from analytic import ROOT, cases, field, surface
 
-CASE = "integer_3d"
-NS = int(sys.argv[1]) if len(sys.argv) >= 2 else 33
-VOLUME = len(sys.argv) == 3 and sys.argv[2] == "--volume"
-if len(sys.argv) not in (1, 2, 3) or (len(sys.argv) == 3 and not VOLUME) or NS < 5:
-    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5 [--volume]]")
+ARGS = sys.argv[1:]
+CASE = ARGS.pop(ARGS.index("--case")+1) if "--case" in ARGS else "integer_3d"
+SOLVE = "--solve" in ARGS  # also run VMEX from the projection and write its WOUT
+FTOL = float(ARGS.pop(ARGS.index("--ftol")+1)) if "--ftol" in ARGS else 1e-12
+ARGS = [a for a in ARGS if a not in ("--case", "--solve", "--ftol")]
+NS = int(ARGS[0]) if ARGS else 33
+VOLUME = ARGS[1:] == ["--volume"]
+if len(ARGS) > 2 or (len(ARGS) == 2 and not VOLUME) or NS < 5:
+    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5 [--volume]] [--case NAME] [--solve [--ftol F]]")
 GRID = 64
 
 
@@ -34,21 +38,24 @@ def project(inp, case, ns=NS, grid=GRID):
     theta = 2*np.pi*np.arange(grid)[:, None]/grid
     phi = 2*np.pi*np.arange(grid)[None, :]/(grid*case.nfp)
     s = np.linspace(0, 1, ns)
-    coefficients = np.zeros((2, ns, modes.mnmax))
+    coefficients = np.zeros((4, ns, modes.mnmax))  # R cos, Z sin, R sin, Z cos
     for j, sj in enumerate(s):
         xyz = surface(case, case.edge*sj, theta, phi)
         R, Z = np.hypot(xyz[..., 0], xyz[..., 1]), xyz[..., 2]
         spectra = [np.fft.fft2(a)/(grid*grid) for a in (R, Z)]
         for k, (m, n) in enumerate(zip(modes.m, modes.n)):
             factor = 1 if m == n == 0 else 2
-            coefficients[0, j, k] = factor*spectra[0][m, -n].real
-            coefficients[1, j, k] = -factor*spectra[1][m, -n].imag
-    R_cos, Z_sin = (coefficients[i]*scale[None, :] for i in range(2))
-    R_cos, Z_sin, _, _ = m1_physical_to_constrained(
-        R_cos, Z_sin, modes=modes, lthreed=bool(res.lthreed),
-        lasym=False, lconm1=True)
+            coefficients[:, j, k] = factor*np.array((spectra[0][m, -n].real, -spectra[1][m, -n].imag,
+                                                     -spectra[0][m, -n].imag, spectra[1][m, -n].real))
+    R_cos, Z_sin, R_sin, Z_cos = (coefficients[i]*scale[None, :] for i in range(4))
     zeros = np.zeros_like(R_cos)
-    return SpectralState(R_cos=R_cos, R_sin=zeros, Z_cos=zeros,
+    if not case.lasym:
+        R_sin = Z_cos = zeros
+    R_cos, Z_sin, R_sin, Z_cos = m1_physical_to_constrained(
+        R_cos, Z_sin, R_sin, Z_cos, modes=modes, lthreed=bool(res.lthreed),
+        lasym=bool(case.lasym), lconm1=True)
+    R_sin, Z_cos = (zeros if a is None else a for a in (R_sin, Z_cos))
+    return SpectralState(R_cos=R_cos, R_sin=R_sin, Z_cos=Z_cos,
                          Z_sin=Z_sin, L_cos=zeros, L_sin=zeros)
 
 
@@ -72,7 +79,7 @@ def main():
                          label_max_over_edge=float(np.max(abs(np.asarray(field(case, xyz)[1])-case.edge*j/(NS-1)))/case.edge)))
     source = Path(vmex.__file__).resolve().parents[1]
     commit = subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip()
-    out = ROOT / f"results/projection/integer_3d_vmex_ns{NS}"
+    out = ROOT / f"results/projection/{CASE}_vmex_ns{NS}"
     out.mkdir(parents=True, exist_ok=True)
     max_B = max(r["B_relative_surface_l2"] for r in rows)
     status = "passed" if max_B < 1e-5 else "failed"
@@ -83,6 +90,17 @@ def main():
         max_B_relative_surface_l2=max_B, rows=rows), indent=2, allow_nan=False)+"\n")
     np.savez_compressed(out / "seed.npz", **{name: np.asarray(getattr(state, name)) for name in
         ("R_cos", "R_sin", "Z_cos", "Z_sin", "L_cos", "L_sin")})
+    if SOLVE:
+        from vmex.core.errors import VmecConvergenceError
+        from vmex.core.solver import solve
+        try:  # tcon0 = 0: no spectral-condensation force at the exact root
+            result = solve(inp, resolution_from_input(inp, ns=NS), initial_state=state, ftol=FTOL,
+                           max_iterations=30000, mode="jit", tcon0=0.0)
+        except VmecConvergenceError as error:
+            raise SystemExit(f"seeded solve unconverged: fsq {error.fsq} after {error.iteration}")
+        vmex.write_wout(out / f"wout_{CASE}_seeded_ns{NS}.nc", vmex.wout_from_result(inp, result))
+        print({"seeded_solve": dict(iterations=int(result.iterations), fsq=[float(result.fsqr),
+               float(result.fsqz), float(result.fsql)])})
     if VOLUME:
         from native_samples import sample_native
         from score_samples import score
