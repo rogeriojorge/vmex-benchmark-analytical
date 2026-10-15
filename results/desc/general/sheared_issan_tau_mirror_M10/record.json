@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "evidence": "desc_exact_case_everywhere",
+  "case": "sheared_issan_tau_mirror",
+  "resolution": {
+    "L": 12,
+    "M": 10,
+    "N": 10,
+    "NFP": 2,
+    "sym": false
+  },
+  "profile_fit_errors": {
+    "pressure": 8.653791968730014e-14,
+    "iota": 2.082719694053592e-13,
+    "enclosed_current": 1.8464286152981053e-14
+  },
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax": "0.6.2",
+  "python": "3.10.12",
+  "script_sha256": "2b66aaca28e373b7eb35dfb5b30274923077138f4291f3acbbe6f1455d6fafe6",
+  "nested_initial_guess": true,
+  "projection": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 2.7247577455568475e-05,
+        "J_relative_l2": 0.4134185158413108,
+        "gradp_relative_l2": 0.0005933689117144714,
+        "force_over_gradp": 10544.340020093543,
+        "min_abs_sqrt_g": 6.578966451983638e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 0.00026991525641933376,
+        "J_relative_l2": 0.41341862587170586,
+        "gradp_relative_l2": 5.9852682667264056e-05,
+        "force_over_gradp": 1054.434875982393,
+        "min_abs_sqrt_g": 6.578607142368084e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 0.0026988789314702777,
+        "J_relative_l2": 0.41342962928497784,
+        "gradp_relative_l2": 9.871517314138225e-06,
+        "force_over_gradp": 105.45039042827993,
+        "min_abs_sqrt_g": 0.0006575042655633485
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 0.026972486472818375,
+        "J_relative_l2": 0.41453309466942156,
+        "gradp_relative_l2": 8.84105509571638e-06,
+        "force_over_gradp": 10.614316530602341,
+        "min_abs_sqrt_g": 0.006542156217348629
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.0805398697294115,
+        "J_relative_l2": 0.42368287464468357,
+        "gradp_relative_l2": 1.6592340224431967e-05,
+        "force_over_gradp": 3.7309573018655984,
+        "min_abs_sqrt_g": 0.01939339119721009
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.18454276993403604,
+        "J_relative_l2": 0.4766256619576039,
+        "gradp_relative_l2": 8.52387738667951e-05,
+        "force_over_gradp": 2.0955880115569823,
+        "min_abs_sqrt_g": 0.043684999959751024
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.258302886136611,
+        "J_relative_l2": 0.5635749025572454,
+        "gradp_relative_l2": 0.0003186460550418589,
+        "force_over_gradp": 2.0963268064580998,
+        "min_abs_sqrt_g": 0.05922953642665627
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.18658840907015925,
+        "J_relative_l2": 0.4665201414716632,
+        "gradp_relative_l2": 0.00017817130757856453,
+        "force_over_gradp": 2.061667890686859,
+        "min_abs_sqrt_g": 0.0003485448376251001
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.18640025615412803,
+        "J_relative_l2": 0.4663506942016225,
+        "gradp_relative_l2": 0.00017625316625351364,
+        "force_over_gradp": 2.0616100737870067,
+        "min_abs_sqrt_g": 0.002052134561651828
+      }
+    }
+  },
+  "solver": {
+    "success": false,
+    "message": "Maximum number of iterations has been exceeded.",
+    "iterations": 150,
+    "solve_seconds": 5956.758129062015
+  },
+  "solved": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 0.0026507988047283536,
+        "J_relative_l2": 0.007831403376096526,
+        "gradp_relative_l2": 0.9999810681251649,
+        "force_over_gradp": 0.012828732830792387,
+        "min_abs_sqrt_g": 6.597936968248743e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 0.0026508000583679724,
+        "J_relative_l2": 0.007831439630675298,
+        "gradp_relative_l2": 0.998112106295698,
+        "force_over_gradp": 0.0128047487535322,
+        "min_abs_sqrt_g": 6.596854851526545e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 0.0026509252632915393,
+        "J_relative_l2": 0.007835063525672321,
+        "gradp_relative_l2": 0.8515978631163221,
+        "force_over_gradp": 0.010924490745389813,
+        "min_abs_sqrt_g": 0.0006586065297821669
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 0.0026619084631745683,
+        "J_relative_l2": 0.008182847549608418,
+        "gradp_relative_l2": 0.15539612681429857,
+        "force_over_gradp": 0.0019702884770522594,
+        "min_abs_sqrt_g": 0.006483120321637499
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.0026674826543514295,
+        "J_relative_l2": 0.010140511005564892,
+        "gradp_relative_l2": 0.04071080952043295,
+        "force_over_gradp": 0.0005383972855822407,
+        "min_abs_sqrt_g": 0.01880419161069661
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.002285030805704095,
+        "J_relative_l2": 0.008543785286264326,
+        "gradp_relative_l2": 0.01956645414059533,
+        "force_over_gradp": 0.00035309872248939165,
+        "min_abs_sqrt_g": 0.04371479699689859
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.0020174035691621116,
+        "J_relative_l2": 0.020317820354978908,
+        "gradp_relative_l2": 0.031545114012818745,
+        "force_over_gradp": 0.0021523479247118633,
+        "min_abs_sqrt_g": 0.061010872678415914
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.0022800394205873963,
+        "J_relative_l2": 0.011551462682229216,
+        "gradp_relative_l2": 0.02152426865185214,
+        "force_over_gradp": 0.0008618460382874167,
+        "min_abs_sqrt_g": 0.00034932847010161203
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.002274734267666477,
+        "J_relative_l2": 0.011478650599549894,
+        "gradp_relative_l2": 0.02124647349413944,
+        "force_over_gradp": 0.0007734013960021551,
+        "min_abs_sqrt_g": 0.0020502683910902444
+      }
+    }
+  },
+  "equilibrium_artifact": {
+    "path": "desc_sheared_issan_tau_mirror_M10.h5",
+    "sha256": "b31bb0d2a4ed44add770d8896c0f4e7367ed96feb5a9749f51bb5f29283d689a"
+  },
+  "elapsed_seconds": 6220.818354857038
+}
