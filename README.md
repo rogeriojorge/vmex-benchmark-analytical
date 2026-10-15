@@ -11,7 +11,7 @@ VMEX, VMEC2000, VMEC++ and DESC are scored against 3-D equilibria known in close
 - **Same input, same answer.** VMEX, VMEC2000 and VMEC++ agree on every converged case; they also fail on the same ones.
 - **Two VMEX defects found and fixed:** the field at the axis ([#452](https://github.com/uwplasma/vmex/pull/452)) and refinement before derivatives ([#453](https://github.com/uwplasma/vmex/pull/453)).
 - **Read the field, not the file.** VMEX's continuous field gives J 10-70x more accurately than a WOUT file.
-- **DESC is the most accurate**, and solves the sheared cases that VMEC-type codes cannot.
+- **DESC is the most accurate**: it solves sheared A, which VMEC-type codes cannot, and converges spectrally on the asymmetric family A, to the exact state rather than its resonant neighbour.
 - **Without stellarator symmetry** VMEX's full-basis path adds no error, mirror pairs agree to 1e-9, and the Boozer, ripple, virtual-casing, tracing and coil tools work and match the exact fields.
 - **Rational transform has a price.** With symmetry broken, the `iota = 2` family is degenerate; VMEX lands on a neighbouring equilibrium 8e-4 away, at every resolution.
 
@@ -101,7 +101,7 @@ ESSOS coils for these cases reach B.n/|B| of 1e-4 to 4e-4 ([coils-for-new-landre
 ## Open problems
 
 - **Near-axis current in solved VMEX states**: 1e-2 in the first two or three cells at NS 129 and 257, identical in VMEC2000. A property of the discretization, not of the evaluator.
-- **Sheared families in VMEC-type codes**: cold starts end on a wrong state and seeded solves drift (VMEX stalls at 1e-7). The NEO_JAX and free-boundary checks on family B wait on a converged equilibrium.
+- **Issan family B**: no code converges yet. VMEX stalls at 1e-7 from the exact geometry and DESC stays at 1e-2 to 1e-3, so the NEO_JAX and free-boundary checks on it wait on a converged equilibrium.
 
 ## Reproduce
 
