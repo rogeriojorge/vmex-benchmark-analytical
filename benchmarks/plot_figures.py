@@ -386,6 +386,34 @@ def fig_losses():
     return save(fig, "alpha_losses.png")
 
 
+def fig_desc_issan():
+    """DESC on the non-symmetric cases: volume B and J error against M, with the symmetric parent."""
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.4), sharey=True)
+    for ax, family in zip(axes, (("integer_3d", "integer_3d_tau", "integer_3d_tau_mirror"),
+                                 ("sheared_issan", "sheared_issan_tau", "sheared_issan_tau_mirror"))):
+        for name, color in zip(family, (MUTED, AFTER, "#eb6834")):
+            rows = []
+            for M in (6, 8, 10, 12):
+                path = ROOT/f"results/desc/general/{name}_M{M}/record.json"
+                if path.exists():
+                    r = load(str(path.relative_to(ROOT)))
+                    rows.append((M, r["solved"]["volume"]["gauss"], r["solver"]["success"]))
+            if not rows:
+                continue
+            M, vol, ok = zip(*rows)
+            for key, ls, mk in (("B_relative_l2", "-", "o"), ("J_relative_l2", "--", "s")):
+                ax.semilogy(M, [v[key] for v in vol], ls, color=color, lw=1.3)
+                for m, v, good in zip(M, vol, ok):
+                    ax.semilogy(m, v[key], mk, color=color, mfc=color if good else "white", ms=5)
+            ax.plot([], [], "-", color=color, label=name.replace("_", " "))
+        ax.plot([], [], "ko-", ms=4, label="B"); ax.plot([], [], "ks--", ms=4, label="J")
+        ax.set_xticks([6, 8, 10, 12])
+        ax.legend(fontsize=7, frameon=False)
+        style(ax, "M (= N)", "volume error" if ax is axes[0] else "", ("family A" if "integer" in family[0] else "family B"))
+    fig.tight_layout()
+    return save(fig, "desc_issan.png")
+
+
 def movie_tau():
     """Flux surfaces of both Issan families as tau breaks stellarator symmetry (GIF)."""
     from matplotlib.animation import FuncAnimation, PillowWriter
@@ -411,7 +439,7 @@ def movie_tau():
 def main():
     summary = load("results/cross_code/summary.json")
     outputs = [fig_parity(summary), fig_readout(), fig_axis_row(), fig_refinement(),
-               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan(), fig_asymmetric(), fig_chain(), fig_vmex_readme(), fig_3d(), fig_losses(), movie_tau()]
+               fig_integer_3d(summary), fig_hard_cases(summary), fig_issan(), fig_asymmetric(), fig_chain(), fig_vmex_readme(), fig_3d(), fig_losses(), fig_desc_issan(), movie_tau()]
     manifest = {"generator": "benchmarks/plot_figures.py",
                 "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), "inputs": INPUTS,
                 "outputs": {n: hashlib.sha256((FIG/n).read_bytes()).hexdigest() for n in outputs}}

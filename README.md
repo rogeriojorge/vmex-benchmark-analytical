@@ -74,6 +74,10 @@ VMEX, VMEC2000, VMEC++ and DESC are scored against 3-D equilibria known in close
 
 The `tau = 0` equilibrium solved in the full basis matches the symmetric solve to every digit. Family B stalls at 1e-7 in VMEX even from the exact geometry.
 
+![DESC on the Issan families](figures/desc_issan.png)
+
+*DESC (`sym=False`). Family A converges spectrally, `tau` and `-tau` on top of each other, to B 1.2e-7 and J 3.6e-6 at M = 10: DESC reaches the exact equilibrium, not the resonant neighbour VMEX finds. Family B stays at 1e-2 to 1e-3; hollow markers did not meet DESC's own tolerance.*
+
 ### 6. `vmex --plot` on an exact asymmetric equilibrium
 
 ![vmex --plot summary for tau0 = 0.5](figures/vmex_plot_tau.png)

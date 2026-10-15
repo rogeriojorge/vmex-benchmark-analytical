@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "evidence": "desc_exact_case_everywhere",
+  "case": "sheared_issan",
+  "resolution": {
+    "L": 8,
+    "M": 6,
+    "N": 6,
+    "NFP": 2,
+    "sym": true
+  },
+  "profile_fit_errors": {
+    "pressure": 8.653791968730014e-14,
+    "iota": 3.6185249022479846e-14,
+    "enclosed_current": 1.824705925706363e-14
+  },
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax": "0.6.2",
+  "python": "3.10.12",
+  "script_sha256": "2b66aaca28e373b7eb35dfb5b30274923077138f4291f3acbbe6f1455d6fafe6",
+  "nested_initial_guess": true,
+  "projection": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 0.00010250721249638319,
+        "J_relative_l2": 0.35560575693930785,
+        "gradp_relative_l2": 0.3707855979282859,
+        "force_over_gradp": 7722.598147205847,
+        "min_abs_sqrt_g": 8.563035681820695e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 0.0002751740327568062,
+        "J_relative_l2": 0.35560581270910474,
+        "gradp_relative_l2": 0.0398932003057006,
+        "force_over_gradp": 830.8709404768366,
+        "min_abs_sqrt_g": 8.562575978112032e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 0.002568439711919887,
+        "J_relative_l2": 0.3556113897750472,
+        "gradp_relative_l2": 0.003997955604873574,
+        "force_over_gradp": 83.15425484172526,
+        "min_abs_sqrt_g": 0.0008558008336631918
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 0.025638182326462575,
+        "J_relative_l2": 0.3561701126680804,
+        "gradp_relative_l2": 0.0004536604920074761,
+        "force_over_gradp": 8.331856454284678,
+        "min_abs_sqrt_g": 0.008515147101602963
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.07627160456196319,
+        "J_relative_l2": 0.36075928346327124,
+        "gradp_relative_l2": 0.0002901953979498773,
+        "force_over_gradp": 2.822702187262542,
+        "min_abs_sqrt_g": 0.02523813571530052
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.171482273835723,
+        "J_relative_l2": 0.3858689893635202,
+        "gradp_relative_l2": 0.0005493383122963387,
+        "force_over_gradp": 1.3247058968422192,
+        "min_abs_sqrt_g": 0.05697199405620811
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.23414073416903566,
+        "J_relative_l2": 0.4235615605696706,
+        "gradp_relative_l2": 0.0011951085892069507,
+        "force_over_gradp": 1.0790224415987364,
+        "min_abs_sqrt_g": 0.0777309529243721
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.17251335394056092,
+        "J_relative_l2": 0.38653231202545774,
+        "gradp_relative_l2": 0.0007507794966005102,
+        "force_over_gradp": 1.3539810265983179,
+        "min_abs_sqrt_g": 0.0004536590262481339
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.1723544841653988,
+        "J_relative_l2": 0.3864588879692934,
+        "gradp_relative_l2": 0.0007469866810637817,
+        "force_over_gradp": 1.3547136904804395,
+        "min_abs_sqrt_g": 0.002671070825049492
+      }
+    }
+  },
+  "solver": {
+    "success": true,
+    "message": "`gtol` condition satisfied. (gtol=1.00e-08)",
+    "iterations": 110,
+    "solve_seconds": 874.1354515510611
+  },
+  "solved": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 0.005977471250175126,
+        "J_relative_l2": 0.0160223680135112,
+        "gradp_relative_l2": 0.999994763652707,
+        "force_over_gradp": 0.02550251665116126,
+        "min_abs_sqrt_g": 8.416944737651394e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 0.005977480374712684,
+        "J_relative_l2": 0.016022408128754256,
+        "gradp_relative_l2": 0.9994767697093512,
+        "force_over_gradp": 0.025489231253910075,
+        "min_abs_sqrt_g": 8.415217109708678e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 0.005978392387080345,
+        "J_relative_l2": 0.016026418296936455,
+        "gradp_relative_l2": 0.9513993997403881,
+        "force_over_gradp": 0.02425598115059281,
+        "min_abs_sqrt_g": 0.0008397975831666935
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 0.006065290790358103,
+        "J_relative_l2": 0.016414275803936566,
+        "gradp_relative_l2": 0.28907111049368256,
+        "force_over_gradp": 0.007157769993588453,
+        "min_abs_sqrt_g": 0.008229068659796293
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.006511787899524391,
+        "J_relative_l2": 0.018817903161963474,
+        "gradp_relative_l2": 0.08343135533982071,
+        "force_over_gradp": 0.0017381297218173988,
+        "min_abs_sqrt_g": 0.023629332910245913
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.0058239688097953286,
+        "J_relative_l2": 0.02277819304407125,
+        "gradp_relative_l2": 0.026643101957373416,
+        "force_over_gradp": 0.0011214087708428186,
+        "min_abs_sqrt_g": 0.05115645874141385
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.005633063978528835,
+        "J_relative_l2": 0.01884030779560154,
+        "gradp_relative_l2": 0.03461735224523824,
+        "force_over_gradp": 0.003993348906622606,
+        "min_abs_sqrt_g": 0.07266935584845509
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.005939044788432659,
+        "J_relative_l2": 0.02084880588816987,
+        "gradp_relative_l2": 0.03549679809019702,
+        "force_over_gradp": 0.0023957489555140525,
+        "min_abs_sqrt_g": 0.0004455302437132291
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.005938601001757651,
+        "J_relative_l2": 0.020833791874696705,
+        "gradp_relative_l2": 0.03551093840002327,
+        "force_over_gradp": 0.0023380239336167224,
+        "min_abs_sqrt_g": 0.0026117250024990375
+      }
+    }
+  },
+  "equilibrium_artifact": {
+    "path": "desc_sheared_issan_M6.h5",
+    "sha256": "3dbc364301dfeac1f23905687e1fa806e7949f6d8cf1c232312778cc6693b11e"
+  },
+  "elapsed_seconds": 1167.777443549945
+}

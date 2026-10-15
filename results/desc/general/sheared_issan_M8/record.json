@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "evidence": "desc_exact_case_everywhere",
+  "case": "sheared_issan",
+  "resolution": {
+    "L": 10,
+    "M": 8,
+    "N": 8,
+    "NFP": 2,
+    "sym": true
+  },
+  "profile_fit_errors": {
+    "pressure": 8.653791968730014e-14,
+    "iota": 3.6185249022479846e-14,
+    "enclosed_current": 1.824705925706363e-14
+  },
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax": "0.6.2",
+  "python": "3.10.12",
+  "script_sha256": "2b66aaca28e373b7eb35dfb5b30274923077138f4291f3acbbe6f1455d6fafe6",
+  "nested_initial_guess": true,
+  "projection": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 2.8012889069442696e-05,
+        "J_relative_l2": 0.35560807874797995,
+        "gradp_relative_l2": 0.013482503293622805,
+        "force_over_gradp": 8314.572153917148,
+        "min_abs_sqrt_g": 8.563500592758119e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 0.0002569029036781462,
+        "J_relative_l2": 0.35560813453319273,
+        "gradp_relative_l2": 0.001348598004829672,
+        "force_over_gradp": 831.5322031568593,
+        "min_abs_sqrt_g": 8.563039869484682e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 0.0025665729580384824,
+        "J_relative_l2": 0.3556137131034617,
+        "gradp_relative_l2": 0.00013710720709012665,
+        "force_over_gradp": 83.15492869809053,
+        "min_abs_sqrt_g": 0.00085584619301228
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 0.02563822502717785,
+        "J_relative_l2": 0.3561725215842646,
+        "gradp_relative_l2": 2.9601196690684102e-05,
+        "force_over_gradp": 8.331879421493532,
+        "min_abs_sqrt_g": 0.008515489108014772
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.07627157614490837,
+        "J_relative_l2": 0.3607591673541101,
+        "gradp_relative_l2": 3.928800284559687e-05,
+        "force_over_gradp": 2.822710780171888,
+        "min_abs_sqrt_g": 0.025239597710382443
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.1714813228019311,
+        "J_relative_l2": 0.3858782279602213,
+        "gradp_relative_l2": 0.00013387930381581097,
+        "force_over_gradp": 1.3247486293072732,
+        "min_abs_sqrt_g": 0.05697689987298572
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.23413374377688242,
+        "J_relative_l2": 0.4233774379420671,
+        "gradp_relative_l2": 0.00038681292827721524,
+        "force_over_gradp": 1.0781749302017656,
+        "min_abs_sqrt_g": 0.07771434044693634
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.1725116684311913,
+        "J_relative_l2": 0.38651570631266624,
+        "gradp_relative_l2": 0.00023212784496325564,
+        "force_over_gradp": 1.3538774526047945,
+        "min_abs_sqrt_g": 0.0004536834531490386
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.17235282123673562,
+        "J_relative_l2": 0.38644322070973347,
+        "gradp_relative_l2": 0.0002303766001893002,
+        "force_over_gradp": 1.3546171042112962,
+        "min_abs_sqrt_g": 0.0026712067014187184
+      }
+    }
+  },
+  "solver": {
+    "success": false,
+    "message": "Maximum number of iterations has been exceeded.",
+    "iterations": 150,
+    "solve_seconds": 2636.8953101160005
+  },
+  "solved": {
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 0.0040562482794778,
+        "J_relative_l2": 0.011193250055968695,
+        "gradp_relative_l2": 0.9999884825303097,
+        "force_over_gradp": 0.010151047870887813,
+        "min_abs_sqrt_g": 8.468065620984254e-06
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 0.004056252761771501,
+        "J_relative_l2": 0.011193285878692994,
+        "gradp_relative_l2": 0.9988502128730053,
+        "force_over_gradp": 0.010139514688646703,
+        "min_abs_sqrt_g": 8.466843399354914e-05
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 0.004056700694070798,
+        "J_relative_l2": 0.011196866564062732,
+        "gradp_relative_l2": 0.9014933565998594,
+        "force_over_gradp": 0.009153167709126726,
+        "min_abs_sqrt_g": 0.000845457643952498
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 0.004098609309909016,
+        "J_relative_l2": 0.011539526748638432,
+        "gradp_relative_l2": 0.19860495976937592,
+        "force_over_gradp": 0.002052400182585406,
+        "min_abs_sqrt_g": 0.008328385837120098
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.004271756913087222,
+        "J_relative_l2": 0.013444009688995,
+        "gradp_relative_l2": 0.05390179863917203,
+        "force_over_gradp": 0.0005593777110094412,
+        "min_abs_sqrt_g": 0.02379597516812111
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.0035161447731733237,
+        "J_relative_l2": 0.013124178790997417,
+        "gradp_relative_l2": 0.01839670754738084,
+        "force_over_gradp": 0.0003207023904774862,
+        "min_abs_sqrt_g": 0.053672746511400485
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.0027754458610120395,
+        "J_relative_l2": 0.0142821806110865,
+        "gradp_relative_l2": 0.02519840290795852,
+        "force_over_gradp": 0.002008927236155221,
+        "min_abs_sqrt_g": 0.07396209222549739
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.003550817897619253,
+        "J_relative_l2": 0.012823409474464299,
+        "gradp_relative_l2": 0.02254007623316156,
+        "force_over_gradp": 0.0009258218386313138,
+        "min_abs_sqrt_g": 0.0004483930849452814
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.0035516304930681393,
+        "J_relative_l2": 0.012780079276522718,
+        "gradp_relative_l2": 0.02242364805729518,
+        "force_over_gradp": 0.0008819967884553381,
+        "min_abs_sqrt_g": 0.002632909371533656
+      }
+    }
+  },
+  "equilibrium_artifact": {
+    "path": "desc_sheared_issan_M8.h5",
+    "sha256": "db2ccdf48d470424c74d4389b6e4796771f1347c0b651e62b8a7356838aed128"
+  },
+  "elapsed_seconds": 3177.4008827439975
+}
