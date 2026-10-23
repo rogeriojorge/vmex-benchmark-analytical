@@ -42,6 +42,14 @@ def positions(w, j, theta, zeta):
 
 
 MU0 = 4e-7*np.pi
+SCHEMA = 2  # 2: per-angle axis subtraction, explicit s for the surface B score, explicit grids
+
+
+def minor_radius(w, theta, zeta):
+    """RMS distance of the boundary from the axis point at the same toroidal angle."""
+    edge = positions(w, int(w.ns)-1, theta, zeta).reshape(len(theta), len(zeta), 3)
+    axis = positions(w, 0, np.zeros(1), zeta).reshape(1, len(zeta), 3)
+    return float(np.sqrt(np.mean(np.sum((edge-axis)**2, -1))))
 
 
 def exact_B_J(case, xyz):
@@ -101,7 +109,8 @@ def exact_s(case, xyz):
     return np.asarray([float(flux(case, max(l, 0.0))) for l in labels])/edge_flux
 
 
-def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None):
+def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None, field_ntheta=32, field_nzeta=16,
+          s_report=0.5):
     import vmex
     case = cases()[case_name]
     w = vmex.read_wout(wout_path)
@@ -112,9 +121,7 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None):
     # Axis: numerical axis row versus the exact axis at the same toroidal angle.
     axis_xyz = positions(w, 0, np.zeros(1), zeta)
     exact_axis = np.asarray(surface(case, 0.0, np.zeros(nzeta), zeta), dtype=float).reshape(-1, 3)
-    minor = np.sqrt(float(np.mean(np.sum((positions(w, ns-1, theta, zeta)
-                                          - np.repeat(axis_xyz, ntheta, 0).reshape(ntheta, nzeta, 3)
-                                            .reshape(-1, 3))**2, -1))))
+    minor = minor_radius(w, theta, zeta)
     axis_offset = float(np.max(np.linalg.norm(axis_xyz-exact_axis, axis=1)))
     surf_rows = []
     for j in range(1, ns):
@@ -122,8 +129,10 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None):
         surf_rows.append({"j": j, "s": float(s_mesh[j]), "flux_label_error_max": float(np.max(np.abs(s_err))),
                           "flux_label_error_rms": float(np.sqrt(np.mean(s_err**2)))})
     field_rows = []
-    for j in sorted({1, 2, max(3, ns//16), ns//4, ns//2, 3*ns//4, ns-2}):
-        sf = vmex.surface_field_data_from_wout(w, ntheta=16, nphi=8, s_index=j)
+    j_report = int(np.argmin(np.abs(s_mesh-s_report)))
+    surfaces = sorted({1, 2, max(3, ns//16), ns//4, ns//2, 3*ns//4, ns-2, j_report})
+    for j in surfaces:
+        sf = vmex.surface_field_data_from_wout(w, ntheta=field_ntheta, nphi=field_nzeta, s_index=j)
         xyz = np.moveaxis(np.asarray(sf.gamma), 0, -1).reshape(-1, 3)
         B = np.moveaxis(np.asarray(sf.B_total), 0, -1).reshape(-1, 3)
         area = np.linalg.norm(np.moveaxis(np.asarray(sf.area_vector), 0, -1), axis=-1).ravel()
@@ -134,8 +143,9 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None):
     # the standard WOUT current versus VMEX's continuous native field.
     route_rows = []
     native = native_field(w, deck) if deck is not None else None
-    th8, ze8 = 2*np.pi*np.arange(16)/16, 2*np.pi*np.arange(8)/(8*int(w.nfp))
-    for j in sorted({1, 2, max(3, ns//16), ns//4, ns//2, 3*ns//4, ns-2}):
+    th8 = 2*np.pi*np.arange(field_ntheta)/field_ntheta
+    ze8 = 2*np.pi*np.arange(field_nzeta)/(field_nzeta*int(w.nfp))
+    for j in surfaces:
         row = {"j": j, "s": float(s_mesh[j])}
         has_current = np.ndim(np.asarray(getattr(w, "currumnc", 0.0))) == 2
         if has_current:
@@ -160,14 +170,19 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None):
     iota_w = np.asarray(w.iotaf)
     iota_x = np.asarray([float(iota(case, float(label_at_s(case, s)))) for s in s_mesh])
     return {
-        "schema": 1, "evidence": "wout_vs_exact_code_neutral", "case": case_name,
+        "schema": SCHEMA, "evidence": "wout_vs_exact_code_neutral", "case": case_name,
+        "grids": {"geometry": [ntheta, nzeta], "fields": [field_ntheta, field_nzeta]},
         "wout_sha256": sha256(wout_path), "ns": ns, "mpol": int(w.mpol), "ntor": int(w.ntor),
         "lasym": bool(w.lasym), "fsq": [float(w.fsqr), float(w.fsqz), float(w.fsql)],
         "ier_flag": int(getattr(w, "ier_flag", -1)),
         "axis_offset_m": axis_offset, "minor_radius_m": minor, "axis_offset_over_minor": axis_offset/minor,
         "flux_label_error_max": float(max(r["flux_label_error_max"] for r in surf_rows)),
         "surfaces": surf_rows, "fields": field_rows,
-        "B_relative_mid": float(np.median([r["B_relative_surface_l2"] for r in field_rows])),
+        # Surface B at the native surface nearest s_report; the median keeps its own name.
+        "B_relative_surface": {"s": float(s_mesh[j_report]), "s_requested": s_report,
+                               "value": next(r["B_relative_surface_l2"] for r in field_rows if r["j"] == j_report)},
+        "B_relative_median_of_surfaces": {"s": [r["s"] for r in field_rows],
+                                          "value": float(np.median([r["B_relative_surface_l2"] for r in field_rows]))},
         "B_relative_near_axis": field_rows[0]["B_relative_surface_l2"],
         "iota_max_abs_error": float(np.max(np.abs(iota_w[1:]-iota_x[1:]))),
         "routes": route_rows,
@@ -187,9 +202,14 @@ def main(argv=None):
     record["run_id"] = receipt["run_id"]
     record["code"] = receipt["code"]
     record["scorer_sha256"] = sha256(__file__)
-    (args.run_dir/"exact_score.json").write_text(json.dumps(record, indent=2)+"\n")
-    print(record["run_id"], "axis %.2e  flux %.2e  B(mid) %.2e  B(j=1) %.2e  iota %.2e  fsq %.1e" % (
-        record["axis_offset_m"], record["flux_label_error_max"], record["B_relative_mid"],
+    # Each scorer schema writes its own file; earlier scores are kept as recorded.
+    name = "exact_score.json" if SCHEMA == 1 else f"exact_score_v{SCHEMA}.json"
+    target = args.run_dir/name
+    if target.exists():
+        raise SystemExit(f"{target} exists; scores are not overwritten")
+    target.write_text(json.dumps(record, indent=2, allow_nan=False)+"\n")
+    print(record["run_id"], "axis %.2e  flux %.2e  B(s) %.2e  B(j=1) %.2e  iota %.2e  fsq %.1e" % (
+        record["axis_offset_m"], record["flux_label_error_max"], record["B_relative_surface"]["value"],
         record["B_relative_near_axis"], record["iota_max_abs_error"], max(record["fsq"])), flush=True)
     for r in record["routes"]:
         print("   j=%d s=%.4f  J_wout %.2e  J_native %s  B_native %s" % (

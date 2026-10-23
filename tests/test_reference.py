@@ -158,3 +158,45 @@ def test_issan_paper_values():
     np.testing.assert_allclose([avg["volume"], avg["beta"]], [1.76, 0.245], rtol=3e-3)
     np.testing.assert_allclose(-iota(B, B.edge*0.5), 2.80, atol=0.01)
     np.testing.assert_allclose(-iota(replace(B, tau=0.5, lasym=True), B.edge*0.5), 2.55, atol=0.01)
+
+
+def test_reference_report_carries_tau_into_integrated_quantities():
+    """The emitted per-case row, not only the formula, must use the case's tau."""
+    import verify_reference
+    rows = {n: verify_reference.case_row(n, CASES[n], np.random.default_rng(0))
+            for n in ("integer_3d", "integer_3d_tau", "integer_3d_tau_mirror",
+                      "sheared_issan", "sheared_issan_tau")}
+    for name, row in rows.items():
+        case = CASES[name]
+        assert row["volume"] == pytest.approx(float(volume(case)), rel=1e-12)
+        assert row["toroidal_flux"] == pytest.approx(float(flux(case, case.edge)), rel=1e-12)
+        assert row["volume_integrated_relative_difference"] < 1e-9
+    # Closed forms (arXiv:2610.07304): 1/(1-tau^2) factors at tau = 0.5.
+    assert rows["integer_3d_tau"]["beta"] == pytest.approx(4/89, rel=1e-12)
+    assert rows["integer_3d"]["beta"] == pytest.approx(2/57, rel=1e-12)
+    assert rows["integer_3d_tau"]["beta"] == pytest.approx(rows["integer_3d_tau_mirror"]["beta"], rel=1e-14)
+    assert rows["sheared_issan_tau"]["beta"] < rows["sheared_issan"]["beta"]
+
+
+def test_independent_integer_helpers_reject_cases_they_do_not_implement():
+    """They ignore tau, phase and shift, so they must refuse them (was a 107% silent B error)."""
+    from measurement import integer_exact_fields, integer_surface_numpy
+    x = np.asarray(surface(CASES["integer_3d"], 0.5*CASES["integer_3d"].edge, 0.3, 0.2)).reshape(1, 3)
+    B = integer_exact_fields(CASES["integer_3d"], x)[0]
+    np.testing.assert_allclose(B, np.asarray(field(CASES["integer_3d"], x)[0]), rtol=1e-13)
+    for name in ("integer_3d_tau", "integer_3d_tau_mirror", "integer_3d_reframed"):
+        with pytest.raises(ValueError, match="independent integer helpers"):
+            integer_exact_fields(CASES[name], x)
+        with pytest.raises(ValueError, match="independent integer helpers"):
+            integer_surface_numpy(CASES[name], np.array([[0.5, 0.3, 0.2]]))
+
+
+@pytest.mark.parametrize("name, naive_error", [("sheared_A", 2.4e-2), ("sheared_issan", 1.66e-2)])
+def test_sheared_surfaces_need_the_nonlinear_flux_map(name, naive_error):
+    """Seeds place surface j at label_at_s(s_j); the old edge*s map misses by ~1e-2 in flux."""
+    case = CASES[name]
+    s = np.linspace(0, 1, 65)
+    exact = np.array([float(flux(case, float(label_at_s(case, x)))) for x in s])/float(flux(case, case.edge))
+    naive = np.array([float(flux(case, case.edge*x)) for x in s])/float(flux(case, case.edge))
+    assert np.max(abs(exact-s)) < 1e-12
+    assert np.max(abs(naive-s)) == pytest.approx(naive_error, rel=0.01)

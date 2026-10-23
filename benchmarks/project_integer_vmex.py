@@ -1,4 +1,10 @@
-"""Project exact integer geometry into a VMEX state and score it before solving."""
+"""Project an exact case's geometry into a VMEX state and score it before solving.
+
+Surfaces are placed at the exact normalized toroidal flux (``label_at_s``). lambda
+is zero, which is the exact field only where the analytic angle is already a
+straight-field-line angle (the integer family); for other families the seed is
+geometry-only and is recorded as such.
+"""
 from dataclasses import replace
 import json
 from pathlib import Path
@@ -12,10 +18,10 @@ import numpy as np
 import vmex
 from vmex.core.fourier import mode_table, trig_tables
 from vmex.core.residuals import m1_physical_to_constrained
-from vmex.core.solver import SpectralState, prepare_runtime, resolution_from_input
+from vmex.core.solver import SpectralState, resolution_from_input
 from vmex.core.transforms import physical_to_internal_scale
 
-from analytic import ROOT, cases, field, surface
+from analytic import ROOT, cases, field, label_at_s, surface
 
 ARGS = sys.argv[1:]
 CASE = ARGS.pop(ARGS.index("--case")+1) if "--case" in ARGS else "integer_3d"
@@ -23,14 +29,13 @@ SOLVE = "--solve" in ARGS  # also run VMEX from the projection and write its WOU
 FTOL = float(ARGS.pop(ARGS.index("--ftol")+1)) if "--ftol" in ARGS else 1e-12
 ARGS = [a for a in ARGS if a not in ("--case", "--solve", "--ftol")]
 NS = int(ARGS[0]) if ARGS else 33
-VOLUME = ARGS[1:] == ["--volume"]
-if len(ARGS) > 2 or (len(ARGS) == 2 and not VOLUME) or NS < 5:
-    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5 [--volume]] [--case NAME] [--solve [--ftol F]]")
+if len(ARGS) > 1 or NS < 5:
+    raise SystemExit("Usage: python benchmarks/project_integer_vmex.py [NS>=5] [--case NAME] [--solve [--ftol F]]")
 GRID = 64
 
 
 def project(inp, case, ns=NS, grid=GRID):
-    """Fit actual full-mesh R/Z; lambda=0 is certified separately here."""
+    """Fit full-mesh R/Z on the exact flux surfaces; lambda = 0."""
     res = resolution_from_input(inp, ns=ns)
     modes = mode_table(res.mpol, res.ntor)
     trig = trig_tables(res)
@@ -40,7 +45,7 @@ def project(inp, case, ns=NS, grid=GRID):
     s = np.linspace(0, 1, ns)
     coefficients = np.zeros((4, ns, modes.mnmax))  # R cos, Z sin, R sin, Z cos
     for j, sj in enumerate(s):
-        xyz = surface(case, case.edge*sj, theta, phi)
+        xyz = surface(case, float(label_at_s(case, sj)), theta, phi)
         R, Z = np.hypot(xyz[..., 0], xyz[..., 1]), xyz[..., 2]
         spectra = [np.fft.fft2(a)/(grid*grid) for a in (R, Z)]
         for k, (m, n) in enumerate(zip(modes.m, modes.n)):
@@ -65,7 +70,6 @@ def main():
     inp = replace(inp, ns_array=[NS], ftol_array=[1e-14], niter_array=[3000])
     start = perf_counter()
     state = project(inp, case)
-    runtime = prepare_runtime(inp, resolution_from_input(inp, ns=NS))
     # These residual placeholders only permit in-memory surface conversion.
     # This projected state has not passed a nonlinear VMEX solve.
     wout = vmex.wout_from_state(inp=inp, state=state, fsqr=0.0, fsqz=0.0, fsql=0.0)
@@ -76,16 +80,18 @@ def main():
         B = np.moveaxis(np.asarray(data.B_total), 0, -1).reshape(-1, 3)
         exact = np.asarray(field(case, xyz)[0])
         rows.append(dict(index=j, B_relative_surface_l2=float(np.linalg.norm(B-exact)/np.linalg.norm(exact)),
-                         label_max_over_edge=float(np.max(abs(np.asarray(field(case, xyz)[1])-case.edge*j/(NS-1)))/case.edge)))
+                         label_max_over_edge=float(np.max(abs(np.asarray(field(case, xyz)[1])
+                                                         - float(label_at_s(case, j/(NS-1)))))/case.edge)))
     source = Path(vmex.__file__).resolve().parents[1]
     commit = subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip()
     out = ROOT / f"results/projection/{CASE}_vmex_ns{NS}"
     out.mkdir(parents=True, exist_ok=True)
     max_B = max(r["B_relative_surface_l2"] for r in rows)
     status = "passed" if max_B < 1e-5 else "failed"
-    (out / "projection.json").write_text(json.dumps(dict(schema=1, evidence="analytic_projection",
+    (out / "projection.json").write_text(json.dumps(dict(schema=2, evidence="analytic_projection",
         status=status, vmex_commit=commit, case=CASE, ns=NS, angular_fit_grid=GRID,
-        no_nonlinear_solve=True, lambda_zero_surface_certificate="results/projection/integer_3d_surface.json",
+        no_nonlinear_solve=True, flux_map="label_at_s",
+        seed=("exact_field_lambda_zero" if case.family == "integer" else "geometry_only_lambda_zero"),
         field_path="projected state -> WOUT surface field", elapsed_seconds=perf_counter()-start,
         max_B_relative_surface_l2=max_B, rows=rows), indent=2, allow_nan=False)+"\n")
     np.savez_compressed(out / "seed.npz", **{name: np.asarray(getattr(state, name)) for name in
@@ -101,14 +107,6 @@ def main():
         vmex.write_wout(out / f"wout_{CASE}_seeded_ns{NS}.nc", vmex.wout_from_result(inp, result))
         print({"seeded_solve": dict(iterations=int(result.iterations), fsq=[float(result.fsqr),
                float(result.fsqz), float(result.fsql)])})
-    if VOLUME:
-        from native_samples import sample_native
-        from score_samples import score
-        samples = sample_native(inp, state, case, runtime=runtime)
-        np.savez_compressed(out / "native_samples.npz", **samples)
-        scores = score(samples)
-        (out / "native_scores.json").write_text(json.dumps(scores, indent=2, allow_nan=False)+"\n")
-        print({"projected_native_score": scores})
     print({"status": status, "max_B_relative_surface_l2": max_B, "rows": rows})
     if status != "passed":
         print("Projection does not meet the initial surface B target")
