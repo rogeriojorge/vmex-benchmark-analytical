@@ -1,7 +1,7 @@
 """Collect the non-stellarator-symmetric results into results/asymmetric/summary.json.
 
 Reads the seeded VMEX runs written by ``project_integer_vmex.py --solve`` and
-their ``exact_score.json``, adds the Fourier spectrum of the flux-label error
+their ``exact_score_v2.json``, adds the Fourier spectrum of the flux-label error
 (where it goes when the transform is rational) and the Boozer check.
 """
 import ast
@@ -48,13 +48,13 @@ def main():
             elif "unconverged: fsq" in text:
                 row["fsq"] = list(ast.literal_eval(text.split("unconverged: fsq ")[1].split(" after")[0]))
             wout_path = run/f"wout_{name}_seeded_ns{ns}.nc"
-            if row["converged"] and wout_path.exists() and not (run/"exact_score.json").exists():
+            if row["converged"] and wout_path.exists() and not (run/"exact_score_v2.json").exists():
                 from score_wout_exact import score as exact_score
                 deck = ROOT/"inputs"/f"input.{name}_iota"
-                (run/"exact_score.json").write_text(json.dumps(exact_score(wout_path, name, deck=deck), indent=1))
-            if (run/"exact_score.json").exists():
-                score = json.loads((run/"exact_score.json").read_text())
-                row.update({k: score[k] for k in ("flux_label_error_max", "B_relative_mid", "iota_max_abs_error")},
+                (run/"exact_score_v2.json").write_text(json.dumps(exact_score(wout_path, name, deck=deck), indent=1))
+            if (run/"exact_score_v2.json").exists():
+                score = json.loads((run/"exact_score_v2.json").read_text())
+                row.update({k: score[k] for k in ("flux_label_error_max", "B_relative_surface", "iota_max_abs_error")},
                            surfaces=[[r["s"], r["flux_label_error_max"]] for r in score["surfaces"]],
                            routes=score["routes"])
                 if ns == 65 and row["converged"]:

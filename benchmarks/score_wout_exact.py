@@ -142,7 +142,13 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None, field_ntheta=32,
     # Current and field routes at identical points of native surfaces:
     # the standard WOUT current versus VMEX's continuous native field.
     route_rows = []
-    native = native_field(w, deck) if deck is not None else None
+    from vmex.core.errors import VmecNumericalError
+    native, native_unavailable = None, None
+    if deck is not None:
+        try:
+            native = native_field(w, deck)
+        except NotImplementedError as e:  # VmecInteriorField has no LASYM states
+            native_unavailable = str(e)
     th8 = 2*np.pi*np.arange(field_ntheta)/field_ntheta
     ze8 = 2*np.pi*np.arange(field_nzeta)/(field_nzeta*int(w.nfp))
     for j in surfaces:
@@ -159,7 +165,12 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None, field_ntheta=32,
             Bx, Jx = exact_B_J(case, xyz)
         if native is not None:
             pts = jnp.asarray(xyz)
-            Bn = np.asarray(native.B(pts))
+            try:
+                Bn = np.asarray(native.B(pts))
+            except VmecNumericalError as e:  # unconverged states can fail inversion
+                native, native_unavailable = None, str(e)
+                route_rows.append(row)
+                continue
             # gradB[p, i, j] = dB_i/dx_j here; the transposed order gives exactly -J
             # (checked against the exact current on the axisymmetric case).
             gB = np.asarray(native.gradB(pts))
@@ -171,7 +182,7 @@ def score(wout_path, case_name, ntheta=32, nzeta=16, deck=None, field_ntheta=32,
     iota_x = np.asarray([float(iota(case, float(label_at_s(case, s)))) for s in s_mesh])
     return {
         "schema": SCHEMA, "evidence": "wout_vs_exact_code_neutral", "case": case_name,
-        "grids": {"geometry": [ntheta, nzeta], "fields": [field_ntheta, field_nzeta]},
+        "native_unavailable": native_unavailable, "grids": {"geometry": [ntheta, nzeta], "fields": [field_ntheta, field_nzeta]},
         "wout_sha256": sha256(wout_path), "ns": ns, "mpol": int(w.mpol), "ntor": int(w.ntor),
         "lasym": bool(w.lasym), "fsq": [float(w.fsqr), float(w.fsqz), float(w.fsql)],
         "ier_flag": int(getattr(w, "ier_flag", -1)),

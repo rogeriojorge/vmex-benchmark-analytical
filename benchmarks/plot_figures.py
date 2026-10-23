@@ -104,7 +104,7 @@ def fig_parity(summary):
 
 
 def fig_readout():
-    rec = load("results/cross_code/runs/integer_axisymmetric_iota-ns129-vmec2000/exact_score.json")
+    rec = load("results/cross_code/runs/integer_axisymmetric_iota-ns129-vmec2000/exact_score_v2.json")
     routes = rec["routes"]
     s = [r["s"] for r in routes]
     wout_B = {f["j"]: f["B_relative_surface_l2"] for f in rec["fields"]}
@@ -394,7 +394,7 @@ def fig_desc_issan():
         for name, color in zip(family, (MUTED, AFTER, "#eb6834")):
             rows = []
             for M in (6, 8, 10, 12):
-                path = ROOT/f"results/desc/general/{name}_M{M}/record.json"
+                path = ROOT/f"results/desc/general/{name}_M{M}/record_v2.json"
                 if path.exists():
                     r = load(str(path.relative_to(ROOT)))
                     rows.append((M, r["solved"]["volume"]["gauss"], r["solver"]["success"]))

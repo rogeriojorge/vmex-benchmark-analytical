@@ -11,9 +11,9 @@ VMEX, VMEC2000, VMEC++ and DESC are scored against 3-D equilibria known in close
 - **Same input, same answer.** VMEX, VMEC2000 and VMEC++ agree on every converged case; they also fail on the same ones.
 - **Two VMEX defects found and fixed:** the field at the axis ([#452](https://github.com/uwplasma/vmex/pull/452)) and refinement before derivatives ([#453](https://github.com/uwplasma/vmex/pull/453)).
 - **Read the field, not the file.** VMEX's continuous field gives J 10-70x more accurately than a WOUT file.
-- **DESC is the most accurate**: it solves sheared A, which VMEC-type codes cannot, and converges spectrally on the asymmetric family A, to the exact state rather than its resonant neighbour.
+- **DESC is the most accurate here**: it gives the best sheared-A approximation (both runs stopped at DESC's 150-iteration cap, so neither counts as converged) and converges spectrally on the asymmetric family A, without the plateau VMEX shows.
 - **Without stellarator symmetry** VMEX's full-basis path adds no error, mirror pairs agree to 1e-9, and the Boozer, ripple, virtual-casing, tracing and coil tools work and match the exact fields.
-- **Rational transform has a price.** With symmetry broken, the `iota = 2` family is degenerate; VMEX lands on a neighbouring equilibrium 8e-4 away, at every resolution.
+- **A plateau at rational transform.** With symmetry broken, VMEX's flux-surface error on the `iota = 2` family stops at about 8e-4 at NS 33, 65 and 129. Its cause is not yet established; a neighbouring equilibrium is one hypothesis among several (see open problems).
 
 ## What is compared
 
@@ -56,11 +56,11 @@ VMEX, VMEC2000, VMEC++ and DESC are scored against 3-D equilibria known in close
 
 ![Volume current error, DESC and VMEX](figures/integer_3d_accuracy.png)
 
-*Integer 3-D: DESC converges spectrally; VMEX, started from the exact state, reaches 1e-4, limited by the cells next to the axis.*
+*Integer 3-D: DESC converges spectrally. For VMEX started from the exact state at NS257 the volume J error is not yet resolved: 1.6e-4 with a midpoint radial rule and 2.3e-3 with a Gauss rule, the difference coming from the cells next to the axis.*
 
 ![Sheared A and asymmetric Solov'ev across codes](figures/hard_cases.png)
 
-*B error at mid radius. Sheared A converges only in DESC (1e-5 at M = 10). On the asymmetric Solov'ev case DESC wins by orders, its basis holds this polynomial almost exactly.*
+*B error on one surface near mid radius (being re-scored at s = 0.5 for every code). On sheared A only DESC gets close (2e-5 at M = 10, at its iteration cap). On the asymmetric Solov'ev case DESC is far more accurate; its basis holds this polynomial almost exactly.*
 
 ### 5. Without stellarator symmetry
 
@@ -70,13 +70,13 @@ VMEX, VMEC2000, VMEC++ and DESC are scored against 3-D equilibria known in close
 
 ![VMEX on the asymmetric family A](figures/asymmetric_vmex.png)
 
-*VMEX from the exact geometry (converged to 1e-11). Left: surfaces at `tau = 0` converge with NS; at `tau = +-0.5` they stop at 8e-4, identical for the mirror pair. Middle: J from the native field is 20x better than WOUT. Right: the miss lives only in the (1,1), (2,2), (3,3) harmonics, resonant with `iota = 2` at two field periods; symmetry forbids them at `tau = 0`.*
+*VMEX from the exact geometry (converged to 1e-11). Left: surfaces at `tau = 0` converge with NS; at `tau = +-0.5` they stop at 8e-4, identical for the mirror pair. Middle: J from the native field is 20x better than WOUT. Right: the miss is concentrated in the (1,1), (2,2), (3,3) harmonics, resonant with `iota = 2` at two field periods. At `tau = 0` the same harmonics are present but small (for example (-1,-1) at 1.6e-6), so magnitudes alone do not settle their parity.*
 
 The `tau = 0` equilibrium solved in the full basis matches the symmetric solve to every digit. Family B stalls at 1e-7 in VMEX even from the exact geometry.
 
 ![DESC on the Issan families](figures/desc_issan.png)
 
-*DESC (`sym=False`). Family A converges spectrally, `tau` and `-tau` on top of each other, to B 1.2e-7 and J 3.6e-6 at M = 10: DESC reaches the exact equilibrium, not the resonant neighbour VMEX finds. Family B stays at 1e-2 to 1e-3; hollow markers did not meet DESC's own tolerance.*
+*DESC (`sym=False`). Family A converges spectrally, `tau` and `-tau` on top of each other, to B 1.2e-7 and J of order 3e-6 at M = 10 (Gauss and midpoint volume rules differ by 15%), with no plateau. Family B stays at 1e-2 to 1e-3; hollow markers did not meet DESC's own tolerance.*
 
 ### 6. `vmex --plot` on an exact asymmetric equilibrium
 
@@ -94,13 +94,14 @@ The `tau = 0` equilibrium solved in the full basis matches the symmetric solve t
 
 ![Alpha loss fraction, family A](figures/alpha_losses.png) ![Alpha loss locations, tau0 = 0.5](figures/alpha_losses_3d.png)
 
-*`vmex --trace` on the VMEX equilibria, scaled to ARIES-CS size. The mirror pair loses 42.4 % and 39.8 % (0.8 sigma apart, as symmetry requires); `tau0 = 0` loses 47 %. Energy is conserved to 4e-4.*
+*`vmex --trace` on the VMEX equilibria, scaled to ARIES-CS size, 500 particles per case. The mirror pair loses 42.4 % and 39.8 %, 0.8 standard errors apart, consistent with the equality symmetry implies; `tau0 = 0` loses 47 %. Energy is conserved to 4e-4. This is an integration check, not an orbit verification.*
 
 ESSOS coils for these cases reach B.n/|B| of 1e-4 to 4e-4 ([coils-for-new-landreman#1](https://github.com/rogeriojorge/coils-for-new-landreman/pull/1)).
 
 ## Open problems
 
-- **Near-axis current in solved VMEX states**: 1e-2 in the first two or three cells at NS 129 and 257, identical in VMEC2000. A property of the discretization, not of the evaluator.
+- **Near-axis current in solved VMEX states**: 1e-2 in the first two or three cells at NS 129 and 257, the same in VMEC2000's solution. The exact projection does not show it, so it is not the evaluator; smoothing the first surfaces and a tighter solve did not remove it. Its cause is not yet isolated.
+- **Plateau on the asymmetric integer family**: VMEX's flux-surface error stops at about 8e-4 for `tau = +-0.5` at every NS. Still to test: angular resolution, the input and seed, both closures, signed harmonic phases, and near-null directions of the constrained Jacobian.
 - **Issan family B**: no code converges yet. VMEX stalls at 1e-7 from the exact geometry and DESC stays at 1e-2 to 1e-3, so the NEO_JAX and free-boundary checks on it wait on a converged equilibrium.
 
 ## Reproduce

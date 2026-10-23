@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+MID = f"{0.5**0.5:g}"  # DESC ring rho = sqrt(s) at s = 0.5, the VMEX-family reporting surface
 
 
 def sha(path):
@@ -20,7 +21,7 @@ def main():
     rows = []
     for receipt_path in sorted((ROOT/"results/cross_code/runs").glob("*/receipt.json")):
         receipt = json.loads(receipt_path.read_text())
-        score_path = receipt_path.parent/"exact_score.json"
+        score_path = receipt_path.parent/"exact_score_v2.json"
         case, ns = receipt["run_id"].rsplit("-ns", 1)
         ns = int(ns.split("-")[0])
         row = {"code": receipt["code"], "case": case.removesuffix("_iota"), "ns": ns,
@@ -33,7 +34,7 @@ def main():
             mid = routes[min(routes, key=lambda j: abs(routes[j]["s"]-0.5))]
             row.update(converged=converged, fsq_max=max(s["fsq"]), axis_offset_m=s["axis_offset_m"],
                        axis_offset_over_minor=s["axis_offset_over_minor"],
-                       flux_label_error_max=s["flux_label_error_max"], B_wout_mid=s["B_relative_mid"],
+                       flux_label_error_max=s["flux_label_error_max"], B_wout_mid=s["B_relative_surface"]["value"], B_wout_s=s["B_relative_surface"]["s"],
                        B_wout_first_surface=s["B_relative_near_axis"], iota_error=s["iota_max_abs_error"],
                        J_wout_mid=mid.get("J_wout_relative_l2"), J_native_mid=mid.get("J_native_relative_l2"),
                        B_native_mid=mid.get("B_native_relative_l2"),
@@ -44,7 +45,7 @@ def main():
             row.update(converged=False)
         rows.append(row)
     desc_rows = []
-    for rec in sorted((ROOT/"results/desc/general").glob("*/record.json")):
+    for rec in sorted((ROOT/"results/desc/general").glob("*/record_v2.json")):
         r = json.loads(rec.read_text())
         v, a = r["solved"]["volume"]["gauss"], r["solved"]["rings"]["0.0001"]
         desc_rows.append({"code": "desc", "case": r["case"], "M": r["resolution"]["M"],
@@ -52,10 +53,10 @@ def main():
                           "B_volume": v["B_relative_l2"], "J_volume": v["J_relative_l2"],
                           "force_volume": v["force_over_gradp"], "B_axis": a["B_relative_l2"],
                           "J_axis": a["J_relative_l2"],
-                          "B_mid": r["solved"]["rings"]["0.7"]["B_relative_l2"],
-                          "J_mid": r["solved"]["rings"]["0.7"]["J_relative_l2"], "record_sha256": sha(rec)})
+                          "B_mid": r["solved"]["rings"][MID]["B_relative_l2"],
+                          "J_mid": r["solved"]["rings"][MID]["J_relative_l2"], "record_sha256": sha(rec)})
     out = ROOT/"results/cross_code/summary.json"
-    out.write_text(json.dumps({"schema": 1, "vmec_family": rows, "desc": desc_rows}, indent=2)+"\n")
+    out.write_text(json.dumps({"schema": 2, "vmec_family": rows, "desc": desc_rows}, indent=2)+"\n")
     for r in rows:
         print(r["case"], r["ns"], r["code"], r["status"], r.get("converged"),
               "flux %.2e" % r["flux_label_error_max"] if "flux_label_error_max" in r else "")
