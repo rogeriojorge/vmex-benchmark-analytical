@@ -152,18 +152,44 @@ def compact(rec):
                 V=v["volume_rel_error"], fsq=rec["fsq"])
 
 
+def vmex_projection_table(ns_list, res_list, kinds=("eta",), closures=(1, 0), out_dir=None):
+    """Exact state through VMEX's wout_from_state (no solve), scored with the same scorer."""
+    import time
+    case = sl.lopez_case()
+    rows = []
+    for kind in kinds:
+        for mpol, ntor in res_list:
+            for ns in ns_list:
+                for closure in closures:
+                    t0 = time.perf_counter()
+                    inp = deck_for(mpol, ntor, ns, kind, closure, directory=out_dir)
+                    import vmex
+                    state = vmex_state(inp, ns, kind)
+                    w = vmex.wout_from_state(inp=inp, state=state, fsqr=0.0, fsqz=0.0, fsql=0.0)
+                    rec = sl.score_wout(w, case, keep_profile=False)
+                    rows.append(dict(source="vmex_wout_from_state", kind=kind, closure="current" if closure else "iota",
+                                     ns=ns, mpol=mpol, ntor=ntor, seconds=time.perf_counter() - t0, **compact(rec)))
+                    print({k: (float("%.3g" % v) if isinstance(v, float) else v) for k, v in rows[-1].items()},
+                          flush=True)
+    return rows
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--projection", action="store_true", help="oracle projection floor table")
+    parser.add_argument("--projection", action="store_true", help="oracle projection floor table (NumPy only)")
+    parser.add_argument("--vmex-projection", action="store_true", help="projection through VMEX wout_from_state")
     parser.add_argument("--kind", default="eta", choices=("eta", "alpha"))
     parser.add_argument("--ns", type=int, nargs="+", default=[17, 33, 65])
     parser.add_argument("--res", type=int, nargs="+", default=[10, 72], help="mpol ntor pairs")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     res = list(zip(args.res[0::2], args.res[1::2]))
-    rows = table(args.ns, res, args.kind)
-    for r in rows:
-        print({k: (float("%.3g" % v) if isinstance(v, float) else v) for k, v in r.items()}, flush=True)
+    if args.vmex_projection:
+        rows = vmex_projection_table(args.ns, res, kinds=(args.kind,))
+    else:
+        rows = table(args.ns, res, args.kind)
+        for r in rows:
+            print({k: (float("%.3g" % v) if isinstance(v, float) else v) for k, v in r.items()}, flush=True)
     if args.out:
         args.out.write_text(json.dumps(rows, indent=1, allow_nan=False) + "\n")
