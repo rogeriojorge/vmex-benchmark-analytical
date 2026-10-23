@@ -1,0 +1,58 @@
+DESC 0.17.3+32.gc9ec78e2d; JAX 0.6.2; devices [CpuDevice(id=0)]
+epsilon=1.08, S=3.0, k_b=0.7, lambda=3.5, kappa=1.0; Psi=0.03943704324346292 Wb
+Axis p=15915.4943113 Pa; edge current=217509.071477 A
+Expected iota axis/edge: [5.68886661 6.21844919]; current is prescribed, iota is solved.
+Expected volume-averaged beta: 19.662357%
+PASS  reference_div_B_relative                         4.8055e-17  <= 1.00e-12
+PASS  reference_force_relative                         2.4246e-15  <= 1.00e-11
+PASS  reference_B_dot_grad_psi_relative                2.6397e-16  <= 1.00e-12
+PASS  reference_positive_chi_rate_relative             5.3291e-15  <= 1.00e-10
+PASS  reference_current_line_integral_relative         1.1102e-16  <= 1.00e-09
+PASS  reference_map_psi_relative                       3.2854e-15  <= 1.00e-11
+PASS  reference_nonpositive_jacobian_count             0.0000e+00  <= 0.00e+00
+PASS  flux_quadrature_relative                         6.6613e-16  <= 1.00e-12
+PASS  flux_radius_fit_absolute                         5.9286e-13  <= 1.00e-11
+PASS  pressure_profile_relative                        3.4287e-16  <= 1.00e-11
+PASS  current_profile_relative                         5.1354e-13  <= 1.00e-11
+PASS  iota_axis_formula_absolute                       8.8818e-16  <= 1.00e-12
+PASS  iota_quadrature_absolute                         4.4409e-15  <= 1.00e-12
+PASS  beta_quadrature_convergence_relative             6.9944e-15  <= 1.00e-10
+
+Solving L=10, M=10, N=20, NFP=2
+Precomputing transforms
+Timer: Precomputing transforms = 3.31 sec
+   Iteration     Total nfev        Cost      Cost reduction    Step norm     Optimality   
+       0              1         2.9571e-07                                    1.10e-03    
+       1              2         1.9829e-08      2.76e-07       1.84e-03       1.08e-05    
+       2              3         1.5181e-08      4.65e-09       7.61e-04       3.53e-06    
+`gtol` termination condition is satisfied.
+Function evaluations 3, initial cost 2.9571e-07, final cost 1.5181e-08, first-order optimality 3.53e-06.
+Independent validation:
+PASS  B_relative_rms                                   2.1878e-05  <= 1.00e-04
+PASS  B_relative_max                                   9.1282e-05  <= 1.00e-03
+PASS  J_relative_rms                                   1.9569e-04  <= 1.00e-03
+PASS  pressure_gradient_relative_rms                   3.6114e-05  <= 2.00e-03
+PASS  force_relative_rms                               6.3418e-04  <= 1.00e-03
+PASS  force_relative_max                               4.6706e-03  <= 1.00e-02
+PASS  surface_psi_max_over_psi_b                       1.6131e-05  <= 1.00e-03
+PASS  pressure_max_over_axis_pressure                  1.6131e-05  <= 1.00e-03
+PASS  B_dot_grad_analytic_psi_relative_rms             1.7276e-05  <= 1.00e-04
+PASS  div_B_relative_rms                               7.7238e-17  <= 1.00e-10
+PASS  nonpositive_jacobian_count                       0.0000e+00  <= 0.00e+00
+PASS  nonfinite_value_count                            0.0000e+00  <= 0.00e+00
+PASS  boundary_psi_max_over_psi_b                      1.6131e-05  <= 1.00e-03
+PASS  axis_distance_over_minor_radius                  5.8110e-06  <= 1.00e-03
+PASS  iota_max_absolute                                6.9979e-05  <= 1.00e-04
+PASS  iota_shear_relative                              6.3328e-05  <= 1.00e-03
+PASS  volume_m3_relative_to_paper                      1.8709e-10  <= 1.00e-03
+PASS  mean_psi_relative_to_paper                       5.2098e-07  <= 1.00e-03
+PASS  mean_P2_relative_to_paper                        8.9392e-07  <= 1.00e-03
+PASS  horizontal_B2_over_kappa2_relative_to_paper      2.4165e-07  <= 1.00e-03
+PASS  mean_pressure_Pa_relative_to_paper               6.0372e-07  <= 1.00e-03
+PASS  mean_B2_T2_relative_to_paper                     3.1200e-07  <= 1.00e-03
+PASS  beta_volume_relative_to_paper                    9.1572e-07  <= 1.00e-03
+Volume-averaged beta: DESC 19.662375%; paper 19.662357%
+
+Saved run_default/landreman_sheared_desc.h5
+Saved run_default/landreman_sheared_desc_checks.json
+Elapsed: 168.8 s; final analytic checks PASS

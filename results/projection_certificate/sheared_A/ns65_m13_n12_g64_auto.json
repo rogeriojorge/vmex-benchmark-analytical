@@ -1,0 +1,368 @@
+{
+  "schema": 1,
+  "evidence": "projection_certificate",
+  "case": "sheared_A",
+  "vmex_commit": "fcf211f20692e557345fa41fe53d83b411ad53a2",
+  "ns": 65,
+  "mpol": 13,
+  "ntor": 12,
+  "angular_fit_grid": 64,
+  "seed": "full_flux_lambda",
+  "lambda_grid": 65,
+  "lambda_certificates": {
+    "gradient_reconstruction_relative": 1.1526393922860848e-07,
+    "closedness_scaled_rms": 4.60594966018239e-08,
+    "period_mean_scaled_max": 1.1523119523015878e-07,
+    "minimum_straight_angle_derivative": 0.6410434855553123
+  },
+  "gates": {
+    "B": 1e-05,
+    "J": 0.001,
+    "force": 0.001
+  },
+  "projection_seconds": 3.7829570829926524,
+  "scoring_seconds": {
+    "q1": 1.9510555409942754,
+    "q2": 3.0731738330068765,
+    "q3": 9.064542624997557,
+    "q4": 18.536453749999055,
+    "q4_shift": 17.949454000001424,
+    "q4_panels": 17.880819291007356
+  },
+  "scores": {
+    "q1": {
+      "all": {
+        "B": 3.542773778356541e-06,
+        "J": 6.594501219670967e-05,
+        "force": 0.0002332146237335076,
+        "B_max_abs_over_Bmax": 1.7329273852628674e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 6.996771864922372e-06,
+        "J": 0.00012068029465767564,
+        "force": 0.002130461869278601,
+        "B_max_abs_over_Bmax": 8.803419687832288e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.8746930851618642e-06,
+        "J": 2.1458349351721014e-05,
+        "force": 9.120499839092771e-05,
+        "B_max_abs_over_Bmax": 8.051265576667037e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 9.498646853888673e-06,
+        "J": 0.00021311508557257991,
+        "force": 0.0005698662140278998,
+        "B_max_abs_over_Bmax": 1.7329273852628674e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "q2": {
+      "all": {
+        "B": 3.4692243274948506e-06,
+        "J": 7.64362032150614e-05,
+        "force": 0.000269914698653611,
+        "B_max_abs_over_Bmax": 2.1811777613740775e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 9.722477354583603e-06,
+        "J": 0.0001161359429207095,
+        "force": 0.0041497003938692975,
+        "B_max_abs_over_Bmax": 1.3095080852181398e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.6720636123920498e-06,
+        "J": 2.2977868347404744e-05,
+        "force": 9.875397870840593e-05,
+        "B_max_abs_over_Bmax": 9.48162532380487e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 8.722321659021422e-06,
+        "J": 0.00023401150256009405,
+        "force": 0.0006128898525281569,
+        "B_max_abs_over_Bmax": 2.1811777613740775e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "q3": {
+      "all": {
+        "B": 3.4284241087795052e-06,
+        "J": 7.708940774026188e-05,
+        "force": 0.0002593265081101631,
+        "B_max_abs_over_Bmax": 2.2134005131595983e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 6.830384662580595e-06,
+        "J": 0.00017373255540656585,
+        "force": 0.0020452690242281357,
+        "B_max_abs_over_Bmax": 1.3098314766170479e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.5000319672585518e-06,
+        "J": 2.0198238022318176e-05,
+        "force": 7.77542859092478e-05,
+        "B_max_abs_over_Bmax": 9.000113493579469e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 8.289721899765878e-06,
+        "J": 0.0002111377152558396,
+        "force": 0.0005599012386858117,
+        "B_max_abs_over_Bmax": 2.2134005131595983e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "q4": {
+      "all": {
+        "B": 3.4313812449861865e-06,
+        "J": 7.712434477823243e-05,
+        "force": 0.0002620678150127401,
+        "B_max_abs_over_Bmax": 2.329231594466233e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 6.39262846998901e-06,
+        "J": 0.00015636329152871932,
+        "force": 0.0020936102584639964,
+        "B_max_abs_over_Bmax": 1.1295210960795703e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.7299198305759797e-06,
+        "J": 2.2171730947169567e-05,
+        "force": 8.930308116441427e-05,
+        "B_max_abs_over_Bmax": 1.1366070173560357e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 8.811115544351902e-06,
+        "J": 0.00023296031546658034,
+        "force": 0.0006117789861539864,
+        "B_max_abs_over_Bmax": 2.329231594466233e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "q4_shift": {
+      "all": {
+        "B": 3.4313812449866117e-06,
+        "J": 7.712434477825051e-05,
+        "force": 0.00026206781501295014,
+        "B_max_abs_over_Bmax": 2.308383694698806e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 6.3926284700070665e-06,
+        "J": 0.00015636329152866232,
+        "force": 0.002093610258461225,
+        "B_max_abs_over_Bmax": 1.1308007233121444e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.7299198305738486e-06,
+        "J": 2.217173094716098e-05,
+        "force": 8.93030811645768e-05,
+        "B_max_abs_over_Bmax": 1.112744478339236e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 8.811115544354415e-06,
+        "J": 0.00023296031546666423,
+        "force": 0.0006117789861544683,
+        "B_max_abs_over_Bmax": 2.308383694698806e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "q4_panels": {
+      "all": {
+        "B": 3.463908148842629e-06,
+        "J": 7.669819595155643e-05,
+        "force": 0.00027275709669587385,
+        "B_max_abs_over_Bmax": 2.2729077297811247e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 9.892679704012801e-06,
+        "J": 0.0001235203110440267,
+        "force": 0.004358369725225592,
+        "B_max_abs_over_Bmax": 1.3302514496582859e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.8326888826960082e-06,
+        "J": 2.438648835868062e-05,
+        "force": 0.00011216264172477717,
+        "B_max_abs_over_Bmax": 1.1421411751314716e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 9.068525824659598e-06,
+        "J": 0.0002508881720258369,
+        "force": 0.0006528299440244848,
+        "B_max_abs_over_Bmax": 2.2729077297811247e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "uncertainty": {
+    "all": {
+      "B": {
+        "ladder_step": 2.9571362066812884e-09,
+        "angular_shift": 4.2521053952165877e-19,
+        "radial_panels": 3.252690385644261e-08,
+        "value": 3.4313812449861865e-06,
+        "uncertainty": 3.252690385644261e-08,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 3.4937037970552234e-08,
+        "angular_shift": 1.8079071226195786e-17,
+        "radial_panels": 4.2614882667599827e-07,
+        "value": 7.712434477823243e-05,
+        "uncertainty": 4.2614882667599827e-07,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 2.7413069025770346e-06,
+        "angular_shift": 2.100099608104422e-16,
+        "radial_panels": 1.068928168313372e-05,
+        "value": 0.0002620678150127401,
+        "uncertainty": 1.068928168313372e-05,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      }
+    },
+    "axis": {
+      "B": {
+        "ladder_step": 4.377561925915845e-07,
+        "angular_shift": 1.805620133661992e-17,
+        "radial_panels": 3.500051234023791e-06,
+        "value": 6.39262846998901e-06,
+        "uncertainty": 3.500051234023791e-06,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": false,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 1.7369263877846537e-05,
+        "angular_shift": 5.70019292184254e-17,
+        "radial_panels": 3.284298048469262e-05,
+        "value": 0.00015636329152871932,
+        "uncertainty": 3.284298048469262e-05,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 4.8341234235860665e-05,
+        "angular_shift": 2.7712207528729493e-15,
+        "radial_panels": 0.002264759466761596,
+        "value": 0.0020936102584639964,
+        "uncertainty": 0.002264759466761596,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": false,
+        "value_below_gate": false
+      }
+    },
+    "bulk": {
+      "B": {
+        "ladder_step": 2.2988786331742796e-07,
+        "angular_shift": 2.1311348952918197e-18,
+        "radial_panels": 1.0276905212002845e-07,
+        "value": 1.7299198305759797e-06,
+        "uncertainty": 2.2988786331742796e-07,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 1.973492924851391e-06,
+        "angular_shift": 8.585525953369588e-18,
+        "radial_panels": 2.2147574115110524e-06,
+        "value": 2.2171730947169567e-05,
+        "uncertainty": 2.2147574115110524e-06,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 1.1548795255166466e-05,
+        "angular_shift": 1.6253545818273318e-16,
+        "radial_panels": 2.2859560560362904e-05,
+        "value": 8.930308116441427e-05,
+        "uncertainty": 2.2859560560362904e-05,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      }
+    },
+    "edge": {
+      "B": {
+        "ladder_step": 5.21393644586024e-07,
+        "angular_shift": 2.5122997215562548e-18,
+        "radial_panels": 2.5741028030769603e-07,
+        "value": 8.811115544351902e-06,
+        "uncertainty": 5.21393644586024e-07,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 2.1822600210740737e-05,
+        "angular_shift": 8.38901430960659e-17,
+        "radial_panels": 1.792785655925654e-05,
+        "value": 0.00023296031546658034,
+        "uncertainty": 2.1822600210740737e-05,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 5.187774746817468e-05,
+        "angular_shift": 4.819278656698067e-16,
+        "radial_panels": 4.105095787049846e-05,
+        "value": 0.0006117789861539864,
+        "uncertainty": 5.187774746817468e-05,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      }
+    }
+  }
+}
