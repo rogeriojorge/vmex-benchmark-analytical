@@ -207,7 +207,7 @@ def fig_hard_cases(summary):
         ax.set_yscale("log")
         ax.set_ylim(1e-10, 1)
         ax.set_xticks(x, labels, fontsize=8)
-        style(ax, "", "B error at mid radius" if ax is axes[0] else "", NAMES[case])
+        style(ax, "", "B error at s = 0.5" if ax is axes[0] else "", NAMES[case])
     fig.tight_layout()
     return save(fig, "hard_cases.png")
 

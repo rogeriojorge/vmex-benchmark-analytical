@@ -60,7 +60,7 @@ VMEX, VMEC2000, VMEC++ and DESC are scored against 3-D equilibria known in close
 
 ![Sheared A and asymmetric Solov'ev across codes](figures/hard_cases.png)
 
-*B error on one surface near mid radius (being re-scored at s = 0.5 for every code). On sheared A only DESC gets close (2e-5 at M = 10, at its iteration cap). On the asymmetric Solov'ev case DESC is far more accurate; its basis holds this polynomial almost exactly.*
+*B error on the surface s = 0.5 for every code. On sheared A only DESC gets close (1.4e-5 at M = 10, at its iteration cap); the published DESC protocol for this case meets its tolerances (B 2.2e-5 volume RMS). On the asymmetric Solov'ev case DESC is far more accurate; its basis holds this polynomial almost exactly.*
 
 ### 5. Without stellarator symmetry
 
