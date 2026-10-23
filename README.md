@@ -129,6 +129,7 @@ python benchmarks/plot_figures.py         # every figure, from results/ only
 - `benchmarks/cross_code_run.py`, `score_wout_exact.py`, `cross_code_summary.py`: VMEX, VMEC2000 and VMEC++.
 - `benchmarks/desc_general_case.py`: DESC.
 - `benchmarks/boozer_exact.py`, `ripple_reference.py`, `asymmetric.py`: Boozer, ripple and non-symmetric records.
+- `benchmarks/lopez_surfaces.py`: Lopez (arXiv:2610.29921v1) configuration D: exact flux map, flux-uniform angle, chart, boundary series and vacuum decks (`inputs/input.lopez_D_*`; ladders in `results/lopez/surfaces.json`).
 - `results/`: receipts (input hash, code version, command) and scores. Development history: tag `archive-2026-09-25`.
 
 ## References
