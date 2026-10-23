@@ -165,3 +165,12 @@ def test_exact_reference_labels_agree_with_the_flux_map():
     assert np.allclose(s, ls.s_of_h((r/ls.A_RAD)**2), atol=1e-9)
     assert np.allclose(b, lopez.field(x), atol=1e-12)
     assert q.max() <= 1 + 1e-9 and margin.min() >= 2
+
+
+def test_fsq_history_uses_the_last_radial_stage(tmp_path):
+    import lopez_tables as lt
+    log = tmp_path/"log"
+    log.write_text("  NS =   17 NO. FOURIER MODES = 3\n    1  1.0E-02  2.0E-02  3.0E-02  x\n"
+                   "  NS =   33 NO. FOURIER MODES = 3\n    1  5.0E-01  2.0E-01  1.0E-01  x\n"
+                   "  200  4.0E-06  2.0E-06  1.0E-06  x\n")
+    assert lt.fsq_history(log) == [(1, 0.5, 0.2, 0.1), (200, 4e-6, 2e-6, 1e-6)]

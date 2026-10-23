@@ -16,8 +16,12 @@ LINE = re.compile(r"^\s+(\d+)\s+([0-9.]+E[+-]\d+)\s+([0-9.]+E[+-]\d+)\s+([0-9.]+
 
 
 def fsq_history(log):
+    """(iteration, fsqr, fsqz, fsql) rows of the LAST radial stage of a solver log."""
     rows = []
     for line in Path(log).read_text(errors="replace").splitlines():
+        if line.lstrip().startswith("NS ="):
+            rows = []
+            continue
         m = LINE.match(line)
         if m:
             rows.append((int(m.group(1)), *(float(m.group(i)) for i in (2, 3, 4))))
@@ -38,7 +42,7 @@ def run_row(d):
     ladder = receipt.get("ladder", {})
     fsq = receipt.get("fsq_final") or s["fsq"]
     return dict(
-        run=d.name, code=code, protocol=protocol, closure=receipt.get("closure") or ("current" if "current" in d.name else "iota"),
+        run=("long20000_" if d.parent.name == "runs" else "") + d.name, code=code, protocol=protocol, closure=receipt.get("closure") or ("current" if "current" in d.name else "iota"),
         ns=s["ns"], ftol=(ladder.get("ftol_array") or [None])[-1], niter=ladder.get("niter_per_stage"),
         converged=receipt.get("converged"), fsq_final_max=max(fsq) if all(x is not None for x in fsq) else None,
         fsq_logged_min=min(peak) if peak else None, iterations_logged=hist[-1][0] if hist else None,
@@ -81,8 +85,25 @@ def markdown(rows):
     return "\n".join(out)
 
 
+def projection_markdown(path):
+    rows = json.loads(Path(path).read_text())
+    cols = [("kind", "gauge"), ("closure", "closure"), ("mpol", "mpol"), ("ntor", "ntor"), ("ns", "NS"), ("flux", "flux label"),
+            ("B_s05", "B s=.5"), ("B_axis", "B near axis"), ("B_vol", "B volume"), ("iota", "iota"), ("curl_s05", "curl s=.5"),
+            ("curl_outer", "curl s>=.25"), ("Iencl", "I encl"), ("div", "div"), ("circ", "circulation"), ("W", "energy"),
+            ("V", "volume")]
+    out = ["| " + " | ".join(h for _, h in cols) + " |", "|" + "---|"*len(cols)]
+    for r in rows:
+        out.append("| " + " | ".join(fmt(r.get(k)) for k, _ in cols) + " |")
+    return "\n".join(out)
+
+
 if __name__ == "__main__":
     root = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT/"results/lopez"
     rows = collect(root)
     (root/"summary.json").write_text(json.dumps(rows, indent=1, allow_nan=False) + "\n")
-    print(markdown(rows))
+    text = ["## Solves\n", markdown(rows)]
+    for name in ("projection_oracle_eta", "projection_oracle_alpha", "projection_vmex_eta"):
+        if (root/f"{name}.json").exists():
+            text += [f"\n## {name}\n", projection_markdown(root/f"{name}.json")]
+    (root/"TABLES.md").write_text("\n".join(text) + "\n")
+    print("\n".join(text))
