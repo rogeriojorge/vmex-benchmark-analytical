@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "run_id": "integer_3d_tau_mirror-seed_tcon0-ns33-vmex",
+  "case": "integer_3d_tau_mirror",
+  "code": "vmex",
+  "protocol": "seed",
+  "ns": 33,
+  "ladder": {
+    "ns_array": [
+      33
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": 0.0
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "2d2f396b7869c7edaa70922778d341c3edf459dacd35524905438f8eb34a47e0",
+  "started_utc": "2026-10-24T02:17:33.332280+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "integer_3d_tau_mirror",
+    "--code",
+    "vmex",
+    "--protocol",
+    "seed",
+    "--ns",
+    "33",
+    "--tag",
+    "_tcon0",
+    "--tcon0",
+    "0.0",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "f6e5b26e16a72b6a2ea9c1bd1826a2e7614ff191d63becaff7724c0c2ae8d4f9",
+  "omp_threads": "4",
+  "load1_start": 14.232421875,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/integer_3d_tau_mirror-seed_tcon0-ns33-vmex",
+  "seed": {
+    "seconds": 0.6667943429929437,
+    "type": "exact_field_lambda_zero",
+    "lambda_certificates": null
+  },
+  "wall_seconds": 289.5591246190015,
+  "wout": {
+    "path": "wout_integer_3d_tau_mirror-seed_tcon0-ns33-vmex.nc",
+    "sha256": "ce5697a647f357071e55f6fa984cf7eaad77d8d8f08801ce42c92eb6b7815d2c"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 20000,
+  "fsq_final": [
+    6.958094998372741e-10,
+    3.615014789230841e-10,
+    3.5255231775672042e-12
+  ],
+  "jacobian_resets": 0,
+  "fsq_first_iteration": [
+    0.0017297759229429907,
+    0.0003523295783021323,
+    0.0001775697316446481
+  ],
+  "process_seconds": 294.5537160209933,
+  "load1_end": 20.15087890625,
+  "finished_utc": "2026-10-24T02:22:27.437608+00:00",
+  "fsq_leq_ftol": false
+}

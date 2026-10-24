@@ -1,0 +1,263 @@
+{
+  "schema": 1,
+  "evidence": "projection_certificate",
+  "case": "sheared_A",
+  "vmex_commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+  "ns": 129,
+  "mpol": 13,
+  "ntor": 12,
+  "angular_fit_grid": 64,
+  "seed": "full_flux_lambda",
+  "lambda_grid": 65,
+  "lambda_certificates": {
+    "gradient_reconstruction_relative": 4.6158168713988e-07,
+    "closedness_scaled_rms": 4.60594966018239e-08,
+    "period_mean_scaled_max": 4.594300269214266e-07,
+    "minimum_straight_angle_derivative": 0.6410434855553123
+  },
+  "gates": {
+    "B": 1e-05,
+    "J": 0.001,
+    "force": 0.001
+  },
+  "projection_seconds": 8.575302416997147,
+  "scoring_seconds": {
+    "m3": 89.16946216700308,
+    "m4": 116.75974354200298,
+    "m4_shift": 114.62918554201315
+  },
+  "scores": {
+    "m3": {
+      "all": {
+        "B": 3.2402932732332917e-06,
+        "J": 4.3571245698859783e-05,
+        "force": 0.00017576154765241991,
+        "B_max_abs_over_Bmax": 2.3444743592098534e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 1.5640909558927802e-06,
+        "J": 5.60608451919543e-05,
+        "force": 0.000654420604797477,
+        "B_max_abs_over_Bmax": 4.376046026167862e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.5814990096719666e-06,
+        "J": 1.8432567285062088e-05,
+        "force": 8.363796329007284e-05,
+        "B_max_abs_over_Bmax": 1.2293394269979463e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 8.668747161622332e-06,
+        "J": 0.00012809172757978181,
+        "force": 0.0003914445670150357,
+        "B_max_abs_over_Bmax": 2.3444743592098534e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "m4": {
+      "all": {
+        "B": 3.240277850926616e-06,
+        "J": 4.357332014676782e-05,
+        "force": 0.00017576165851326237,
+        "B_max_abs_over_Bmax": 2.3495274916243363e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 1.629113996373278e-06,
+        "J": 5.839212239085142e-05,
+        "force": 0.0007053341323558563,
+        "B_max_abs_over_Bmax": 4.517030934429645e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.5707276762508305e-06,
+        "J": 1.831941483710821e-05,
+        "force": 8.32142148244004e-05,
+        "B_max_abs_over_Bmax": 1.2266239030307474e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 8.648600036922123e-06,
+        "J": 0.000127724634766302,
+        "force": 0.00039046710877371565,
+        "B_max_abs_over_Bmax": 2.3495274916243363e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "m4_shift": {
+      "all": {
+        "B": 3.240277828373737e-06,
+        "J": 4.357332011861938e-05,
+        "force": 0.0001757616568786971,
+        "B_max_abs_over_Bmax": 2.1782281905740067e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 1.6291139963599457e-06,
+        "J": 5.839212239080661e-05,
+        "force": 0.0007053341323575728,
+        "B_max_abs_over_Bmax": 4.522755327949477e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.570727672829651e-06,
+        "J": 1.831941483247087e-05,
+        "force": 8.321421454970699e-05,
+        "B_max_abs_over_Bmax": 1.1117492939831874e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 8.648599965680387e-06,
+        "J": 0.0001277246346702099,
+        "force": 0.00039046710455904857,
+        "B_max_abs_over_Bmax": 2.1782281905740067e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "uncertainty": {
+    "all": {
+      "B": {
+        "ladder_step": 1.5422306675729125e-11,
+        "angular_shift": 2.2552879025026715e-14,
+        "value": 3.240277850926616e-06,
+        "uncertainty": 1.5422306675729125e-11,
+        "relative_uncertainty": 4.7595630329414e-06,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 2.074447908034251e-09,
+        "angular_shift": 2.8148436272829036e-14,
+        "value": 4.357332014676782e-05,
+        "uncertainty": 2.074447908034251e-09,
+        "relative_uncertainty": 4.7608213031435234e-05,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 1.1086084245157286e-10,
+        "angular_shift": 1.6345652587533566e-12,
+        "value": 0.00017576165851326237,
+        "uncertainty": 1.1086084245157286e-10,
+        "relative_uncertainty": 6.3074531379213e-07,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      }
+    },
+    "axis": {
+      "B": {
+        "ladder_step": 6.502304048049781e-08,
+        "angular_shift": 1.3332298589782687e-17,
+        "value": 1.629113996373278e-06,
+        "uncertainty": 6.502304048049781e-08,
+        "relative_uncertainty": 0.03991313107937912,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 2.3312771988971185e-06,
+        "angular_shift": 4.4811431041541505e-17,
+        "value": 5.839212239085142e-05,
+        "uncertainty": 2.3312771988971185e-06,
+        "relative_uncertainty": 0.03992451555866671,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 5.091352755837923e-05,
+        "angular_shift": 1.7165088794790506e-15,
+        "value": 0.0007053341323558563,
+        "uncertainty": 5.091352755837923e-05,
+        "relative_uncertainty": 0.07218355843396539,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      }
+    },
+    "bulk": {
+      "B": {
+        "ladder_step": 1.0771333421136153e-08,
+        "angular_shift": 3.4211794147290383e-15,
+        "value": 1.5707276762508305e-06,
+        "uncertainty": 1.0771333421136153e-08,
+        "relative_uncertainty": 0.006857543534755972,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 1.1315244795387854e-07,
+        "angular_shift": 4.6373393677596325e-15,
+        "value": 1.831941483710821e-05,
+        "uncertainty": 1.1315244795387854e-07,
+        "relative_uncertainty": 0.006176640954965137,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 4.2374846567244824e-07,
+        "angular_shift": 2.746934082108188e-13,
+        "value": 8.32142148244004e-05,
+        "uncertainty": 4.2374846567244824e-07,
+        "relative_uncertainty": 0.0050922605779150495,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      }
+    },
+    "edge": {
+      "B": {
+        "ladder_step": 2.0147124700209396e-08,
+        "angular_shift": 7.124173551976455e-14,
+        "value": 8.648600036922123e-06,
+        "uncertainty": 2.0147124700209396e-08,
+        "relative_uncertainty": 0.0023295243870913684,
+        "gate": 1e-05,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "J": {
+        "ladder_step": 3.6709281347980724e-07,
+        "angular_shift": 9.609210671092383e-14,
+        "value": 0.000127724634766302,
+        "uncertainty": 3.6709281347980724e-07,
+        "relative_uncertainty": 0.0028740956210325254,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      },
+      "force": {
+        "ladder_step": 9.774582413200395e-07,
+        "angular_shift": 4.214667081049034e-12,
+        "value": 0.00039046710877371565,
+        "uncertainty": 9.774582413200395e-07,
+        "relative_uncertainty": 0.002503304937488341,
+        "gate": 0.001,
+        "uncertainty_below_tenth_gate": true,
+        "value_below_gate": true
+      }
+    }
+  }
+}

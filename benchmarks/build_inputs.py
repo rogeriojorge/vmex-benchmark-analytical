@@ -23,8 +23,8 @@ MAX_M = 12
 MAX_N = 12
 FIT_GRID = 128
 STRONG_BOUNDARY_RESOLUTION = {"sheared_B": (16, 96), "sheared_C": (24, 100),
-                              **dict.fromkeys(("sheared_issan", "sheared_issan_tau",
-                                               "sheared_issan_tau_mirror"), (16, 24))}
+                              **dict.fromkeys(("sheared_issan", "sheared_issan_tau", "sheared_issan_tau_mirror",
+                                               "sheared_path_t25", "sheared_path_t50", "sheared_path_t75"), (16, 24))}
 PROFILE_DEGREES = (8, 12, 16, 20)
 PROFILE_TOL = 1e-8
 OUT = ROOT / "inputs"

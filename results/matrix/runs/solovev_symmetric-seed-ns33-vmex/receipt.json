@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "run_id": "solovev_symmetric-seed-ns33-vmex",
+  "case": "solovev_symmetric",
+  "code": "vmex",
+  "protocol": "seed",
+  "ns": 33,
+  "ladder": {
+    "ns_array": [
+      33
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "61611116cca9a24d7481b2245310a471795c23577fe93b37ec70d87b1a9e8bd1",
+  "started_utc": "2026-10-23T20:45:17.363250+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "solovev_symmetric",
+    "--code",
+    "vmex",
+    "--protocol",
+    "seed",
+    "--ns",
+    "33",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "f6e5b26e16a72b6a2ea9c1bd1826a2e7614ff191d63becaff7724c0c2ae8d4f9",
+  "omp_threads": "4",
+  "load1_start": 14.794921875,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/solovev_symmetric-seed-ns33-vmex",
+  "seed": {
+    "seconds": 2.1190362839988666,
+    "type": "full_flux_lambda",
+    "lambda_certificates": {
+      "gradient_reconstruction_relative": 1.1179773297776421e-08,
+      "closedness_scaled_rms": 1.2275547637350816e-08,
+      "period_mean_scaled_max": 1.0265593247255495e-08,
+      "minimum_straight_angle_derivative": 0.7745966688033911
+    }
+  },
+  "wall_seconds": 4.034206569995149,
+  "wout": {
+    "path": "wout_solovev_symmetric-seed-ns33-vmex.nc",
+    "sha256": "a9f9d0cfa811ec400b6ae5b14c7985c09fb738930aa7dbe4012fea7c373516ed"
+  },
+  "converged": true,
+  "ier_flag": 11,
+  "iterations_final_stage": 290,
+  "fsq_final": [
+    9.487271577281134e-15,
+    7.987690840477466e-15,
+    2.124591684027868e-15
+  ],
+  "jacobian_resets": 0,
+  "fsq_first_iteration": [
+    7.203138395181431e-05,
+    5.101180622709e-05,
+    1.3668181473055378e-10
+  ],
+  "process_seconds": 9.669109700000263,
+  "load1_end": 14.291015625,
+  "finished_utc": "2026-10-23T20:45:26.638227+00:00",
+  "fsq_leq_ftol": true
+}

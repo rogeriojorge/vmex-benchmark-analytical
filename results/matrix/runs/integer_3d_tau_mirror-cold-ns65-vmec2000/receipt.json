@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "run_id": "integer_3d_tau_mirror-cold-ns65-vmec2000",
+  "case": "integer_3d_tau_mirror",
+  "code": "vmec2000",
+  "protocol": "cold",
+  "ns": 65,
+  "ladder": {
+    "ns_array": [
+      65
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "4d377dbfb126bdf073e6b743918f98220869635112693b7dcd6f837062f02420",
+  "started_utc": "2026-10-24T02:38:31.151329+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "integer_3d_tau_mirror",
+    "--code",
+    "vmec2000",
+    "--protocol",
+    "cold",
+    "--ns",
+    "65",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "f6e5b26e16a72b6a2ea9c1bd1826a2e7614ff191d63becaff7724c0c2ae8d4f9",
+  "omp_threads": "4",
+  "load1_start": 18.52099609375,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": "70c637a56a535de7b72a5721d4294a7c1a6cf739",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "binary_sha256": "1dec62d1c8026f6ed5dccc1e5199dd5320ee702c354153c296d81d3411f751e0"
+  },
+  "command": [
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "input.integer_3d_tau_mirror-cold-ns65-vmec2000"
+  ],
+  "wall_seconds": 750.9519545829971,
+  "returncode": 0,
+  "cpu_seconds": 749.224409,
+  "peak_rss_bytes": 165535744,
+  "code_total_seconds": 749.06,
+  "wout": {
+    "path": "wout_integer_3d_tau_mirror-cold-ns65-vmec2000.nc",
+    "sha256": "cb3ac64a6d0487a4be98f746b02b868b2f465082743f99d7329b8ec97d4ce1f7"
+  },
+  "ier_flag": 0,
+  "fsq_final": [
+    3.1949853901141373e-11,
+    1.7600776656644816e-11,
+    1.2797710814792093e-11
+  ],
+  "process_seconds": 751.6531204920029,
+  "load1_end": 9.115234375,
+  "finished_utc": "2026-10-24T02:51:02.381052+00:00",
+  "fsq_leq_ftol": false
+}

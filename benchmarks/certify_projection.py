@@ -30,59 +30,112 @@ import jax.numpy as jnp
 import numpy as np
 from numpy.polynomial.legendre import leggauss
 
-from analytic import ROOT, cases, differential_fields, flux, label_at_s, shear_chart, volume, shear_averages
+from analytic import (ROOT, cases, differential_fields, flux, flux_rate, integer_targets, label_at_s, shear_chart, shear_averages,
+                      surface, volume)
 
 GATES = {"B": 1e-5, "J": 1e-3, "force": 1e-3}  # relative L2 on the volume: B, J, |J x B - grad p|/|grad p|
+GRADED_EDGES = np.array([0.0, 1e-3, 4e-3, 0.016, 0.064, 0.256, 1.0])
 LEVELS = {  # name: (radial nodes, theta points, t points, rule, angular shift, panels)
     "q1": (12, 25, 25, "gauss", 0.0, 1), "q2": (16, 33, 33, "gauss", 0.0, 1),
     "q3": (24, 49, 49, "gauss", 0.0, 1), "q4": (32, 65, 65, "gauss", 0.0, 1),
     "q4_shift": (32, 65, 65, "gauss", 0.5, 1), "q4_panels": (8, 65, 65, "gauss", 0.0, 4),
+    # radial panels graded geometrically toward the axis (edges at GRADED_EDGES * edge), nodes per panel
+    "g1": (8, 33, 33, "graded", 0.0, len(GRADED_EDGES)-1), "g1_shift": (8, 33, 33, "graded", 0.5, len(GRADED_EDGES)-1),
+    "g2": (12, 49, 49, "graded", 0.0, len(GRADED_EDGES)-1), "g2_shift": (12, 49, 49, "graded", 0.5, len(GRADED_EDGES)-1),
+    # radial Gauss panels aligned with the native mesh: one panel per radial cell, ``nodes`` points each,
+    # so a solved state's piecewise-radial structure is integrated, not aliased.  Needs the state's NS.
+    "m2": (2, 41, 41, "mesh", 0.0, 0), "m3": (3, 41, 41, "mesh", 0.0, 0), "m4": (4, 41, 41, "mesh", 0.0, 0),
+    "m4_shift": (4, 41, 41, "mesh", 0.5, 0),
 }
+MESH_LEVELS = ("m3", "m4", "m4_shift")
+LADDERS = {"q": ("q4", "q3", "q4_shift", "q4_panels"), "m": ("m4", "m3", "m4_shift", None)}  # finest, previous, shifted, other (None: not used)
 FINEST, PREVIOUS, SHIFTED, PANELS = "q4", "q3", "q4_shift", "q4_panels"
+FINEST_FALLBACK = "q2"
 REGIONS = {"axis": (0.0, 0.02), "bulk": (0.02, 0.9), "edge": (0.9, 1.0)}
 
 
 def radial_nodes(edge, nodes, rule, panels):
     """Gauss-Legendre in the analytic label, on ``panels`` equal panels of ``nodes`` points each."""
     x, w = leggauss(nodes)
+    if rule == "graded":
+        lo, width = edge*GRADED_EDGES[:-1], edge*np.diff(GRADED_EDGES)
+        return (lo[:, None]+(x[None, :]+1)/2*width[:, None]).ravel(), (w[None, :]/2*width[:, None]).ravel()
     lo = edge*np.arange(panels)/panels
     width = edge/panels
     return (lo[:, None]+(x[None, :]+1)/2*width).ravel(), np.tile(w/2*width, panels)
 
 
-def chart_jacobian(case, label, theta, t):
-    """|det d x / d (label, theta, t)| of the exact sheared chart, by forward-mode AD."""
-    eps, S, lam, _ = case.parameters
+def chart_function(case):
+    """(label, theta, t) -> xyz of the exact chart, differentiable.
 
-    def chart(q):
-        return shear_chart(jnp.sqrt(2*q[0]), q[1], q[2], eps, S, lam, case.tau, xp=jnp)
+    Sheared: the explicit chart (``t`` is its own toroidal parameter).  Integer and Solov'ev: the
+    exact surface sampler at the physical toroidal angle ``t = phi``, label = pressure label.
+    """
+    if case.family == "sheared":
+        eps, S, lam, _ = case.parameters
+        return lambda q: shear_chart(jnp.sqrt(2*q[0]), q[1], q[2], eps, S, lam, case.tau, xp=jnp)
+    return lambda q: surface(case, q[0], q[1], q[2], xp=jnp)
+
+
+def chart_jacobian(case, label, theta, t):
+    """|det d x / d (label, theta, t)| of the exact chart, by forward-mode AD."""
+    chart = chart_function(case)
 
     def one(q):
         return jnp.abs(jnp.linalg.det(jax.jacfwd(chart)(q)))
     return np.asarray(jax.jit(jax.vmap(one))(jnp.stack((label, theta, t), -1)))
 
 
+def chart_points(case, label, theta, t):
+    """Cartesian points of the exact chart (NumPy array, shape (n, 3))."""
+    chart = chart_function(case)
+    return np.asarray(jax.jit(jax.vmap(chart))(jnp.stack((label, theta, t), -1)))
+
+
 def chunked(function, array, size=32768):
     return np.concatenate([np.asarray(function(array[i:i+size])) for i in range(0, len(array), size)])
 
 
-def volume_rule(case, name):
-    """Points, weights, exact fields and radial bookkeeping for one quadrature level."""
-    if case.family != "sheared":
-        raise ValueError("the chart-Jacobian volume rule is implemented for the sheared family")
+def mesh_nodes(case, ns, nodes):
+    """Gauss nodes of every radial cell of an NS-surface mesh, as (label, weight in label, s).
+
+    Integrates in normalised toroidal flux s (cells [j, j+1]/(NS-1)); the weight carries dlabel/ds
+    = flux(edge)/flux_rate so that ``wr`` integrates over the pressure label like the other rules.
+    """
+    x, w = leggauss(nodes)
+    lo = np.arange(ns-1)/(ns-1)
+    h = 1.0/(ns-1)
+    s_nodes = (lo[:, None]+(x[None, :]+1)/2*h).ravel()
+    ws = np.tile(w/2*h, ns-1)
+    label = np.asarray(label_at_s(case, s_nodes))
+    return label, ws*float(flux(case, case.edge))/np.asarray(flux_rate(case, label)), s_nodes
+
+
+def volume_rule(case, name, ns=None):
+    """Points, weights, exact fields and radial bookkeeping for one quadrature level.
+
+    Mesh levels (``m*``) need ``ns``; axisymmetric (Solov'ev) cases use 5 toroidal points.
+    """
     nr, nth, nt, rule, shift, panels = LEVELS[name]
-    r, wr = radial_nodes(case.edge, nr, rule, panels)
+    if rule == "mesh":
+        if ns is None:
+            raise ValueError("mesh levels need the state's NS")
+        r, wr, s_nodes = mesh_nodes(case, ns, nr)
+        nt = 5 if case.family == "solovev" else nt
+    else:
+        r, wr = radial_nodes(case.edge, nr, rule, panels)
     th = 2*np.pi*(np.arange(nth)+shift)/nth
     t = 2*np.pi*(np.arange(nt)+shift)/nt
     L, T, A = (a.ravel() for a in np.meshgrid(r, th, t, indexing="ij"))
     shape = (len(r), nth, nt)
     weights = chart_jacobian(case, jnp.asarray(L), jnp.asarray(T), jnp.asarray(A))
     weights = weights*np.broadcast_to(wr[:, None, None], shape).ravel()*(2*np.pi/nth)*(2*np.pi/nt)
-    xyz = np.asarray(shear_chart(np.sqrt(2*L), T, A, *case.parameters[:-1], case.tau))
+    xyz = chart_points(case, jnp.asarray(L), jnp.asarray(T), jnp.asarray(A))
     B, curl, gp, _, _ = (np.concatenate(p) for p in zip(*[
         differential_fields(case, xyz[i:i+16384]) for i in range(0, len(xyz), 16384)]))
     edge_flux = float(flux(case, case.edge))
-    s = np.broadcast_to((np.asarray([float(flux(case, x)) for x in r])/edge_flux)[:, None, None], shape).ravel()
+    s_radial = s_nodes if rule == "mesh" else np.asarray([float(flux(case, x)) for x in r])/edge_flux
+    s = np.broadcast_to(s_radial[:, None, None], shape).ravel()
     return dict(name=name, xyz=xyz, w=weights, B=B, J=curl, gp=gp, s=s)
 
 
@@ -101,6 +154,8 @@ def metrics(rule, B, J, valid=None):
 
     def block(mask):
         w = np.where(mask & valid, rule["w"], 0.0)
+        if not np.any(w > 0):  # a shell the native field cannot evaluate anywhere: no value, not NaN
+            return {"B": None, "J": None, "force": None, "B_max_abs_over_Bmax": None}
         force = np.cross(J, B)-rule["gp"]
         return {"B": relative(w, B, rule["B"]), "J": relative(w, J, rule["J"]),
                 "force": float(np.sqrt(np.sum(w*np.sum(force**2, -1))/np.sum(w*np.sum(rule["gp"]**2, -1)))),
@@ -116,16 +171,25 @@ def metrics(rule, B, J, valid=None):
     return out
 
 
+def closed_form_mean_B2(case):
+    """Closed-form volume-mean B^2, or None when the family has none."""
+    if case.family == "sheared":
+        return shear_averages(*case.parameters, case.tau)["mean_B2"]
+    if case.family == "integer":
+        return float(integer_targets(*case.parameters, case.tau)["mean_B2"])
+    return None
+
+
 def reference_certificate(case, rules):
     """The exact chart quadrature against the closed forms; also the exact force residual."""
-    expected = shear_averages(*case.parameters, case.tau)
+    expected = closed_form_mean_B2(case)
     rows = {}
     for name, r in rules.items():
         V = float(np.sum(r["w"]))
         energy = float(np.sum(r["w"]*np.sum(r["B"]**2, -1))/V)
         force = np.cross(r["J"], r["B"])-r["gp"]
         rows[name] = {"volume_relative_error": V/float(volume(case))-1,
-                      "mean_B2_relative_error": energy/expected["mean_B2"]-1,
+                      "mean_B2_relative_error": None if expected is None else energy/expected-1,
                       "exact_force_over_gradp": float(np.sqrt(np.sum(r["w"]*np.sum(force**2, -1))
                                                               / np.sum(r["w"]*np.sum(r["gp"]**2, -1))))}
     return rows
@@ -210,17 +274,33 @@ def lambda_reconstruction(case, s, n=65, n_check=97, shift=0.37, radial_step=6.2
             "certificate": {k: v for k, v in certificate.items() if not isinstance(v, str)}}
 
 
+def ladder_of(scores):
+    """(finest, previous, shifted, other) level names of the ladder present in ``scores``, or None."""
+    for names in LADDERS.values():
+        if all(n in scores for n in names if n is not None):
+            return names
+    return None
+
+
 def uncertainty(scores):
-    """Per-metric quadrature uncertainty: max of ladder step, angular shift and independent radial rule."""
+    """Per-metric quadrature uncertainty: max of ladder step, angular shift and an independent radial rule."""
+    finest, previous, shifted, other = ladder_of(scores)
     out = {}
     for region in ("all", *REGIONS):
         out[region] = {}
         for key in ("B", "J", "force"):
-            ref = scores[FINEST][region][key]
-            parts = {"ladder_step": abs(scores[PREVIOUS][region][key]-ref),
-                     "angular_shift": abs(scores[SHIFTED][region][key]-ref),
-                     "radial_panels": abs(scores[PANELS][region][key]-ref)}
+            ref = scores[finest][region][key]
+            used = [k for k in (previous, shifted, other) if k is not None]
+            if ref is None or any(scores[k][region][key] is None for k in used):
+                out[region][key] = {"value": ref, "uncertainty": None, "gate": GATES[key],
+                                    "uncertainty_below_tenth_gate": None, "value_below_gate": None}
+                continue
+            parts = {"ladder_step": abs(scores[previous][region][key]-ref),
+                     "angular_shift": abs(scores[shifted][region][key]-ref)}
+            if other is not None:
+                parts["radial_panels"] = abs(scores[other][region][key]-ref)
             out[region][key] = {**parts, "value": ref, "uncertainty": max(parts.values()),
+                                "relative_uncertainty": max(parts.values())/ref if ref else None,
                                 "gate": GATES[key], "uncertainty_below_tenth_gate": max(parts.values()) < GATES[key]/10,
                                 "value_below_gate": ref < GATES[key]}
     return out
@@ -250,6 +330,7 @@ def main(argv=None):
     parser.add_argument("--levels", nargs="*", default=list(LEVELS), choices=list(LEVELS))
     parser.add_argument("--lambda-mode", default="auto", choices=("auto", "zero", "full_flux"))
     parser.add_argument("--reference-only", action="store_true")
+    parser.add_argument("--tag", default="", help="suffix of the record file name (e.g. _mesh)")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args(argv)
     import vmex
@@ -258,11 +339,13 @@ def main(argv=None):
     out = args.out or ROOT/"results/projection_certificate"/args.case
     out.mkdir(parents=True, exist_ok=True)
     start = perf_counter()
-    rules = {name: volume_rule(case, name) for name in args.levels}
+    fixed = [n for n in args.levels if n not in MESH_LEVELS]
+    rules = {name: volume_rule(case, name) for name in fixed or [FINEST_FALLBACK]}
     print("reference rules built in %.1f s" % (perf_counter()-start), flush=True)
     reference = reference_certificate(case, rules)
     for name, row in reference.items():
-        print(f"  {name}: V {row['volume_relative_error']:+.2e}  <B2> {row['mean_B2_relative_error']:+.2e}"
+        b2 = row["mean_B2_relative_error"]
+        print(f"  {name}: V {row['volume_relative_error']:+.2e}  <B2> {'n/a' if b2 is None else format(b2, '+.2e')}"
               f"  exact force/|grad p| {row['exact_force_over_gradp']:.2e}", flush=True)
     target = out/"reference.json"
     if not target.exists():
@@ -281,7 +364,7 @@ def main(argv=None):
         ns, mpol, ntor, grid = parse_config(text)
         inp = with_resolution(vmex.VmecInput.from_file(ROOT/"inputs"/f"input.{args.case}_iota"),
                               ns, mpol or None, ntor or None)
-        path = out/f"ns{ns}_m{int(inp.mpol)}_n{int(inp.ntor)}_g{grid}_{args.lambda_mode}.json"
+        path = out/f"ns{ns}_m{int(inp.mpol)}_n{int(inp.ntor)}_g{grid}_{args.lambda_mode}{args.tag}.json"
         if path.exists():
             print(f"{path.name} exists; skipping", flush=True)
             continue
@@ -289,16 +372,19 @@ def main(argv=None):
         state, info = project(inp, case, ns, grid=grid, lambda_mode=args.lambda_mode,
                               lambda_grid=grid+1-grid % 2)  # odd lambda grid (65 for the default 64)
         t1 = perf_counter()
-        scores, times = certify_state(case, inp, state, rules)
+        config_rules = {**{n: r for n, r in rules.items() if n in args.levels},
+                        **{n: volume_rule(case, n, ns) for n in args.levels if n in MESH_LEVELS}}
+        scores, times = certify_state(case, inp, state, config_rules)
         record = {"schema": 1, "evidence": "projection_certificate", "case": args.case, "vmex_commit": commit,
                   "ns": ns, "mpol": int(inp.mpol), "ntor": int(inp.ntor), "angular_fit_grid": grid,
                   "seed": info["seed"], "lambda_grid": info["lambda_grid"],
                   "lambda_certificates": info["lambda_certificates"], "gates": GATES,
                   "projection_seconds": t1-t0, "scoring_seconds": times, "scores": scores}
-        if all(k in scores for k in (FINEST, PREVIOUS, SHIFTED, PANELS)):
+        if ladder_of(scores):
             record["uncertainty"] = uncertainty(scores)
         path.write_text(json.dumps(record, indent=2, allow_nan=False)+"\n")
-        a = scores[args.levels[-1]]["all"] if FINEST not in scores else scores[FINEST]["all"]
+        ladder = ladder_of(scores)
+        a = scores[ladder[0] if ladder else args.levels[-1]]["all"]
         print(f"{path.name}: B {a['B']:.2e}  J {a['J']:.2e}  force {a['force']:.2e}  "
               f"({t1-t0:.0f}s project, {sum(times.values()):.0f}s score)", flush=True)
 

@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "run_id": "solovev_symmetric-cold-ns65-vmec2000",
+  "case": "solovev_symmetric",
+  "code": "vmec2000",
+  "protocol": "cold",
+  "ns": 65,
+  "ladder": {
+    "ns_array": [
+      65
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "67c2a351cd22dc2243527c480c1f5121e6449f5bfad6676faeabce4ced727ee4",
+  "started_utc": "2026-10-23T20:46:29.690945+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "solovev_symmetric",
+    "--code",
+    "vmec2000",
+    "--protocol",
+    "cold",
+    "--ns",
+    "65",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "f6e5b26e16a72b6a2ea9c1bd1826a2e7614ff191d63becaff7724c0c2ae8d4f9",
+  "omp_threads": "4",
+  "load1_start": 16.85595703125,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": "70c637a56a535de7b72a5721d4294a7c1a6cf739",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "binary_sha256": "1dec62d1c8026f6ed5dccc1e5199dd5320ee702c354153c296d81d3411f751e0"
+  },
+  "command": [
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "input.solovev_symmetric-cold-ns65-vmec2000"
+  ],
+  "wall_seconds": 2.369207480995101,
+  "returncode": 0,
+  "cpu_seconds": 1.610687,
+  "peak_rss_bytes": 165720064,
+  "code_total_seconds": 0.68,
+  "wout": {
+    "path": "wout_solovev_symmetric-cold-ns65-vmec2000.nc",
+    "sha256": "8938420a3034fc7f92a8dcf0be867f6732b1c5208c5ea41d5aeecc5ab965411f"
+  },
+  "ier_flag": 0,
+  "fsq_final": [
+    9.801044988215197e-15,
+    4.143770983095127e-15,
+    4.840316954280729e-16
+  ],
+  "process_seconds": 3.1209005270065973,
+  "load1_end": 16.85595703125,
+  "finished_utc": "2026-10-23T20:46:32.339974+00:00",
+  "fsq_leq_ftol": true
+}

@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "run_id": "sheared_A-seed-ns33-vmex",
+  "case": "sheared_A",
+  "code": "vmex",
+  "protocol": "seed",
+  "ns": 33,
+  "ladder": {
+    "ns_array": [
+      33
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "3a965dcf6e328fbfc5285427948da9f5ee9a4fabaebe9e6d9d78ab9e5b9a20b7",
+  "started_utc": "2026-10-24T03:44:33.406430+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "sheared_A",
+    "--code",
+    "vmex",
+    "--protocol",
+    "seed",
+    "--ns",
+    "33",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "f6e5b26e16a72b6a2ea9c1bd1826a2e7614ff191d63becaff7724c0c2ae8d4f9",
+  "omp_threads": "4",
+  "load1_start": 12.7900390625,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/sheared_A-seed-ns33-vmex",
+  "seed": {
+    "seconds": 9.87250396500167,
+    "type": "full_flux_lambda",
+    "lambda_certificates": {
+      "gradient_reconstruction_relative": 2.8752941620135615e-08,
+      "closedness_scaled_rms": 4.5880777080188845e-08,
+      "period_mean_scaled_max": 2.898696329804824e-08,
+      "minimum_straight_angle_derivative": 0.6410434853888836
+    }
+  },
+  "wall_seconds": 207.7991414850112,
+  "wout": {
+    "path": "wout_sheared_A-seed-ns33-vmex.nc",
+    "sha256": "7d99ee1cb65101516c6f8eb6ade2566440567851469092e5eacbbdae3621647b"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 20000,
+  "fsq_final": [
+    9.105308419034316e-09,
+    9.202248060435457e-09,
+    9.87896453509576e-09
+  ],
+  "jacobian_resets": 0,
+  "fsq_first_iteration": [
+    0.24903127043435444,
+    0.13481027828389797,
+    2.7525016753404564e-08
+  ],
+  "process_seconds": 222.14956060900295,
+  "load1_end": 12.75830078125,
+  "finished_utc": "2026-10-24T03:48:15.087365+00:00",
+  "fsq_leq_ftol": false
+}

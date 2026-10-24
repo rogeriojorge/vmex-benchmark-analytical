@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "run_id": "solovev_symmetric-cold-ns65-vmex",
+  "case": "solovev_symmetric",
+  "code": "vmex",
+  "protocol": "cold",
+  "ns": 65,
+  "ladder": {
+    "ns_array": [
+      65
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "67c2a351cd22dc2243527c480c1f5121e6449f5bfad6676faeabce4ced727ee4",
+  "started_utc": "2026-10-23T20:46:18.891026+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "solovev_symmetric",
+    "--code",
+    "vmex",
+    "--protocol",
+    "cold",
+    "--ns",
+    "65",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "f6e5b26e16a72b6a2ea9c1bd1826a2e7614ff191d63becaff7724c0c2ae8d4f9",
+  "omp_threads": "4",
+  "load1_start": 16.4658203125,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/solovev_symmetric-cold-ns65-vmex",
+  "wall_seconds": 6.462310574002913,
+  "wout": {
+    "path": "wout_solovev_symmetric-cold-ns65-vmex.nc",
+    "sha256": "271dfb10a9929592a432704c892fb37b3f0d32fca10b17e63f5359a77955ed48"
+  },
+  "converged": true,
+  "ier_flag": 11,
+  "iterations_final_stage": 668,
+  "fsq_final": [
+    9.801003381657244e-15,
+    4.143762968670441e-15,
+    4.840308015497681e-16
+  ],
+  "jacobian_resets": 1,
+  "fsq_first_iteration": [
+    0.006620861224704254,
+    0.0007987287402165158,
+    0.003982149281964747
+  ],
+  "process_seconds": 10.122225429004175,
+  "load1_end": 16.85595703125,
+  "finished_utc": "2026-10-23T20:46:28.611481+00:00",
+  "fsq_leq_ftol": true
+}
