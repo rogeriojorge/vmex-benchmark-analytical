@@ -106,7 +106,7 @@ def exact_field_parameter_tangents(case: Case, points_m: np.ndarray, indices, *,
                 parameters[index] = value
             changed = replace(case, parameters=tuple(parameters))
             return field_t*field(changed, jnp.asarray(point)/length_m)[0]
-        base = jnp.asarray([case.parameters[i] for i in indices])
+        base = jnp.asarray([case.parameters[i] for i in indices], dtype=float)  # integer-valued parameters stay differentiable
         values.append(np.asarray(jax.jacfwd(evaluate)(base)))
     return np.stack(values)
 

@@ -1,0 +1,302 @@
+{
+ "case": "integer_axisymmetric",
+ "ns": 65,
+ "mpol": 13,
+ "ntor": 0,
+ "nfp": 1,
+ "tcon0": 1.0,
+ "seed": "cold",
+ "ftol": 1e-14,
+ "refine_tol": 1e-11,
+ "adjoint_tol": 1e-10,
+ "s_max": 0.9,
+ "volume_rule": [
+  24,
+  32,
+  2
+ ],
+ "points": {
+  "cloud": 80,
+  "volume": 1536,
+  "volume_fine": 3200
+ },
+ "volume_weight_sum": 0.27758262378063814,
+ "host_solve": {
+  "fsqr": 9.724851319741415e-15,
+  "fsqz": 4.449915795285426e-15,
+  "fsql": 4.680041019525959e-16,
+  "iterations": 631,
+  "converged": true
+ },
+ "root": {
+  "preconditioned": 5.119318430666013e-14,
+  "raw": 5.018616061372582e-12
+ },
+ "base_field_error": {
+  "cloud": 0.00046477274652662005,
+  "volume": 0.00020059305326892572,
+  "volume_fine": 0.00018617254682175502
+ },
+ "params": {
+  "c": {
+   "jvp": {
+    "cloud": {
+     "rms_error_T": 0.0017687865646074561,
+     "rms_exact_T": 0.1504111505356769,
+     "finite_points": 80,
+     "points": 80,
+     "relative_error": 0.011759677113751664,
+     "gate_pass": false
+    },
+    "volume": {
+     "rms_error_T": 0.0014141989270068836,
+     "rms_exact_T": 0.16933883636471697,
+     "finite_points": 1536,
+     "points": 1536,
+     "relative_error": 0.008351297064313255,
+     "gate_pass": false
+    },
+    "volume_fine": {
+     "rms_error_T": 0.0013660676002719278,
+     "rms_exact_T": 0.16933883636471697,
+     "finite_points": 3200,
+     "points": 3200,
+     "relative_error": 0.008067066182796555,
+     "gate_pass": false
+    }
+   },
+   "linear": {
+    "raw": {
+     "relative_residual": 4.161815417723919e-15,
+     "rhs_norm": 632.4274486321649
+    },
+    "preconditioned": {
+     "relative_residual": 4.28346481976904e-15,
+     "rhs_norm": 13.475990233571128
+    }
+   },
+   "fd": []
+  },
+  "delta": {
+   "jvp": {
+    "cloud": {
+     "rms_error_T": 0.10126794420813709,
+     "rms_exact_T": 0.0,
+     "finite_points": 80,
+     "points": 80,
+     "null_scaled_rms": 0.001582311628252142,
+     "gate_pass": false
+    },
+    "volume": {
+     "rms_error_T": 0.06422887250961382,
+     "rms_exact_T": 0.0,
+     "finite_points": 1536,
+     "points": 1536,
+     "null_scaled_rms": 0.0010035761329627159,
+     "gate_pass": false
+    },
+    "volume_fine": {
+     "rms_error_T": 0.0645705751229668,
+     "rms_exact_T": 0.0,
+     "finite_points": 3200,
+     "points": 3200,
+     "null_scaled_rms": 0.0010089152362963562,
+     "gate_pass": false
+    }
+   },
+   "linear": {
+    "raw": {
+     "relative_residual": 2.984280912412314e-15,
+     "rhs_norm": 33190.870167373745
+    },
+    "preconditioned": {
+     "relative_residual": 1.1219636630494822e-13,
+     "rhs_norm": 31.318622614735713
+    }
+   },
+   "fd": []
+  }
+ },
+ "tangent_report": {
+  "residual_norm": [
+   2.578134127623157e-12,
+   1.0003986481479204e-10
+  ],
+  "tolerance": [
+   6.32427448632165e-07,
+   3.319087016737375e-05
+  ],
+  "iterations": [
+   0,
+   0
+  ],
+  "converged": [
+   true,
+   true
+  ]
+ },
+ "transpose": {
+  "cloud": {
+   "trials": [
+    {
+     "forward": [
+      -2.8161237300471873,
+      -0.894393174222493
+     ],
+     "reverse": [
+      -2.81612373004382,
+      -0.8943931741102311
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.440499456852977e-13,
+      7.134046701680396e-12
+     ],
+     "mismatch_relative": [
+      1.1956450468270992e-12,
+      1.2551735601862154e-10
+     ]
+    },
+    {
+     "forward": [
+      -0.3962050908629424,
+      -0.32019372587537304
+     ],
+     "reverse": [
+      -0.3962050908626713,
+      -0.32019372577775673
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.3666496081039498e-14,
+      7.309173036323676e-12
+     ],
+     "mismatch_relative": [
+      6.842831373594071e-13,
+      3.0486638569242367e-10
+     ]
+    },
+    {
+     "forward": [
+      -1.420633253464961,
+      -0.8293188188126471
+     ],
+     "reverse": [
+      -1.42063325347049,
+      -0.8293188188641398
+     ],
+     "mismatch_over_cauchy_bound": [
+      2.5891642325398564e-13,
+      3.5818737497710835e-12
+     ],
+     "mismatch_relative": [
+      3.891863469425769e-12,
+      6.209035394150712e-11
+     ]
+    }
+   ],
+   "names": [
+    "c",
+    "delta"
+   ],
+   "max_mismatch_over_bound": 7.309173036323676e-12,
+   "max_mismatch_relative": 3.0486638569242367e-10
+  },
+  "volume": {
+   "trials": [
+    {
+     "forward": [
+      -0.6974408515302128,
+      -2.5315044748587425
+     ],
+     "reverse": [
+      -0.6974408515308004,
+      -2.5315044749040823
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.29679531013784e-15,
+      2.1872648488401944e-13
+     ],
+     "mismatch_relative": [
+      8.424083896750151e-13,
+      1.7910192305929024e-11
+     ]
+    },
+    {
+     "forward": [
+      0.6453225676761432,
+      3.421485498889712
+     ],
+     "reverse": [
+      0.6453225676801835,
+      3.4214854992556383
+     ],
+     "mismatch_over_cauchy_bound": [
+      8.928925747172889e-15,
+      1.7674936427400186e-12
+     ],
+     "mismatch_relative": [
+      6.260936520072579e-12,
+      1.0694956923581638e-10
+     ]
+    },
+    {
+     "forward": [
+      3.00004967292237,
+      0.28093548302861115
+     ],
+     "reverse": [
+      3.000049672923795,
+      0.2809354818460781
+     ],
+     "mismatch_over_cauchy_bound": [
+      3.1743855026240156e-15,
+      5.757236676348326e-12
+     ],
+     "mismatch_relative": [
+      4.750195595994886e-13,
+      4.209269184212975e-09
+     ]
+    }
+   ],
+   "names": [
+    "c",
+    "delta"
+   ],
+   "max_mismatch_over_bound": 5.757236676348326e-12,
+   "max_mismatch_relative": 4.209269184212975e-09
+  }
+ },
+ "mean_absB": {
+  "exact": 1.0052819478364587,
+  "vmex": 1.0052820441923542,
+  "d_exact": {
+   "c": 0.014009217323658682,
+   "delta": 0.0
+  },
+  "d_jvp": {
+   "c": 0.013829413800389845,
+   "delta": 0.00021380621268320273
+  }
+ },
+ "timing": {
+  "base_solve_s": 51.748793328006286,
+  "tangent_solve_s_all_rhs": 253.859527469991,
+  "field_jvp_s": 16.732619956994313,
+  "transpose_s": 91.07306562901067
+ },
+ "schema": 1,
+ "tag": "_fine",
+ "vmex_commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+ "vmex_version": "0.12.0",
+ "jax": "0.11.2",
+ "devices": [
+  "cpu:0"
+ ],
+ "env": {
+  "JAX_PLATFORMS": "cpu",
+  "CUDA_VISIBLE_DEVICES": "",
+  "OMP_NUM_THREADS": "4"
+ },
+ "command": "python sensitivity_vmex.py --case integer_axisymmetric --ns 65 --steps --vol 24 32 2 --vol-fine 10 32 2 --tag _fine --out /home/rjorge/vab-sensI/out/fine",
+ "script_sha256": "798fca455064c74ba01acaf99f7baca8e8775236bd4a38f11ce21be51bbfa899",
+ "map_sha256": "971931e0ddda5e8693dbc266e08a6b2c6dd86b5f87172b4b89da9160a75eb3da"
+}
