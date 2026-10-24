@@ -1,0 +1,114 @@
+{
+ "args": {
+  "chart": "cyl",
+  "twist": -1,
+  "mpol": 10,
+  "ntor": 56,
+  "cache": "/tmp/cylF_10_56.npz",
+  "ns": [
+   6,
+   8,
+   96
+  ],
+  "p": 3,
+  "pert": [],
+  "turns": 10,
+  "steps": 96,
+  "lines": [
+   6,
+   8
+  ],
+  "ham": true,
+  "no_score": false,
+  "batch": 20000,
+  "out": "/Users/rogerio/local/vmex-bench-work/mrxJ/benchmarks/../results/lopez_mrx/cylham/cyl_10_56_6_8_96.json"
+ },
+ "boundary_truncation_error": 4.593701787259138e-06,
+ "radial_fit_error": 1.6653345369377348e-16,
+ "expected_rotation": 1.0,
+ "build_s": 37.68585991859436,
+ "flux_cut_spread": 5.503125568862925e-09,
+ "dofs_2form": 8640,
+ "solve_done_s": 39.87237191200256,
+ "score": {
+  "B_rel_volume_l2": 0.00025616723268310316,
+  "B_rel_volume_l2_scaled": 0.0002561672348373865,
+  "flux_scale_fit": 0.9999999907586657,
+  "thinning": 1,
+  "B_rel_surface_l2": 0.00026864143124287503,
+  "B_rel_surface_max": 0.000946385220478246,
+  "B_rel_near_axis_l2": 0.00014424928416990012,
+  "weak_curl_over_B_over_a": 6.871653750014966e-14,
+  "div_over_B_over_a": 9.243855019099229e-17,
+  "pointwise_curl_over_B_over_a": 0.004247884930944648,
+  "pointwise_div_over_B_over_a": 4.937177698374035e-16,
+  "energy": 0.0021935163844781307,
+  "energy_target": 0.0021935162603818016,
+  "energy_rel_error": 5.6574155138378046e-08,
+  "volume": 0.0005040841597442683,
+  "volume_rel_error": 5.422396864851464e-09,
+  "circulation_rel_error_max": 1.57809788620674e-06,
+  "enclosed_current_over_aB_max": 0.00044044992905496576
+ },
+ "score_done_s": 71.1036148071289,
+ "closure": {
+  "ok": true,
+  "turns": 10,
+  "steps": 96,
+  "n_lines": 49,
+  "return_defect_max": 0.0002148645840070304,
+  "return_defect_rms": 9.197042930765873e-05,
+  "rotation_dev_max": 0.00019311586698833594,
+  "radial_excursion_max": 0.0027758181789097752
+ },
+ "effective_hamiltonian": {
+  "grid": 61,
+  "n_O": 3,
+  "n_X": 2,
+  "points": [
+   {
+    "u": -0.7148315224285303,
+    "v": 0.0971889692220849,
+    "kind": "O"
+   },
+   {
+    "u": -0.2987063094817396,
+    "v": 0.67194624031406,
+    "kind": "O"
+   },
+   {
+    "u": -0.15984315182744785,
+    "v": -0.6663935583589484,
+    "kind": "O"
+   },
+   {
+    "u": 0.08130592967797734,
+    "v": 0.24470598691074344,
+    "kind": "X"
+   },
+   {
+    "u": 0.8239779650893977,
+    "v": -0.1968829763616999,
+    "kind": "X"
+   }
+  ],
+  "regions": [
+   {
+    "O": [
+     -0.2987063094817396,
+     0.67194624031406
+    ],
+    "H_O": 1.7650666831520102e-05,
+    "H_sep": -6.324990226849644e-05,
+    "area": 0.1693619999999999,
+    "r_min": 0.46294288104593534,
+    "r_max": 0.8878429540809069,
+    "radial_extent": 0.4249000730349715,
+    "diameter": 0.5173333333333333
+   }
+  ],
+  "D_max": 0.00604525094907335
+ },
+ "total_s": 73.07723593711853,
+ "max_rss_gb": 11.837128704
+}
