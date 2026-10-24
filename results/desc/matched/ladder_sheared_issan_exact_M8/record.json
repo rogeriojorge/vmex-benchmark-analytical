@@ -1,0 +1,320 @@
+{
+  "schema": 3,
+  "evidence": "desc_matched_run",
+  "case": "sheared_issan",
+  "label": "",
+  "protocol": {
+    "seed": "exact",
+    "closure": "iota",
+    "optimizer": "lsq-exact",
+    "grid": "default",
+    "tol": "published",
+    "tolerances": {
+      "ftol": 1e-08,
+      "xtol": 1e-10,
+      "gtol": 1e-05
+    },
+    "maxiter": 150,
+    "maxiter_unit": "iterations",
+    "avail_mem_gb": 6.0
+  },
+  "resolution": {
+    "L": 10,
+    "M": 8,
+    "N": 8,
+    "NFP": 2,
+    "sym": true
+  },
+  "solve_grid": {
+    "kind": "default",
+    "num_nodes": 3399,
+    "num_rho": 11
+  },
+  "profile_fit_errors": {
+    "pressure": 8.653791968730014e-14,
+    "iota": 3.6185249022479846e-14,
+    "enclosed_current": 1.824705925706363e-14
+  },
+  "exact_seed": {
+    "grid_nodes": 35178,
+    "gradient_inconsistency_relative": 0.0009700330933078047,
+    "lambda_max_abs": 0.41861377373688796
+  },
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax": "0.6.2",
+  "script_sha256": "af95efab9c431dde176cdca952e4ea85bc1b6d05601b68ebc23e2c650e227158",
+  "environment_start": {
+    "host": "pop-os",
+    "loadavg": [
+      8.52783203125,
+      9.501953125,
+      9.66845703125
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  },
+  "solver": {
+    "success": true,
+    "message": "`gtol` condition satisfied. (gtol=1.00e-05)",
+    "iterations": 4,
+    "nfev": 11,
+    "solve_seconds": 29.209318059001816,
+    "solve_cpu_seconds": 120.862752067,
+    "initial_cost": 2.031e-06,
+    "final_cost": 2.764862320809398e-07,
+    "final_optimality": 4.660890926292679e-06,
+    "njev": 5
+  },
+  "trajectory": [
+    {
+      "iteration": 0,
+      "nfev": 1,
+      "cost": 2.031e-06,
+      "optimality": 0.0003474,
+      "step_norm": null,
+      "t": 14.7
+    },
+    {
+      "iteration": 1,
+      "nfev": 6,
+      "cost": 3.669e-07,
+      "optimality": 6.023e-05,
+      "step_norm": 0.003095,
+      "t": 20.08
+    },
+    {
+      "iteration": 2,
+      "nfev": 8,
+      "cost": 3.172e-07,
+      "optimality": 1.499e-05,
+      "step_norm": 0.002565,
+      "t": 22.87
+    },
+    {
+      "iteration": 3,
+      "nfev": 9,
+      "cost": 2.969e-07,
+      "optimality": 5.407e-05,
+      "step_norm": 0.006191,
+      "t": 24.86
+    },
+    {
+      "iteration": 4,
+      "nfev": 11,
+      "cost": 2.765e-07,
+      "optimality": 4.661e-06,
+      "step_norm": 0.001492,
+      "t": 27.23
+    }
+  ],
+  "native": {
+    "grids": {
+      "ring_angles": [
+        16,
+        16
+      ],
+      "volume": [
+        16,
+        32,
+        32
+      ]
+    },
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 7.34820715474079e-05,
+        "J_relative_l2": 0.0002526632181436381,
+        "gradp_relative_l2": 0.8158369528004429,
+        "force_over_gradp": 1.3897815434655656,
+        "min_abs_sqrt_g": 8.563952947672611e-06,
+        "sqrt_g_range": [
+          8.563952947672611e-06,
+          8.581161314800608e-06
+        ]
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 7.348229662129e-05,
+        "J_relative_l2": 0.0002526619410619192,
+        "gradp_relative_l2": 0.13969708663514313,
+        "force_over_gradp": 0.2379717306442174,
+        "min_abs_sqrt_g": 8.563467344555393e-05,
+        "sqrt_g_range": [
+          8.563467344555393e-05,
+          8.581504080088144e-05
+        ]
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 7.350481264904432e-05,
+        "J_relative_l2": 0.00025253467486807625,
+        "gradp_relative_l2": 0.014117221121700376,
+        "force_over_gradp": 0.024019861890953887,
+        "min_abs_sqrt_g": 0.0008558638077274746,
+        "sqrt_g_range": [
+          0.0008558638077274746,
+          0.0008585012102330662
+        ]
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 7.585772940296454e-05,
+        "J_relative_l2": 0.00024435765580781875,
+        "gradp_relative_l2": 0.0016036565228878684,
+        "force_over_gradp": 0.002308704190362996,
+        "min_abs_sqrt_g": 0.00851284998860509,
+        "sqrt_g_range": [
+          0.00851284998860509,
+          0.008629917973036649
+        ]
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 0.00010823084620117304,
+        "J_relative_l2": 0.00041518550238636714,
+        "gradp_relative_l2": 0.0019583368391031314,
+        "force_over_gradp": 0.000672803983340336,
+        "min_abs_sqrt_g": 0.025184678219692832,
+        "sqrt_g_range": [
+          0.025184678219692832,
+          0.02646342693317108
+        ]
+      },
+      "0.707107": {
+        "points": 256,
+        "B_relative_l2": 0.0002733305154912845,
+        "J_relative_l2": 0.001689421266793658,
+        "gradp_relative_l2": 0.0033036167281855103,
+        "force_over_gradp": 0.0004804570452786548,
+        "min_abs_sqrt_g": 0.05732365001870425,
+        "sqrt_g_range": [
+          0.05732365001870425,
+          0.06805981661264969
+        ]
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 0.00027058715766686045,
+        "J_relative_l2": 0.0016234269151897767,
+        "gradp_relative_l2": 0.0032101452405828078,
+        "force_over_gradp": 0.0004705633734828384,
+        "min_abs_sqrt_g": 0.056793397410182384,
+        "sqrt_g_range": [
+          0.056793397410182384,
+          0.06722720100855721
+        ]
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.0006118138902646703,
+        "J_relative_l2": 0.007098878172473859,
+        "gradp_relative_l2": 0.010546585143565339,
+        "force_over_gradp": 0.0022428539534425198,
+        "min_abs_sqrt_g": 0.07611943189740895,
+        "sqrt_g_range": [
+          0.07611943189740895,
+          0.1074102523697254
+        ]
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.0003543128096692421,
+        "J_relative_l2": 0.0025884072311071595,
+        "gradp_relative_l2": 0.004566974594943498,
+        "force_over_gradp": 0.0010787757587600324,
+        "min_abs_sqrt_g": 0.0004536996956458975,
+        "sqrt_g_range": [
+          0.0004536996956458975,
+          0.10891744837156972
+        ]
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.0003513201024211691,
+        "J_relative_l2": 0.002492748566656036,
+        "gradp_relative_l2": 0.004263406087255715,
+        "force_over_gradp": 0.0010469793738082252,
+        "min_abs_sqrt_g": 0.0026710701383134304,
+        "sqrt_g_range": [
+          0.0026710701383134304,
+          0.10410684211205688
+        ]
+      }
+    },
+    "orientation_consistent": true
+  },
+  "chart": {
+    "q2": {
+      "all": {
+        "B": 0.00035475185259403454,
+        "J": 0.0025927172035003576,
+        "force": 0.004691864322632207,
+        "B_max_abs_over_Bmax": 0.0012807038675245333,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 7.628612643329714e-05,
+        "J": 0.00023712588280886424,
+        "force": 0.004019259802360505,
+        "B_max_abs_over_Bmax": 9.912093009631493e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 0.0003186648560933727,
+        "J": 0.0019136482164580485,
+        "force": 0.0031720498543743466,
+        "B_max_abs_over_Bmax": 0.001139275346738511,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 0.0005772827844890478,
+        "J": 0.0061072973755901755,
+        "force": 0.008925698705596808,
+        "B_max_abs_over_Bmax": 0.0012807038675245333,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "chart_seconds": {
+    "q2": 200.67261824398884
+  },
+  "nested_final": true,
+  "equilibrium_artifact": {
+    "path": "/home/rjorge/vab-descH/results/ladder_sheared_issan_exact_M8/desc_sheared_issan_M8.h5",
+    "sha256": "3309138a68c94073adda7f1224f45cf804805e272d786d930825f4305fd47a29",
+    "bytes": 129362
+  },
+  "timings": {
+    "build": 22.311940578976646,
+    "seed": 6.564182813017396,
+    "solve": 29.209318059001816,
+    "solve_cpu": 120.862752067,
+    "score_native": 37.98492376800277,
+    "score_chart": 208.29220784499194,
+    "total": 307.6588030689745
+  },
+  "environment_end": {
+    "host": "pop-os",
+    "loadavg": [
+      9.60107421875,
+      9.90576171875,
+      9.82275390625
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  }
+}

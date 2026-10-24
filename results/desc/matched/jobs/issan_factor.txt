@@ -1,0 +1,7 @@
+issan_factor_8_pub --case sheared_issan --levels q1 --avail-mem-gb 6 --M 8 --seed exact --closure current --optimizer matrix-free --grid quadrature --tol published --N 16 --L 8
+issan_factor_8_pub_minus_N --case sheared_issan --levels q1 --avail-mem-gb 6 --M 8 --seed exact --closure current --optimizer matrix-free --grid quadrature --tol published --N 8 --L 8
+issan_factor_8_pub_minus_closure --case sheared_issan --levels q1 --avail-mem-gb 6 --M 8 --seed exact --closure iota --optimizer matrix-free --grid quadrature --tol published --N 16 --L 8
+issan_factor_8_pub_minus_L --case sheared_issan --levels q1 --avail-mem-gb 6 --M 8 --seed exact --closure current --optimizer matrix-free --grid quadrature --tol published --N 16 --L 10
+issan_factor_8_pub_minus_seed --case sheared_issan --levels q1 --avail-mem-gb 6 --M 8 --seed zero --closure current --optimizer matrix-free --grid quadrature --tol published --N 16 --L 8
+issan_factor_8_pub_minus_tol --case sheared_issan --levels q1 --avail-mem-gb 6 --M 8 --seed exact --closure current --optimizer matrix-free --grid quadrature --tol ours --N 16 --L 8
+issan_factor_8_pub_minus_grid --case sheared_issan --levels q1 --avail-mem-gb 6 --M 8 --seed exact --closure current --optimizer matrix-free --grid default --tol published --N 16 --L 8

@@ -1,0 +1,103 @@
+{
+  "schema": 3,
+  "evidence": "desc_exact_chart_rescore",
+  "case": "sheared_A",
+  "artifact": {
+    "path": "results/ladder_sheared_A_pub_M10/desc_sheared_A_M10.h5",
+    "sha256": "001eece81ce03cdea3eed0e257a925de2bd8d95e42d4cbc02103479790adef8e"
+  },
+  "resolution": {
+    "L": 10,
+    "M": 10,
+    "N": 20,
+    "sym": true
+  },
+  "chart": {
+    "q2": {
+      "all": {
+        "B": 1.741024612074095e-05,
+        "J": 0.00018875886592316734,
+        "force": 0.0003314553189604788,
+        "B_max_abs_over_Bmax": 8.849687670416433e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 2.402983514553941e-05,
+        "J": 5.5452204060487275e-05,
+        "force": 0.001958418664337341,
+        "B_max_abs_over_Bmax": 5.075510763474007e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.2640306555892327e-05,
+        "J": 0.00010416401702788065,
+        "force": 0.00024323376582925074,
+        "B_max_abs_over_Bmax": 5.045770990947844e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 3.735931611325155e-05,
+        "J": 0.0005227794995573079,
+        "force": 0.0006025363310197349,
+        "B_max_abs_over_Bmax": 8.849687670416433e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "q3": {
+      "all": {
+        "B": 1.741024071063869e-05,
+        "J": 0.00018875887919588257,
+        "force": 0.00033145553773065685,
+        "B_max_abs_over_Bmax": 9.014835600979351e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 2.232028260670259e-05,
+        "J": 6.55226065051824e-05,
+        "force": 0.001799111266448727,
+        "B_max_abs_over_Bmax": 5.3110316901873475e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.2055563554199186e-05,
+        "J": 9.788669350987377e-05,
+        "force": 0.0002351346024830548,
+        "B_max_abs_over_Bmax": 5.467129642678865e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 3.6019810709299174e-05,
+        "J": 0.0004934886983384071,
+        "force": 0.0005750361409373778,
+        "B_max_abs_over_Bmax": 9.014835600979351e-05,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "chart_seconds": {
+    "q2": 341.8594050250249,
+    "q3": 987.1677924600081
+  },
+  "environment": {
+    "host": "pop-os",
+    "loadavg": [
+      10.7763671875,
+      10.986328125,
+      11.79541015625
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  }
+}

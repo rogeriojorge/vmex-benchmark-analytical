@@ -1,0 +1,320 @@
+{
+  "schema": 3,
+  "evidence": "desc_matched_run",
+  "case": "sheared_A",
+  "label": "",
+  "protocol": {
+    "seed": "exact",
+    "closure": "iota",
+    "optimizer": "lsq-exact",
+    "grid": "default",
+    "tol": "published",
+    "tolerances": {
+      "ftol": 1e-08,
+      "xtol": 1e-10,
+      "gtol": 1e-05
+    },
+    "maxiter": 150,
+    "maxiter_unit": "iterations",
+    "avail_mem_gb": 6.0
+  },
+  "resolution": {
+    "L": 10,
+    "M": 8,
+    "N": 8,
+    "NFP": 2,
+    "sym": true
+  },
+  "solve_grid": {
+    "kind": "default",
+    "num_nodes": 3399,
+    "num_rho": 11
+  },
+  "profile_fit_errors": {
+    "pressure": 6.380383146733366e-11,
+    "iota": 1.6947728195373864e-11,
+    "enclosed_current": 9.487446696856045e-12
+  },
+  "exact_seed": {
+    "grid_nodes": 35178,
+    "gradient_inconsistency_relative": 0.0017699950956345327,
+    "lambda_max_abs": 0.49305380202569743
+  },
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax": "0.6.2",
+  "script_sha256": "af95efab9c431dde176cdca952e4ea85bc1b6d05601b68ebc23e2c650e227158",
+  "environment_start": {
+    "host": "pop-os",
+    "loadavg": [
+      9.0419921875,
+      9.337890625,
+      9.86328125
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  },
+  "solver": {
+    "success": true,
+    "message": "`gtol` condition satisfied. (gtol=1.00e-05)",
+    "iterations": 4,
+    "nfev": 10,
+    "solve_seconds": 24.086961404012982,
+    "solve_cpu_seconds": 106.202131036,
+    "initial_cost": 1.036e-06,
+    "final_cost": 6.250298422591615e-09,
+    "final_optimality": 4.723465537449128e-06,
+    "njev": 5
+  },
+  "trajectory": [
+    {
+      "iteration": 0,
+      "nfev": 1,
+      "cost": 1.036e-06,
+      "optimality": 0.0009146,
+      "step_norm": null,
+      "t": 12.38
+    },
+    {
+      "iteration": 1,
+      "nfev": 4,
+      "cost": 1.408e-07,
+      "optimality": 0.0001828,
+      "step_norm": 0.008851,
+      "t": 15.76
+    },
+    {
+      "iteration": 2,
+      "nfev": 6,
+      "cost": 1.812e-08,
+      "optimality": 5.585e-05,
+      "step_norm": 0.004881,
+      "t": 17.97
+    },
+    {
+      "iteration": 3,
+      "nfev": 8,
+      "cost": 7.664e-09,
+      "optimality": 1.855e-05,
+      "step_norm": 0.00279,
+      "t": 20.25
+    },
+    {
+      "iteration": 4,
+      "nfev": 10,
+      "cost": 6.25e-09,
+      "optimality": 4.723e-06,
+      "step_norm": 0.001256,
+      "t": 22.33
+    }
+  ],
+  "native": {
+    "grids": {
+      "ring_angles": [
+        16,
+        16
+      ],
+      "volume": [
+        16,
+        32,
+        32
+      ]
+    },
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 8.221755719747137e-05,
+        "J_relative_l2": 0.00020158893656506405,
+        "gradp_relative_l2": 0.9564092637267869,
+        "force_over_gradp": 0.16203347594522946,
+        "min_abs_sqrt_g": 6.786830890661437e-06,
+        "sqrt_g_range": [
+          6.786830890661437e-06,
+          7.531305661261057e-06
+        ]
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 8.221718960612338e-05,
+        "J_relative_l2": 0.00020159495872921742,
+        "gradp_relative_l2": 0.3112365355907649,
+        "force_over_gradp": 0.052729254756600376,
+        "min_abs_sqrt_g": 6.78679230023334e-05,
+        "sqrt_g_range": [
+          6.78679230023334e-05,
+          7.531333739291022e-05
+        ]
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 8.218048056282527e-05,
+        "J_relative_l2": 0.00020219510113022942,
+        "gradp_relative_l2": 0.03271907773661016,
+        "force_over_gradp": 0.005543333028572467,
+        "min_abs_sqrt_g": 0.0006786456733065171,
+        "sqrt_g_range": [
+          0.0006786456733065171,
+          0.0007531697466900633
+        ]
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 7.898423657821011e-05,
+        "J_relative_l2": 0.00024651840264735165,
+        "gradp_relative_l2": 0.003154889176291903,
+        "force_over_gradp": 0.0005342276486125626,
+        "min_abs_sqrt_g": 0.006785806129828833,
+        "sqrt_g_range": [
+          0.006785806129828833,
+          0.007559486500711713
+        ]
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 7.256751056027911e-05,
+        "J_relative_l2": 0.0002710757935614256,
+        "gradp_relative_l2": 0.0009634851159846923,
+        "force_over_gradp": 0.00015506453642238102,
+        "min_abs_sqrt_g": 0.02040438570118806,
+        "sqrt_g_range": [
+          0.02040438570118806,
+          0.023390445689797465
+        ]
+      },
+      "0.707107": {
+        "points": 256,
+        "B_relative_l2": 6.934497779781542e-05,
+        "J_relative_l2": 0.00034009119502997085,
+        "gradp_relative_l2": 0.0006918640465880468,
+        "force_over_gradp": 0.0001220704879310963,
+        "min_abs_sqrt_g": 0.04880897603058045,
+        "sqrt_g_range": [
+          0.04880897603058045,
+          0.0657869405720967
+        ]
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 6.918977963202797e-05,
+        "J_relative_l2": 0.0003323396684249447,
+        "gradp_relative_l2": 0.0006843328111457968,
+        "force_over_gradp": 0.00012033697115526721,
+        "min_abs_sqrt_g": 0.04830145227389321,
+        "sqrt_g_range": [
+          0.04830145227389321,
+          0.06481973300751075
+        ]
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 0.00025788721233542636,
+        "J_relative_l2": 0.0019278758698153412,
+        "gradp_relative_l2": 0.0015449616510793487,
+        "force_over_gradp": 0.0005473783103935185,
+        "min_abs_sqrt_g": 0.06935652985875036,
+        "sqrt_g_range": [
+          0.06935652985875036,
+          0.11890611792632416
+        ]
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 0.00011360819454790646,
+        "J_relative_l2": 0.0005673070822628075,
+        "gradp_relative_l2": 0.0007948444324772354,
+        "force_over_gradp": 0.0002569575624985412,
+        "min_abs_sqrt_g": 0.0003585210237078177,
+        "sqrt_g_range": [
+          0.0003585210237078177,
+          0.12014166320162777
+        ]
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 0.00011060007514803664,
+        "J_relative_l2": 0.0005182460783145764,
+        "gradp_relative_l2": 0.0007687606150756135,
+        "force_over_gradp": 0.0002438633787572608,
+        "min_abs_sqrt_g": 0.00211386653720097,
+        "sqrt_g_range": [
+          0.00211386653720097,
+          0.11351926238772622
+        ]
+      }
+    },
+    "orientation_consistent": true
+  },
+  "chart": {
+    "q2": {
+      "all": {
+        "B": 0.00011360716953483888,
+        "J": 0.0005673207599387714,
+        "force": 0.0008363037557059186,
+        "B_max_abs_over_Bmax": 0.0005347320261711758,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 7.9581749760435e-05,
+        "J": 0.0002261238296247384,
+        "force": 0.0045197792913785565,
+        "B_max_abs_over_Bmax": 0.00010883016102255799,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 9.048689081203098e-05,
+        "J": 0.00033795579649463915,
+        "force": 0.0006704134815883199,
+        "B_max_abs_over_Bmax": 0.00027936976665391566,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 0.00022452728467105572,
+        "J": 0.00152087919008559,
+        "force": 0.0013950874240896765,
+        "B_max_abs_over_Bmax": 0.0005347320261711758,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "chart_seconds": {
+    "q2": 183.63666174499667
+  },
+  "nested_final": true,
+  "equilibrium_artifact": {
+    "path": "/home/rjorge/vab-descH/results/ladder_sheared_A_exact_M8/desc_sheared_A_M8.h5",
+    "sha256": "fd9e3c988d0705aa07f454f517e74216010f3c4190232834ec26c03443f79d79",
+    "bytes": 129330
+  },
+  "timings": {
+    "build": 19.842293451016303,
+    "seed": 5.885859189991606,
+    "solve": 24.086961404012982,
+    "solve_cpu": 106.202131036,
+    "score_native": 32.27822970901616,
+    "score_chart": 190.23788861199864,
+    "total": 276.0215679809917
+  },
+  "environment_end": {
+    "host": "pop-os",
+    "loadavg": [
+      8.70751953125,
+      8.65283203125,
+      9.3896484375
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "schema": 3,
+  "evidence": "desc_matched_run",
+  "case": "integer_3d_tau_mirror",
+  "label": "",
+  "protocol": {
+    "seed": "exact",
+    "closure": "iota",
+    "optimizer": "lsq-exact",
+    "grid": "default",
+    "tol": "published",
+    "tolerances": {
+      "ftol": 1e-08,
+      "xtol": 1e-10,
+      "gtol": 1e-05
+    },
+    "maxiter": 150,
+    "maxiter_unit": "iterations",
+    "avail_mem_gb": 6.0
+  },
+  "resolution": {
+    "L": 12,
+    "M": 10,
+    "N": 10,
+    "NFP": 2,
+    "sym": false
+  },
+  "solve_grid": {
+    "kind": "default",
+    "num_nodes": 11521,
+    "num_rho": 13
+  },
+  "profile_fit_errors": {
+    "pressure": 1.3322676295501878e-15,
+    "iota": 7.771561172376096e-16,
+    "enclosed_current": 3.1494117032473135e-14
+  },
+  "exact_seed": {
+    "grid_nodes": 59878,
+    "gradient_inconsistency_relative": 0.3432334741172123,
+    "lambda_max_abs": 3.7305918764558326e-07
+  },
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax": "0.6.2",
+  "script_sha256": "af95efab9c431dde176cdca952e4ea85bc1b6d05601b68ebc23e2c650e227158",
+  "environment_start": {
+    "host": "pop-os",
+    "loadavg": [
+      9.47900390625,
+      10.36376953125,
+      10.32177734375
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  },
+  "solver": {
+    "success": true,
+    "message": "`gtol` condition satisfied. (gtol=1.00e-05)",
+    "iterations": 0,
+    "nfev": 1,
+    "solve_seconds": 67.89171207501204,
+    "solve_cpu_seconds": 264.022406642,
+    "initial_cost": 5.192e-12,
+    "final_cost": 5.1922280141581975e-12,
+    "final_optimality": 1.1988445390688773e-06,
+    "njev": 1
+  },
+  "trajectory": [
+    {
+      "iteration": 0,
+      "nfev": 1,
+      "cost": 5.192e-12,
+      "optimality": 1.199e-06,
+      "step_norm": null,
+      "t": 66.16
+    }
+  ],
+  "native": {
+    "grids": {
+      "ring_angles": [
+        16,
+        16
+      ],
+      "volume": [
+        16,
+        32,
+        32
+      ]
+    },
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 2.107547807929025e-09,
+        "J_relative_l2": 2.307575324280163e-08,
+        "gradp_relative_l2": 2.167111762220799e-07,
+        "force_over_gradp": 0.0015473480985219155,
+        "min_abs_sqrt_g": 1.78400818604439e-06,
+        "sqrt_g_range": [
+          1.78400818604439e-06,
+          2.432879972002673e-06
+        ]
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 2.1074345575017835e-09,
+        "J_relative_l2": 2.3079720932045997e-08,
+        "gradp_relative_l2": 2.198154839897994e-08,
+        "force_over_gradp": 0.0001547614628645599,
+        "min_abs_sqrt_g": 1.7835412174087383e-05,
+        "sqrt_g_range": [
+          1.7835412174087383e-05,
+          2.4335169511786454e-05
+        ]
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 2.0961431051127305e-09,
+        "J_relative_l2": 2.3428981761914214e-08,
+        "gradp_relative_l2": 4.2734070902440775e-09,
+        "force_over_gradp": 1.570815160480832e-05,
+        "min_abs_sqrt_g": 0.00017788832579591706,
+        "sqrt_g_range": [
+          0.00017788832579591706,
+          0.0002439889051711419
+        ]
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 1.1959754776846836e-09,
+        "J_relative_l2": 3.906607734825267e-08,
+        "gradp_relative_l2": 2.0030850522293812e-09,
+        "force_over_gradp": 2.606524824540981e-06,
+        "min_abs_sqrt_g": 0.0017334381133621314,
+        "sqrt_g_range": [
+          0.0017334381133621314,
+          0.0025038550519926204
+        ]
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 1.3058980351228635e-09,
+        "J_relative_l2": 4.0569932134225364e-08,
+        "gradp_relative_l2": 1.7781660790407133e-09,
+        "force_over_gradp": 8.999036299025587e-07,
+        "min_abs_sqrt_g": 0.00491747369444161,
+        "sqrt_g_range": [
+          0.00491747369444161,
+          0.007943611363656676
+        ]
+      },
+      "0.707107": {
+        "points": 256,
+        "B_relative_l2": 6.320631871478094e-09,
+        "J_relative_l2": 2.3119861381499192e-07,
+        "gradp_relative_l2": 1.451978318995767e-08,
+        "force_over_gradp": 2.145186143831826e-06,
+        "min_abs_sqrt_g": 0.010397412538939632,
+        "sqrt_g_range": [
+          0.010397412538939632,
+          0.020871911525121717
+        ]
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 5.83407089591386e-09,
+        "J_relative_l2": 2.1169734119247276e-07,
+        "gradp_relative_l2": 1.3323460420573917e-08,
+        "force_over_gradp": 1.982758329766463e-06,
+        "min_abs_sqrt_g": 0.010311973275032183,
+        "sqrt_g_range": [
+          0.010311973275032183,
+          0.020623947772635036
+        ]
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 2.2007811409852275e-07,
+        "J_relative_l2": 7.145002909353495e-06,
+        "gradp_relative_l2": 4.947682968251929e-07,
+        "force_over_gradp": 4.416065495857878e-05,
+        "min_abs_sqrt_g": 0.013536554877540937,
+        "sqrt_g_range": [
+          0.013536554877540937,
+          0.03142527029407105
+        ]
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 7.229879135062045e-08,
+        "J_relative_l2": 2.2630780517410243e-06,
+        "gradp_relative_l2": 2.0936965545644831e-07,
+        "force_over_gradp": 1.90118695519497e-05,
+        "min_abs_sqrt_g": 9.4401279167861e-05,
+        "sqrt_g_range": [
+          9.4401279167861e-05,
+          0.03161220933183582
+        ]
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 6.87948387727232e-08,
+        "J_relative_l2": 2.118764810710775e-06,
+        "gradp_relative_l2": 1.9698831029393243e-07,
+        "force_over_gradp": 1.7890600195104367e-05,
+        "min_abs_sqrt_g": 0.000552490319263886,
+        "sqrt_g_range": [
+          0.000552490319263886,
+          0.030585007629686096
+        ]
+      }
+    },
+    "orientation_consistent": true
+  },
+  "chart": {
+    "q2": {
+      "all": {
+        "B": 7.2292451207974e-08,
+        "J": 2.263075272384324e-06,
+        "force": 1.8853197989053928e-05,
+        "B_max_abs_over_Bmax": 8.156915982821695e-07,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 1.5029387248768218e-09,
+        "J": 3.330585530170867e-08,
+        "force": 3.040580924894654e-06,
+        "B_max_abs_over_Bmax": 3.011522038919471e-09,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 4.194389981940324e-08,
+        "J": 1.2924971505378813e-06,
+        "force": 1.1534666242474764e-05,
+        "B_max_abs_over_Bmax": 3.7528209151886917e-07,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 1.9703362417868653e-07,
+        "J": 6.201905869334998e-06,
+        "force": 3.7280331882726585e-05,
+        "B_max_abs_over_Bmax": 8.156915982821695e-07,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "chart_seconds": {
+    "q2": 99.88605960001587
+  },
+  "nested_final": true,
+  "equilibrium_artifact": {
+    "path": "/home/rjorge/vab-descH/results/ladder_integer_3d_tau_mirror_exact_M10/desc_integer_3d_tau_mirror_M10.h5",
+    "sha256": "6e1f40e706ac35cb6753053acd3b98784b248a99d8b8deb40ced2bf4882efc70",
+    "bytes": 164977
+  },
+  "timings": {
+    "build": 32.857114259008085,
+    "seed": 5.930249997007195,
+    "solve": 67.89171207501204,
+    "solve_cpu": 264.022406642,
+    "score_native": 33.186206999002025,
+    "score_chart": 105.60785802800092,
+    "total": 248.52404724099324
+  },
+  "environment_end": {
+    "host": "pop-os",
+    "loadavg": [
+      8.4853515625,
+      9.8798828125,
+      10.16748046875
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  }
+}

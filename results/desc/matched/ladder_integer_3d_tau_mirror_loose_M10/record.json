@@ -1,0 +1,283 @@
+{
+  "schema": 3,
+  "evidence": "desc_matched_run",
+  "case": "integer_3d_tau_mirror",
+  "label": "",
+  "protocol": {
+    "seed": "zero",
+    "closure": "iota",
+    "optimizer": "lsq-exact",
+    "grid": "default",
+    "tol": "published",
+    "tolerances": {
+      "ftol": 1e-08,
+      "xtol": 1e-10,
+      "gtol": 1e-05
+    },
+    "maxiter": 150,
+    "maxiter_unit": "iterations",
+    "avail_mem_gb": 6.0
+  },
+  "resolution": {
+    "L": 12,
+    "M": 10,
+    "N": 10,
+    "NFP": 2,
+    "sym": false
+  },
+  "solve_grid": {
+    "kind": "default",
+    "num_nodes": 11521,
+    "num_rho": 13
+  },
+  "profile_fit_errors": {
+    "pressure": 1.3322676295501878e-15,
+    "iota": 7.771561172376096e-16,
+    "enclosed_current": 3.1494117032473135e-14
+  },
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax": "0.6.2",
+  "script_sha256": "af95efab9c431dde176cdca952e4ea85bc1b6d05601b68ebc23e2c650e227158",
+  "environment_start": {
+    "host": "pop-os",
+    "loadavg": [
+      7.63623046875,
+      8.111328125,
+      10.02490234375
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  },
+  "solver": {
+    "success": true,
+    "message": "`gtol` condition satisfied. (gtol=1.00e-05)",
+    "iterations": 0,
+    "nfev": 1,
+    "solve_seconds": 58.5580859350157,
+    "solve_cpu_seconds": 240.50679508500002,
+    "initial_cost": 4.511e-11,
+    "final_cost": 4.510781593940742e-11,
+    "final_optimality": 3.720791623422494e-06,
+    "njev": 1
+  },
+  "trajectory": [
+    {
+      "iteration": 0,
+      "nfev": 1,
+      "cost": 4.511e-11,
+      "optimality": 3.721e-06,
+      "step_norm": null,
+      "t": 57.03
+    }
+  ],
+  "native": {
+    "grids": {
+      "ring_angles": [
+        16,
+        16
+      ],
+      "volume": [
+        16,
+        32,
+        32
+      ]
+    },
+    "rings": {
+      "0.0001": {
+        "points": 256,
+        "B_relative_l2": 2.1075477102913894e-09,
+        "J_relative_l2": 1.3439969989132845e-08,
+        "gradp_relative_l2": 2.167111762220799e-07,
+        "force_over_gradp": 0.0008843750074085708,
+        "min_abs_sqrt_g": 1.78400818604439e-06,
+        "sqrt_g_range": [
+          1.78400818604439e-06,
+          2.432879972002673e-06
+        ]
+      },
+      "0.001": {
+        "points": 256,
+        "B_relative_l2": 2.1074263958454913e-09,
+        "J_relative_l2": 1.3460941012617525e-08,
+        "gradp_relative_l2": 2.198154839897994e-08,
+        "force_over_gradp": 8.858348848457019e-05,
+        "min_abs_sqrt_g": 1.7835412174087383e-05,
+        "sqrt_g_range": [
+          1.7835412174087383e-05,
+          2.4335169511786454e-05
+        ]
+      },
+      "0.01": {
+        "points": 256,
+        "B_relative_l2": 2.095337339798637e-09,
+        "J_relative_l2": 1.5375983426002975e-08,
+        "gradp_relative_l2": 4.2734070902440775e-09,
+        "force_over_gradp": 1.0182493718119288e-05,
+        "min_abs_sqrt_g": 0.00017788832579591706,
+        "sqrt_g_range": [
+          0.00017788832579591706,
+          0.0002439889051711419
+        ]
+      },
+      "0.1": {
+        "points": 256,
+        "B_relative_l2": 1.2524402298811212e-09,
+        "J_relative_l2": 5.931952917266437e-08,
+        "gradp_relative_l2": 2.0030850522293812e-09,
+        "force_over_gradp": 4.0014872381622375e-06,
+        "min_abs_sqrt_g": 0.0017334381133621314,
+        "sqrt_g_range": [
+          0.0017334381133621314,
+          0.0025038550519926204
+        ]
+      },
+      "0.3": {
+        "points": 256,
+        "B_relative_l2": 1.7803380875087335e-09,
+        "J_relative_l2": 6.801095367134094e-08,
+        "gradp_relative_l2": 1.7781660790407133e-09,
+        "force_over_gradp": 1.540602665668179e-06,
+        "min_abs_sqrt_g": 0.00491747369444161,
+        "sqrt_g_range": [
+          0.00491747369444161,
+          0.007943611363656676
+        ]
+      },
+      "0.707107": {
+        "points": 256,
+        "B_relative_l2": 1.8458794025794222e-08,
+        "J_relative_l2": 6.689497777966272e-07,
+        "gradp_relative_l2": 1.451978318995767e-08,
+        "force_over_gradp": 6.585666959535797e-06,
+        "min_abs_sqrt_g": 0.010397412538939632,
+        "sqrt_g_range": [
+          0.010397412538939632,
+          0.020871911525121717
+        ]
+      },
+      "0.7": {
+        "points": 256,
+        "B_relative_l2": 1.6794166681635184e-08,
+        "J_relative_l2": 6.110998153355322e-07,
+        "gradp_relative_l2": 1.3323460420573917e-08,
+        "force_over_gradp": 6.072513347807917e-06,
+        "min_abs_sqrt_g": 0.010311973275032183,
+        "sqrt_g_range": [
+          0.010311973275032183,
+          0.020623947772635036
+        ]
+      },
+      "0.99": {
+        "points": 256,
+        "B_relative_l2": 6.429454781475331e-07,
+        "J_relative_l2": 1.9805284952273455e-05,
+        "gradp_relative_l2": 4.947682968251929e-07,
+        "force_over_gradp": 0.00014253356016354844,
+        "min_abs_sqrt_g": 0.013536554877540937,
+        "sqrt_g_range": [
+          0.013536554877540937,
+          0.03142527029407105
+        ]
+      }
+    },
+    "volume": {
+      "gauss": {
+        "points": 16384,
+        "B_relative_l2": 2.0057524448672175e-07,
+        "J_relative_l2": 6.1313081464749786e-06,
+        "gradp_relative_l2": 2.0936965545644831e-07,
+        "force_over_gradp": 5.9739084715608584e-05,
+        "min_abs_sqrt_g": 9.4401279167861e-05,
+        "sqrt_g_range": [
+          9.4401279167861e-05,
+          0.03161220933183582
+        ]
+      },
+      "midpoint": {
+        "points": 16384,
+        "B_relative_l2": 1.9155564538598445e-07,
+        "J_relative_l2": 5.812934389032043e-06,
+        "gradp_relative_l2": 1.9698831029393243e-07,
+        "force_over_gradp": 5.671673403093841e-05,
+        "min_abs_sqrt_g": 0.000552490319263886,
+        "sqrt_g_range": [
+          0.000552490319263886,
+          0.030585007629686096
+        ]
+      }
+    },
+    "orientation_consistent": true
+  },
+  "chart": {
+    "q2": {
+      "all": {
+        "B": 2.00576122466462e-07,
+        "J": 6.1313071937509364e-06,
+        "force": 5.9922554322786586e-05,
+        "B_max_abs_over_Bmax": 1.8949382259634971e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 1.4900986041757267e-09,
+        "J": 4.7203688800184624e-08,
+        "force": 4.353849890987785e-06,
+        "B_max_abs_over_Bmax": 2.9822335117675527e-09,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.1777209564667771e-07,
+        "J": 3.5977723398943074e-06,
+        "force": 3.66544711244987e-05,
+        "B_max_abs_over_Bmax": 9.502199613288851e-07,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 5.438279880524845e-07,
+        "J": 1.660983571755599e-05,
+        "force": 0.00011850129208794648,
+        "B_max_abs_over_Bmax": 1.8949382259634971e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "chart_seconds": {
+    "q2": 104.62345870601712
+  },
+  "nested_final": true,
+  "equilibrium_artifact": {
+    "path": "/home/rjorge/vab-descH/results/ladder_integer_3d_tau_mirror_loose_M10/desc_integer_3d_tau_mirror_M10.h5",
+    "sha256": "c8cbec52e74c3db1fb261b7137923e382b48ed44fbc87ff7e8edbc606df346b4",
+    "bytes": 152841
+  },
+  "timings": {
+    "build": 27.41560876800213,
+    "seed": 5.439796950668097e-07,
+    "solve": 58.5580859350157,
+    "solve_cpu": 240.50679508500002,
+    "score_native": 28.31918359399424,
+    "score_chart": 109.34887498500757,
+    "total": 227.29910775000462
+  },
+  "environment_end": {
+    "host": "pop-os",
+    "loadavg": [
+      10.1279296875,
+      8.87158203125,
+      9.87744140625
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  }
+}
