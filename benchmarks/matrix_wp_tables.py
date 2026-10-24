@@ -18,7 +18,9 @@ import statistics
 from matrix_tables import ROOT, floor_for, log_iterations
 
 
-def load_runs(runs_dir):
+def load_runs(runs_dir, borrow=None):
+    """Runs of one pass.  ``borrow`` (id -> run of an earlier pass): a repeat pass is not rescored; a run takes
+    the earlier score when its final residuals and iteration count are identical (the solve is deterministic)."""
     out = []
     for path in sorted(Path(runs_dir).glob("*/receipt.json")):
         d = path.parent
@@ -27,6 +29,10 @@ def load_runs(runs_dir):
         score_path = d/"volume_score_v1.json"
         score = json.loads(score_path.read_text()) if score_path.exists() else None
         last, total = log_iterations(d/"stdout.log")
+        if score is None and borrow and rec["run_id"] in borrow:
+            old = borrow[rec["run_id"]]
+            if old["score"] and old["fsq_final"] == rec.get("fsq_final") and old["iters_total"] == total:
+                score = {"headline": old["score"], "mpol": old["mpol"], "ntor": old["ntor"], "borrowed_from_pass_1": True}
         out.append({"id": rec["run_id"], "case": rec["case"], "code": rec["code"], "protocol": rec["protocol"], "ns": rec["ns"],
                     "tag": tag, "kind": "rep" if tag.startswith("_rep") else "ftol", "rep": int(tag[4:]) if tag.startswith("_rep") else None,
                     "started": rec.get("started_utc"), "ftol": rec["ftol"], "ladder_ftols": rec["ladder"]["ftol_array"], "wall": rec.get("wall_seconds"),
@@ -133,14 +139,21 @@ def matched_table(rows, targets=(1e-2, 1e-3, 1e-4, 1e-5)):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--runs", type=Path, default=ROOT/"results/matrix/wp_runs")
+    p.add_argument("--second", type=Path, default=None, help="a second timing pass (same queue) on a quieter box")
     p.add_argument("--out", type=Path, default=ROOT/"results/matrix")
     a = p.parse_args(argv)
-    rows = summarise(load_runs(a.runs))
-    (a.out/"wp_summary.json").write_text(json.dumps({"schema": 1, "rows": rows}, indent=1, allow_nan=False)+"\n")
-    text = ["## Timing: repeated runs per configuration", "", timing_table(rows), "", "## Tolerance sweep (every ladder stage at the swept ftol)", "",
-            sweep_table(rows), "", "## Cheapest configuration reaching each whole-volume B target", "", matched_table(rows), ""]
+    first = load_runs(a.runs)
+    passes = {"pass 1": summarise(first)}
+    if a.second:
+        passes["pass 2"] = summarise(load_runs(a.second, {r["id"]: r for r in first}))
+    (a.out/"wp_summary.json").write_text(json.dumps({"schema": 1, "passes": passes}, indent=1, allow_nan=False)+"\n")
+    text = []
+    for name, rows in passes.items():
+        text += [f"# Work-precision, {name}", "", "## Timing: repeated runs per configuration", "", timing_table(rows), "",
+                 "## Tolerance sweep (every ladder stage at the swept ftol)", "", sweep_table(rows), "",
+                 "## Cheapest configuration reaching each whole-volume B target", "", matched_table(rows), ""]
     (a.out/"WP_TABLES.md").write_text("\n".join(text))
-    print(f"{len(rows)} configurations")
+    print({k: len(v) for k, v in passes.items()})
 
 
 if __name__ == "__main__":

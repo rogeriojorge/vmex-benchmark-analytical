@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "run_id": "integer_3d-cold_rep0-ns33-vmex",
+  "case": "integer_3d",
+  "code": "vmex",
+  "protocol": "cold",
+  "ns": 33,
+  "ladder": {
+    "ns_array": [
+      33
+    ],
+    "ftol_array": [
+      1e-08
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-08,
+  "deck_sha256": "93f32fd041901c9a0e6796db60f8398e12e406f734a4241142f6dfcf2e19f2ad",
+  "started_utc": "2026-10-24T11:10:29.777608+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "integer_3d",
+    "--code",
+    "vmex",
+    "--protocol",
+    "cold",
+    "--ns",
+    "33",
+    "--tag",
+    "_rep0",
+    "--ftol",
+    "1e-08",
+    "--ftol-stages",
+    "1e-08",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs_wp2"
+  ],
+  "runner_sha256": "12e4608493818e66b78f0d8ff2cfe2608558978fc92a5f8468620072fd50293d",
+  "omp_threads": "4",
+  "load1_start": 28.46435546875,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "69a3607bc669800fd68c1613df19dc877e5150c0aa737d4bad313fde7ad8bb93",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache_runs_wp2/integer_3d_cold_33_1e-08",
+  "wall_seconds": 8.03054954201798,
+  "wout": {
+    "path": "wout_integer_3d-cold_rep0-ns33-vmex.nc",
+    "sha256": "3c11614db5dc83be9600843c3a0ce294ea7780f3f367e2f95c779f5f37a227f9"
+  },
+  "converged": true,
+  "ier_flag": 11,
+  "iterations_final_stage": 184,
+  "fsq_final": [
+    9.44030652957944e-09,
+    7.950240642369216e-09,
+    5.7469407136919065e-09
+  ],
+  "jacobian_resets": 1,
+  "fsq_first_iteration": [
+    0.23661616188579104,
+    0.828680082665052,
+    0.018766210707554205
+  ],
+  "process_seconds": 12.469163149013184,
+  "load1_end": 29.79248046875,
+  "finished_utc": "2026-10-24T11:10:41.750980+00:00",
+  "fsq_leq_ftol": true
+}
