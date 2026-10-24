@@ -47,6 +47,10 @@ def main(argv=None):
     p.add_argument("--niter", type=int, default=3000, help="iteration cap per stage")
     p.add_argument("--tcon0", type=float, default=None)
     p.add_argument("--tag", default="", help="suffix of the run id (e.g. loose)")
+    p.add_argument("--c", type=int, default=None, help="integer transform of the poloidal-angle gauge (default: recorded, 1)")
+    p.add_argument("--kind", default=None, help="surface family of the deck/seed: eta (default) | shift:dl:db")
+    p.add_argument("--ai", type=float, nargs="+", default=None,
+                   help="prescribed iota power-series coefficients (closure iota only): iota(s) = sum ai_k s^k")
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args(argv)
     import jax
@@ -61,19 +65,31 @@ def main(argv=None):
     a.out.mkdir(parents=True, exist_ok=False)
     run_id = f"lopez_D_{a.closure}-ns{a.ns}-{a.protocol}{a.tag}-vmex"
     closure = 1 if a.closure == "current" else 0
-    if a.protocol == "cold":
+    generated = a.c is not None or a.kind not in (None, "eta") or (a.mpol, a.ntor) != (10, 72)
+    kind = a.kind or ("alpha" if a.protocol == "alpha" else "eta")
+    if a.protocol == "cold" and not generated:
         inp = vmex.VmecInput.from_file(ROOT/"inputs"/f"input.lopez_D_{a.closure}")
         stages = [n for n in LADDER if n < a.ns] + [a.ns]
         state = None
         deck_text_path = ROOT/"inputs"/f"input.lopez_D_{a.closure}"
+    elif a.protocol == "cold":   # same cold protocol, deck regenerated in another gauge / resolution / surface family
+        inp = lr.deck_for(a.mpol, a.ntor, a.ns, kind, closure, directory=a.out, c=a.c)
+        stages = [n for n in LADDER if n < a.ns] + [a.ns]
+        state = None
+        deck_text_path = next(a.out.glob("input.lopez_*"))
     else:
-        kind = "eta" if a.protocol == "seed" else "alpha"
-        inp = lr.deck_for(a.mpol, a.ntor, a.ns, kind, closure, directory=a.out)
+        inp = lr.deck_for(a.mpol, a.ntor, a.ns, kind, closure, directory=a.out, c=a.c)
         stages = [a.ns]
         deck_text_path = next(a.out.glob("input.lopez_*"))
         t_seed = time.perf_counter()
-        state = lr.vmex_state(inp, a.ns, kind)
+        state = lr.vmex_state(inp, a.ns, kind, c=a.c)
         seed_seconds = time.perf_counter() - t_seed
+    if a.ai is not None:
+        if closure != 0:
+            raise SystemExit("--ai needs --closure iota")
+        coefficients = np.zeros(21)
+        coefficients[:len(a.ai)] = a.ai
+        inp = replace(inp, ai=coefficients)
     if a.tcon0 is not None:
         inp = replace(inp, tcon0=a.tcon0)
     ftols = [1e-12]*(len(stages) - 1) + [a.ftol]
@@ -81,7 +97,7 @@ def main(argv=None):
                   niter_array=np.asarray([a.niter]*len(stages)))
     name = f"{run_id}"
     inp.to_indata(a.out/f"input.{name}")
-    receipt = dict(schema=1, run_id=run_id, protocol=a.protocol, closure=a.closure, ns=a.ns, mpol=a.mpol, ntor=a.ntor,
+    receipt = dict(schema=1, run_id=run_id, gauge_c=lr.gauge_with(a.c)[2], kind=kind, ai=a.ai, protocol=a.protocol, closure=a.closure, ns=a.ns, mpol=a.mpol, ntor=a.ntor,
                    ladder=dict(ns_array=stages, ftol_array=ftols, niter_per_stage=a.niter, tcon0=a.tcon0),
                    deck_sha256=sha256(a.out/f"input.{name}"), source_deck=deck_text_path.name,
                    source_deck_sha256=sha256(deck_text_path), code="vmex",
@@ -113,7 +129,7 @@ def main(argv=None):
         if state is not None:
             receipt["seed_seconds"] = seed_seconds
         try:
-            score = sl.score_wout(w, sl.lopez_case())
+            score = sl.score_wout(w, sl.lopez_case(iota=lr.gauge_with(a.c)[2]))
             score.update(wout_sha256=receipt["wout"]["sha256"], scorer_sha256=sha256(Path(sl.__file__)),
                          run_id=run_id, code="vmex", wall_seconds=receipt["wall_seconds"])
             (a.out/f"lopez_score_v{sl.SCHEMA}.json").write_text(json.dumps(score, indent=1, allow_nan=False) + "\n")

@@ -1,0 +1,64 @@
+ ====================== PARALLEL TIMINGS ====================
+               total  :        2.182221
+                rank  :               0
+mgrid file read time  :        0.000000
+        No. of procs  :               1
+
+      --- non-vacuum  :             547             17              1       0.773353
+      --- non-vacuum  :             531             33              1       1.347741
+
+             runvmec  :        2.181923
+
+         init radial  :        0.000000
+             eqsolve  :        2.154343
+             fileout  :        0.017281
+
+              evolve  :        2.143726
+             funct3d  :        2.121093
+            nfunct3d  :            1078
+
+             totzsps  :        0.300026
+             totzspa  :        0.287151
+              symrzl  :        0.071540
+            jacobian  :        0.033731
+              bcovar  :        0.162329
+              vacuum  :        0.000000
+
+            - precal  :        0.000000
+           - surface  :        0.000000
+
+           - bextern  :        0.000000
+
+           -- becoil  :        0.000000
+           -- tolicu  :        0.000000
+           -- belicu  :        0.000000
+
+           - scalpot  :        0.000000
+
+           -- analyt  :        0.000000
+           -- greenf  :        0.000000
+            -- fourp  :        0.000000
+            -- fouri  :        0.000000
+
+            - solver  :        0.000000
+
+               alias  :        0.145336
+              forces  :        0.239071
+           symforces  :        0.086609
+             tomnsps  :        0.129560
+             tomnspa  :        0.120677
+             residue  :        0.586721
+          -- tridslv  :        0.530197
+
+ ============================================================
+
+           allgather  :        0.000000
+           allreduce  :        0.004653
+           broadcast  :        0.000844
+           sendrecv   :        0.009608
+
+     Fill_blocks      :        0.000000
+     Compute blocks   :        0.000000
+     Forward solve    :        0.000000
+     Backward solve   :        0.000000
+ ============================================================

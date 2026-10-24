@@ -71,13 +71,16 @@ class Case(NamedTuple):
     circulation: float  # int B . dl around a toroidal loop (2 pi for the unit-scale reference)
 
 
-def lopez_case(frame=None, select="label"):
-    """Configuration D. The frame defaults to the one recorded in the manifest (OPT_FRAME)."""
+def lopez_case(frame=None, select="label", iota=None):
+    """Configuration D. The frame defaults to the one recorded in the manifest (OPT_FRAME);
+    ``iota`` overrides the integer transform of the poloidal-angle gauge of the state being scored
+    (theta' = theta - k phi gives iota' = iota - k; the physical field is unchanged)."""
     record = next(r for r in json.loads((ROOT/"inputs/manifest.json").read_text())["records"]
                   if r["case"] == "lopez_D")["lopez"]
     if frame is None:
         frame = (np.array(record["frame_rotation"]), np.array(record["frame_origin"]))
     sigma, c = int(record["sigma"]), int(record["iota"])
+    iota_scored = c if iota is None else float(iota)
 
     def exact(xyz):
         r = lopez.evaluate(xyz, select)
@@ -90,7 +93,7 @@ def lopez_case(frame=None, select="label"):
     def axis(phi):
         return ls.boundary_rz(0., phi, frame, sigma, c, s=0.)
 
-    return Case("lopez_D", (np.asarray(frame[0]), np.asarray(frame[1])), exact, float(c),
+    return Case("lopez_D", (np.asarray(frame[0]), np.asarray(frame[1])), exact, float(iota_scored),
                 float(record["phiedge"]), float(record["volume"]), axis, TWO_PI)
 
 

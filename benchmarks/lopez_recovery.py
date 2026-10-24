@@ -25,6 +25,8 @@ from types import SimpleNamespace
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import lopez_foliation as lf  # noqa: E402
+import lopez_polar as lp  # noqa: E402
 import lopez_surfaces as ls  # noqa: E402
 import score_lopez as sl  # noqa: E402
 
@@ -38,6 +40,23 @@ def gauge_record():
     return (np.array(rec["frame_rotation"]), np.array(rec["frame_origin"])), int(rec["sigma"]), int(rec["iota"])
 
 
+def gauge_with(c=None):
+    """(frame, sigma, c) of the recorded gauge, with the integer transform c replaced when given.
+
+    theta = sigma*eta + c*phi: shifting c re-labels the poloidal angle of the same surfaces
+    (theta' = theta - k*phi, iota' = iota - k); the physical state is unchanged."""
+    frame, sigma, c0 = gauge_record()
+    return frame, sigma, c0 if c is None else int(c)
+
+
+def surface_rz(kind, theta, phi, frame, sigma, c, s):
+    """(R, Z) of the surface s: 'eta'/'alpha' concentric family, 'shift:dl:db' shifted foliation,
+    'polar:<base>' the same surfaces in VMEC's m = 1 polar gauge (lambda = omega(s, phi), see lopez_polar)."""
+    if lp.is_polar(kind):
+        return lp.polar_rz(kind, theta, phi, frame, sigma, c, s)
+    return lp.base_rz(kind, theta, phi, frame, sigma, c, s)
+
+
 def surface_harmonics(ns, mpol, ntor, kind="eta", grid=(64, 256), frame_gauge=None):
     """Full-mesh (ns) R/Z cos and sin harmonics of the exact surfaces at s = j/(ns-1)."""
     frame, sigma, c = frame_gauge or gauge_record()
@@ -47,15 +66,15 @@ def surface_harmonics(ns, mpol, ntor, kind="eta", grid=(64, 256), frame_gauge=No
     R = np.empty((ns,) + tuple(grid))
     Z = np.empty_like(R)
     for j in range(ns):
-        R[j], Z[j] = ls.boundary_rz(th[:, None], ph[None, :], frame, sigma, c, s=j/(ns - 1), kind=kind)
+        R[j], Z[j] = surface_rz(kind, th[:, None], ph[None, :], frame, sigma, c, j/(ns - 1))
     rc, rs = sl.analyze(R, xm, xn, 1)
     zc, zs = sl.analyze(Z, xm, xn, 1)
     return xm, xn, rc, rs, zc, zs
 
 
-def oracle_wout(ns, mpol, ntor, kind="eta", grid=(64, 256), nyq=None):
+def oracle_wout(ns, mpol, ntor, kind="eta", grid=(64, 256), nyq=None, c=None):
     """Exact state projected onto the (ns, mpol, ntor) VMEC representation (no solver)."""
-    frame_gauge = gauge_record()
+    frame_gauge = gauge_with(c)
     c = frame_gauge[2]
     xm, xn, rc, rs, zc, zs = surface_harmonics(ns, mpol, ntor, kind, grid, frame_gauge)
     nyq = nyq or (2*mpol, 2*ntor)
@@ -71,6 +90,9 @@ def oracle_wout(ns, mpol, ntor, kind="eta", grid=(64, 256), nyq=None):
     g = np.abs(sl.sqrtg(half))
     bv = float(ls.flux_edge())/(TWO_PI*g)
     bu = c*bv
+    if lp.is_polar(kind):          # theta' = theta - omega(s, phi): d theta'/d phi = c - omega_phi
+        _, dw = lp.lambda_and_derivative(kind, ns, egrid[1], *frame_gauge)
+        bu = (c - 0.5*(dw[1:] + dw[:-1]))[:, None, :]*bv
     for name, f in (("bsupu", bu), ("bsupv", bv)):
         cos, sin = sl.analyze(f, xmn, xnn, 1)
         for suffix, a in (("mnc", cos), ("mns", sin)):
@@ -80,26 +102,33 @@ def oracle_wout(ns, mpol, ntor, kind="eta", grid=(64, 256), nyq=None):
     return w
 
 
-def deck_for(mpol, ntor, ns, kind="eta", closure=1, directory=None):
+def deck_for(mpol, ntor, ns, kind="eta", closure=1, directory=None, c=None):
     """VmecInput of the vacuum deck at (mpol, ntor) with a single radial stage ns.
 
-    kind 'alpha' writes the boundary in the ordinary ellipse angle (the direction-only gauge)."""
+    kind 'alpha' writes the boundary in the ordinary ellipse angle (the direction-only gauge);
+    'shift:dl:db' writes the boundary of the shifted foliation (same ellipse, other angle label);
+    ``c`` overrides the integer transform of the poloidal-angle gauge (iota = c for closure 0)."""
     import tempfile
     import vmex
-    frame, sigma, c = gauge_record()
+    frame, sigma, c = gauge_with(c)
     if kind == "eta":
         rows, _ = ls.boundary_rows(frame, sigma, c, mpol, ntor)
     else:
         xm, xn, rc, rs, zc, zs = surface_harmonics(2, mpol, ntor, kind, (96, max(256, 6*ntor)), (frame, sigma, c))
         rows = np.array([[m, n, a, b, d, e] for m, n, a, b, d, e in zip(xm, xn, rc[-1], rs[-1], zc[-1], zs[-1])])
-    path = Path(directory or tempfile.mkdtemp())/f"input.lopez_{kind}_{mpol}_{ntor}"
+    tag = kind.replace(":", "_") + ("" if c == gauge_record()[2] else f"_c{c}")
+    path = Path(directory or tempfile.mkdtemp())/f"input.lopez_{tag}_{mpol}_{ntor}"
     path.write_text(ls.deck_text(rows, closure, sigma, c))
     inp = vmex.VmecInput.from_file(path)
     return replace(inp, ns_array=np.asarray([ns]), ftol_array=np.asarray([1e-14]), niter_array=np.asarray([3000]))
 
 
-def vmex_state(inp, ns, kind="eta", grid=(64, 256)):
-    """Exact surfaces put into a VMEX SpectralState (lambda = 0); no solve."""
+LAMBDA_KAPPA = -1.0   # internal lambda = LAMBDA_KAPPA * omega * (R/Z internal scale); the sign is fixed by the projection score (+1: 10% field error, -1: 1e-3)
+
+
+def vmex_state(inp, ns, kind="eta", grid=(64, 256), c=None, lam_scale=None):
+    """Exact surfaces put into a VMEX SpectralState; lambda = 0 except in the polar gauge, where
+    lambda = omega(s, phi) (m = 0 harmonics; see ``lopez_polar``). No solve."""
     from vmex.core.fourier import mode_table, trig_tables
     from vmex.core.residuals import m1_physical_to_constrained
     from vmex.core.solver import SpectralState, resolution_from_input
@@ -109,10 +138,10 @@ def vmex_state(inp, ns, kind="eta", grid=(64, 256)):
     scale = physical_to_internal_scale(modes, trig_tables(res))
     th = TWO_PI*np.arange(grid[0])/grid[0]
     ph = TWO_PI*np.arange(grid[1])/grid[1]
-    frame, sigma, c = gauge_record()
+    frame, sigma, c = gauge_with(c)
     coef = np.zeros((4, ns, modes.mnmax))
     for j in range(ns):
-        R, Z = ls.boundary_rz(th[:, None], ph[None, :], frame, sigma, c, s=j/(ns - 1), kind=kind)
+        R, Z = surface_rz(kind, th[:, None], ph[None, :], frame, sigma, c, j/(ns - 1))
         cr, sr = sl.analyze(R, np.asarray(modes.m, float), np.asarray(modes.n, float), 1)
         cz, sz = sl.analyze(Z, np.asarray(modes.m, float), np.asarray(modes.n, float), 1)
         coef[:, j] = (cr, sz, sr, cz)   # R cos, Z sin, R sin, Z cos
@@ -120,7 +149,16 @@ def vmex_state(inp, ns, kind="eta", grid=(64, 256)):
     R_cos, Z_sin, R_sin, Z_cos = m1_physical_to_constrained(
         R_cos, Z_sin, R_sin, Z_cos, modes=modes, lthreed=bool(res.lthreed), lasym=True, lconm1=True)
     zeros = np.zeros_like(R_cos)
-    return SpectralState(R_cos=R_cos, R_sin=R_sin, Z_cos=Z_cos, Z_sin=Z_sin, L_cos=zeros, L_sin=zeros)
+    L_cos = L_sin = zeros
+    if lp.is_polar(kind):
+        omega, _ = lp.lambda_and_derivative(kind, ns, grid[1], frame, sigma, c)
+        lam = np.zeros((2, ns, modes.mnmax))
+        for j in range(ns):
+            f = np.broadcast_to((omega[j] - omega[j].mean())[None, :], (grid[0], grid[1]))
+            lam[:, j] = sl.analyze(f, np.asarray(modes.m, float), np.asarray(modes.n, float), 1)
+        kappa = LAMBDA_KAPPA if lam_scale is None else lam_scale
+        L_cos, L_sin = (kappa*lam[i]*scale[None, :] for i in range(2))
+    return SpectralState(R_cos=R_cos, R_sin=R_sin, Z_cos=Z_cos, Z_sin=Z_sin, L_cos=L_cos, L_sin=L_sin)
 
 
 def vmex_projection(mpol, ntor, ns, kind="eta", directory=None):
