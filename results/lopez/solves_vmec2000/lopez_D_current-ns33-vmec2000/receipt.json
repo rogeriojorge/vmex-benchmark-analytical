@@ -1,0 +1,54 @@
+{
+  "schema": 2,
+  "run_id": "lopez_D_current-ns33-vmec2000",
+  "case_deck": "input.lopez_D_current",
+  "deck_sha256": "341fff34b5a59dc07a6d6f4fea03149a2d918303a2de103c174f3d9ce2335ccf",
+  "ladder": {
+    "ns_array": [
+      17,
+      33
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-12
+    ],
+    "niter_per_stage": 3000
+  },
+  "code": "vmec2000",
+  "started_utc": "2026-10-23T17:57:18.578178+00:00",
+  "status": "wout_written",
+  "runner_sha256": "42f2357f1b46d5123a1b806474e9ee81d6f51e67affd2a0182f88a41693ff590",
+  "host": "pop-os",
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": "b3cb7c4821e9604b74f788d3984377a941729a33",
+    "tracked_tree_clean": false,
+    "tracked_diff_sha256": "286cd03ff5caed98d61cb14c46dd721d9461a28c760d606a3aefd58fb7ad523e",
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "0770ade95570c577bf742c7cd3b49f27005cf7591c8cacdf6538627730c3e633"
+  },
+  "code_identity": {
+    "repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": "70c637a56a535de7b72a5721d4294a7c1a6cf739",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "binary_sha256": "1dec62d1c8026f6ed5dccc1e5199dd5320ee702c354153c296d81d3411f751e0"
+  },
+  "command": [
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "input.lopez_D_current_ns33"
+  ],
+  "wall_seconds": 1793.5462806419964,
+  "returncode": 0,
+  "wout": {
+    "path": "wout_lopez_D_current_ns33.nc",
+    "sha256": "84c9b513cd60274af49a9720abd8a3d96d19bf5a556e2f66e9153bcb3879e45e"
+  },
+  "finished_utc": "2026-10-23T18:27:12.823121+00:00"
+}

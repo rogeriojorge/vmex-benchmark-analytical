@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "run_id": "solovev_symmetric-ladder_rep0-ns65-vmex",
+  "case": "solovev_symmetric",
+  "code": "vmex",
+  "protocol": "ladder",
+  "ns": 65,
+  "ladder": {
+    "ns_array": [
+      17,
+      33,
+      65
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-12,
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "fd5ad5d4191fe89ef1bef3f40738a20429e295a3aa04058c034897d754768544",
+  "started_utc": "2026-10-24T11:00:37.755057+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "solovev_symmetric",
+    "--code",
+    "vmex",
+    "--protocol",
+    "ladder",
+    "--ns",
+    "65",
+    "--tag",
+    "_rep0",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs_wp2"
+  ],
+  "runner_sha256": "12e4608493818e66b78f0d8ff2cfe2608558978fc92a5f8468620072fd50293d",
+  "omp_threads": "4",
+  "load1_start": 30.99072265625,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "69a3607bc669800fd68c1613df19dc877e5150c0aa737d4bad313fde7ad8bb93",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache_runs_wp2/solovev_symmetric_ladder_65_1e-14",
+  "wall_seconds": 16.369447992998175,
+  "wout": {
+    "path": "wout_solovev_symmetric-ladder_rep0-ns65-vmex.nc",
+    "sha256": "d111ed55702dbd9e6a6cac990e8540f9e415fc6e2338258c38dfa8e1b39791d3"
+  },
+  "converged": true,
+  "ier_flag": 11,
+  "iterations_final_stage": 368,
+  "fsq_final": [
+    9.641586059986148e-15,
+    3.5336559554717048e-15,
+    2.647874797832384e-18
+  ],
+  "jacobian_resets": 0,
+  "fsq_first_iteration": [
+    4.106334601462361e-06,
+    4.4881128317918114e-07,
+    9.49248276840524e-11
+  ],
+  "process_seconds": 20.33044594101375,
+  "load1_end": 25.8134765625,
+  "finished_utc": "2026-10-24T11:00:57.640635+00:00",
+  "fsq_leq_ftol": true
+}

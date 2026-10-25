@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "run_id": "sheared_issan-cold-ns33-vmex",
+  "case": "sheared_issan",
+  "code": "vmex",
+  "protocol": "cold",
+  "ns": 33,
+  "ladder": {
+    "ns_array": [
+      33
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "49e4d78d78b5c89118021094d19630d16b77b6a0e6b4a2ef23fec53b7520a548",
+  "started_utc": "2026-10-24T07:54:49.591975+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "sheared_issan",
+    "--code",
+    "vmex",
+    "--protocol",
+    "cold",
+    "--ns",
+    "33",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "12e4608493818e66b78f0d8ff2cfe2608558978fc92a5f8468620072fd50293d",
+  "omp_threads": "4",
+  "load1_start": 9.603515625,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "69a3607bc669800fd68c1613df19dc877e5150c0aa737d4bad313fde7ad8bb93",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/sheared_issan-cold-ns33-vmex",
+  "wall_seconds": 327.27423854600056,
+  "wout": {
+    "path": "wout_sheared_issan-cold-ns33-vmex.nc",
+    "sha256": "fd2e1c0639b436b13abc2ee67bc74c679cc960652d2efc61ec9151cf981c2ebf"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 20000,
+  "fsq_final": [
+    6.092429077104713e-06,
+    1.6284052108230778e-06,
+    4.745054508717587e-06
+  ],
+  "jacobian_resets": 13,
+  "fsq_first_iteration": [
+    0.07361602656621424,
+    0.0548109684489513,
+    0.04464624930261403
+  ],
+  "process_seconds": 331.0197907160036,
+  "load1_end": 10.28857421875,
+  "finished_utc": "2026-10-24T08:00:20.230075+00:00",
+  "fsq_leq_ftol": false
+}

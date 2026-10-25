@@ -1,0 +1,105 @@
+{
+ "args": {
+  "chart": "cyl",
+  "twist": -1,
+  "mpol": 6,
+  "ntor": 24,
+  "cache": "/tmp/cylF_6_24.npz",
+  "ns": [
+   6,
+   8,
+   96
+  ],
+  "p": 3,
+  "pert": [],
+  "turns": 10,
+  "steps": 96,
+  "lines": [
+   6,
+   8
+  ],
+  "ham": true,
+  "no_score": false,
+  "batch": 20000,
+  "out": "/Users/rogerio/local/vmex-bench-work/mrxJ/benchmarks/../results/lopez_mrx/cylham/cyl_6_24_6_8_96.json"
+ },
+ "boundary_truncation_error": 0.0007880133230690283,
+ "radial_fit_error": 1.942890293094024e-16,
+ "expected_rotation": 1.0,
+ "build_s": 39.01201272010803,
+ "flux_cut_spread": 4.1161476412625295e-07,
+ "dofs_2form": 8640,
+ "solve_done_s": 41.41556096076965,
+ "score": {
+  "B_rel_volume_l2": 0.03753923219048238,
+  "B_rel_volume_l2_scaled": 0.037499152465341426,
+  "flux_scale_fit": 1.0008262826145686,
+  "thinning": 1,
+  "B_rel_surface_l2": 0.04426240057425069,
+  "B_rel_surface_max": 0.11735825680827182,
+  "B_rel_near_axis_l2": 0.043420920630934036,
+  "weak_curl_over_B_over_a": 7.085595553559043e-14,
+  "div_over_B_over_a": 9.187978939870203e-17,
+  "pointwise_curl_over_B_over_a": 0.10327104709204875,
+  "pointwise_div_over_B_over_a": 4.899943941350086e-16,
+  "energy": 0.002198415635640482,
+  "energy_target": 0.0021935162603818016,
+  "energy_rel_error": 0.002233571433761572,
+  "volume": 0.0005040225290279176,
+  "volume_rel_error": 0.00012226817321947525,
+  "circulation_rel_error_max": 0.0024039109128012855,
+  "enclosed_current_over_aB_max": 0.004663007223851523
+ },
+ "score_done_s": 67.83238673210144,
+ "closure": {
+  "ok": true,
+  "turns": 10,
+  "steps": 96,
+  "n_lines": 49,
+  "return_defect_max": 0.05424784782233084,
+  "return_defect_rms": 0.01962883290622363,
+  "rotation_dev_max": 0.03443984687269164,
+  "radial_excursion_max": 0.29456785798338847
+ },
+ "effective_hamiltonian": {
+  "grid": 61,
+  "n_O": 3,
+  "n_X": 3,
+  "points": [
+   {
+    "u": -0.5047158154220814,
+    "v": 0.05071443887280071,
+    "kind": "O"
+   },
+   {
+    "u": -0.29256228061273437,
+    "v": 0.6471630310249117,
+    "kind": "O"
+   },
+   {
+    "u": -0.05508962615452991,
+    "v": -0.5855746373654627,
+    "kind": "O"
+   },
+   {
+    "u": 0.2862849923199705,
+    "v": 0.7345491864888496,
+    "kind": "X"
+   },
+   {
+    "u": 0.5297206878340734,
+    "v": 0.6406047813595274,
+    "kind": "X"
+   },
+   {
+    "u": 0.6411861075808086,
+    "v": 0.48780098549280815,
+    "kind": "X"
+   }
+  ],
+  "regions": [],
+  "D_max": 1.8983417246465866
+ },
+ "total_s": 69.71806597709656,
+ "max_rss_gb": 6.128369664
+}

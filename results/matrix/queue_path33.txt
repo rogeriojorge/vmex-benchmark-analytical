@@ -1,0 +1,16 @@
+sheared_path_t25|vmex|seed|33||
+sheared_path_t25|vmex|cold|33||
+sheared_path_t25|vmec2000|cold|33||
+sheared_path_t25|vmex|restart|33|_chain|--restart-wout @RUNS@/sheared_A-seed-ns33-vmex/wout_sheared_A-seed-ns33-vmex.nc
+sheared_path_t50|vmex|seed|33||
+sheared_path_t50|vmex|cold|33||
+sheared_path_t50|vmec2000|cold|33||
+sheared_path_t50|vmex|restart|33|_chain|--restart-wout @RUNS@/sheared_path_t25-restart_chain-ns33-vmex/wout_sheared_path_t25-restart_chain-ns33-vmex.nc
+sheared_path_t75|vmex|seed|33||
+sheared_path_t75|vmex|cold|33||
+sheared_path_t75|vmec2000|cold|33||
+sheared_path_t75|vmex|restart|33|_chain|--restart-wout @RUNS@/sheared_path_t50-restart_chain-ns33-vmex/wout_sheared_path_t50-restart_chain-ns33-vmex.nc
+sheared_issan|vmex|seed|33||
+sheared_issan|vmex|cold|33||
+sheared_issan|vmec2000|cold|33||
+sheared_issan|vmex|restart|33|_chain|--restart-wout @RUNS@/sheared_path_t75-restart_chain-ns33-vmex/wout_sheared_path_t75-restart_chain-ns33-vmex.nc

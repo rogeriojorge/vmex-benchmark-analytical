@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "run_id": "sheared_path_t50-seed-ns33-vmex",
+  "case": "sheared_path_t50",
+  "code": "vmex",
+  "protocol": "seed",
+  "ns": 33,
+  "ladder": {
+    "ns_array": [
+      33
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "280cc5a81aa6c50dd65916f7ca89f012ad641b00901fe254e5c8f0faaf2f9f58",
+  "started_utc": "2026-10-24T06:59:37.858699+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "sheared_path_t50",
+    "--code",
+    "vmex",
+    "--protocol",
+    "seed",
+    "--ns",
+    "33",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "12e4608493818e66b78f0d8ff2cfe2608558978fc92a5f8468620072fd50293d",
+  "omp_threads": "4",
+  "load1_start": 9.14111328125,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "69a3607bc669800fd68c1613df19dc877e5150c0aa737d4bad313fde7ad8bb93",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/sheared_path_t50-seed-ns33-vmex",
+  "seed": {
+    "seconds": 8.32062848500209,
+    "type": "full_flux_lambda",
+    "lambda_certificates": {
+      "gradient_reconstruction_relative": 2.1561875368818224e-08,
+      "closedness_scaled_rms": 3.05562635952666e-08,
+      "period_mean_scaled_max": 2.1534933339980492e-08,
+      "minimum_straight_angle_derivative": 0.6404359587943447
+    }
+  },
+  "wall_seconds": 324.77888498001266,
+  "wout": {
+    "path": "wout_sheared_path_t50-seed-ns33-vmex.nc",
+    "sha256": "d5fef8dec0bcea4d497783a3c04ee93ab10414fb9b6f3a010226279e653ccc04"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 20000,
+  "fsq_final": [
+    7.953992628697852e-09,
+    5.496852034171824e-09,
+    6.675175705617836e-09
+  ],
+  "jacobian_resets": 0,
+  "fsq_first_iteration": [
+    0.04876902905690792,
+    0.04175353913407479,
+    1.697626839841126e-08
+  ],
+  "process_seconds": 337.21864248998463,
+  "load1_end": 11.970703125,
+  "finished_utc": "2026-10-24T07:05:14.720035+00:00",
+  "fsq_leq_ftol": false
+}

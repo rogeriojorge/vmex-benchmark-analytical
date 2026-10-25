@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "run_id": "solovev_symmetric-ladder_ftol1e-12-ns65-vmec2000",
+  "case": "solovev_symmetric",
+  "code": "vmec2000",
+  "protocol": "ladder",
+  "ns": 65,
+  "ladder": {
+    "ns_array": [
+      17,
+      33,
+      65
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-12,
+      1e-12
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-12,
+  "deck_sha256": "1565822fe143bbbb03f4c6261f9236cda37c39d79532bdef2ce1f3f3c5fdd611",
+  "started_utc": "2026-10-24T11:03:48.142565+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "solovev_symmetric",
+    "--code",
+    "vmec2000",
+    "--protocol",
+    "ladder",
+    "--ns",
+    "65",
+    "--tag",
+    "_ftol1e-12",
+    "--ftol",
+    "1e-12",
+    "--ftol-stages",
+    "1e-12",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs_wp2"
+  ],
+  "runner_sha256": "12e4608493818e66b78f0d8ff2cfe2608558978fc92a5f8468620072fd50293d",
+  "omp_threads": "4",
+  "load1_start": 20.16259765625,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "69a3607bc669800fd68c1613df19dc877e5150c0aa737d4bad313fde7ad8bb93",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": "70c637a56a535de7b72a5721d4294a7c1a6cf739",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "binary_sha256": "1dec62d1c8026f6ed5dccc1e5199dd5320ee702c354153c296d81d3411f751e0"
+  },
+  "command": [
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "input.solovev_symmetric-ladder_ftol1e-12-ns65-vmec2000"
+  ],
+  "wall_seconds": 2.4294432070164476,
+  "returncode": 0,
+  "cpu_seconds": 1.655167,
+  "peak_rss_bytes": 164409344,
+  "code_total_seconds": 0.74,
+  "wout": {
+    "path": "wout_solovev_symmetric-ladder_ftol1e-12-ns65-vmec2000.nc",
+    "sha256": "c4c2cf40b328f9341ca2af9693a9e1fe8f68e4fee8f4928d356eee8ea6e039e7"
+  },
+  "ier_flag": 0,
+  "fsq_final": [
+    8.54558420404837e-13,
+    1.612449038164454e-13,
+    1.235857368257844e-16
+  ],
+  "process_seconds": 3.346459108986892,
+  "load1_end": 19.5087890625,
+  "finished_utc": "2026-10-24T11:03:50.934621+00:00",
+  "fsq_leq_ftol": true
+}

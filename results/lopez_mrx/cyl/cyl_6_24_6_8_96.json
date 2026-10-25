@@ -1,0 +1,63 @@
+{
+ "args": {
+  "chart": "cyl",
+  "twist": -1,
+  "mpol": 6,
+  "ntor": 24,
+  "cache": "/home/rjorge/mrxJ-office/cylF_6_24.npz",
+  "ns": [
+   6,
+   8,
+   96
+  ],
+  "p": 3,
+  "pert": [],
+  "turns": 10,
+  "steps": 96,
+  "lines": [
+   6,
+   8
+  ],
+  "no_score": false,
+  "batch": 20000,
+  "out": "/home/rjorge/mrxJ-office/mrxJ/results/lopez_mrx/cyl/cyl_6_24_6_8_96.json"
+ },
+ "boundary_truncation_error": 0.0007880133230689998,
+ "radial_fit_error": 1.6653345369377348e-16,
+ "expected_rotation": 1.0,
+ "build_s": 325.96686697006226,
+ "flux_cut_spread": 4.1161476435923587e-07,
+ "dofs_2form": 8640,
+ "solve_done_s": 338.0353968143463,
+ "score": {
+  "B_rel_volume_l2": 0.03753923219048242,
+  "thinning": 1,
+  "B_rel_surface_l2": 0.044262400574247775,
+  "B_rel_surface_max": 0.1173582568082763,
+  "B_rel_near_axis_l2": 0.04342092063093832,
+  "weak_curl_over_B_over_a": 6.495844269737764e-14,
+  "div_over_B_over_a": 8.744531968288238e-17,
+  "pointwise_curl_over_B_over_a": 0.1032710470961939,
+  "pointwise_div_over_B_over_a": 4.3966992385882126e-16,
+  "energy": 0.0021984156356404817,
+  "energy_target": 0.0021935162603818016,
+  "energy_rel_error": 0.002233571433761572,
+  "volume": 0.0005040225290279186,
+  "volume_rel_error": 0.00012226817321758787,
+  "circulation_rel_error_max": 0.0024039109128640482,
+  "enclosed_current_over_aB_max": 0.004663007223643597
+ },
+ "score_done_s": 534.8589265346527,
+ "closure": {
+  "ok": true,
+  "turns": 10,
+  "steps": 96,
+  "n_lines": 49,
+  "return_defect_max": 0.05424784782251275,
+  "return_defect_rms": 0.019628832906178666,
+  "rotation_dev_max": 0.034439846873991264,
+  "radial_excursion_max": 0.2945678579854363
+ },
+ "total_s": 539.9505553245544,
+ "max_rss_gb": 4.43228
+}

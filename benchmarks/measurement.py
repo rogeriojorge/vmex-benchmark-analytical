@@ -9,10 +9,15 @@ import jax.numpy as jnp
 from analytic import Case
 
 
+def _require_symmetric_integer(case: Case) -> None:
+    """These independent NumPy paths implement only the symmetric, unshifted integer family."""
+    if case.family != "integer" or case.tau != 0.0 or case.phase != 0.0 or case.zshift != 0.0:
+        raise ValueError("independent integer helpers support tau = 0, no phase and no z shift only")
+
+
 def integer_surface_numpy(case: Case, coordinates: np.ndarray) -> np.ndarray:
     """NumPy chart used for independent complex-step quadrature weights."""
-    if case.family != "integer" or case.phase != 0.0 or case.zshift != 0.0:
-        raise ValueError("the R1 chart currently requires an unshifted integer-family case")
+    _require_symmetric_integer(case)
     a, b, c, edge = case.parameters
     coordinates = np.asarray(coordinates)
     s, theta, phi = coordinates.T
@@ -34,8 +39,7 @@ def integer_surface_numpy(case: Case, coordinates: np.ndarray) -> np.ndarray:
 
 def integer_exact_fields(case: Case, xyz: np.ndarray, *, step: float = 1e-30):
     """Numpy/complex-step B, curl(B), grad(p), dB and flux label."""
-    if case.family != "integer":
-        raise ValueError("independent complex-step fields currently support integer cases")
+    _require_symmetric_integer(case)
     a, b, c, _ = case.parameters
     points = np.asarray(xyz, dtype=np.complex128)
 
@@ -102,7 +106,7 @@ def exact_field_parameter_tangents(case: Case, points_m: np.ndarray, indices, *,
                 parameters[index] = value
             changed = replace(case, parameters=tuple(parameters))
             return field_t*field(changed, jnp.asarray(point)/length_m)[0]
-        base = jnp.asarray([case.parameters[i] for i in indices])
+        base = jnp.asarray([case.parameters[i] for i in indices], dtype=float)  # integer-valued parameters stay differentiable
         values.append(np.asarray(jax.jacfwd(evaluate)(base)))
     return np.stack(values)
 

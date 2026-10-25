@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "run_id": "sheared_path_t50-cold-ns33-vmex",
+  "case": "sheared_path_t50",
+  "code": "vmex",
+  "protocol": "cold",
+  "ns": 33,
+  "ladder": {
+    "ns_array": [
+      33
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "280cc5a81aa6c50dd65916f7ca89f012ad641b00901fe254e5c8f0faaf2f9f58",
+  "started_utc": "2026-10-24T07:05:15.540327+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "sheared_path_t50",
+    "--code",
+    "vmex",
+    "--protocol",
+    "cold",
+    "--ns",
+    "33",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "12e4608493818e66b78f0d8ff2cfe2608558978fc92a5f8468620072fd50293d",
+  "omp_threads": "4",
+  "load1_start": 11.970703125,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "69a3607bc669800fd68c1613df19dc877e5150c0aa737d4bad313fde7ad8bb93",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/sheared_path_t50-cold-ns33-vmex",
+  "wall_seconds": 328.33400683500804,
+  "wout": {
+    "path": "wout_sheared_path_t50-cold-ns33-vmex.nc",
+    "sha256": "f5a3f83d48cb6553a040720352abcba418829d94146fdef18d31cb9044bc73bb"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 20000,
+  "fsq_final": [
+    0.0002027320083633915,
+    0.00017726053060656085,
+    0.0005027001036314332
+  ],
+  "jacobian_resets": 1,
+  "fsq_first_iteration": [
+    0.12927396876137817,
+    0.04799110941052713,
+    0.026993644554326297
+  ],
+  "process_seconds": 332.14366927201627,
+  "load1_end": 9.2197265625,
+  "finished_utc": "2026-10-24T07:10:47.278019+00:00",
+  "fsq_leq_ftol": false
+}

@@ -1,0 +1,613 @@
+{
+ "case": "integer_3d",
+ "ns": 17,
+ "mpol": 13,
+ "ntor": 12,
+ "nfp": 2,
+ "tcon0": 1.0,
+ "seed": "exact",
+ "ftol": 1e-10,
+ "refine_tol": 1e-11,
+ "adjoint_tol": 1e-10,
+ "s_max": 0.9,
+ "volume_rule": [
+  16,
+  24,
+  6
+ ],
+ "points": {
+  "cloud": 80,
+  "volume": 2304,
+  "volume_fine": 5760
+ },
+ "volume_weight_sum": 0.11636112338943999,
+ "host_solve": {
+  "fsqr": 8.356212592209959e-11,
+  "fsqz": 8.47831453364965e-11,
+  "fsql": 9.940366574930382e-11,
+  "iterations": 302,
+  "converged": true
+ },
+ "root": {
+  "preconditioned": 2.992470330301412e-14,
+  "raw": 3.8918491422629486e-13
+ },
+ "base_field_error": {
+  "cloud": 0.0020359467094658475,
+  "volume": 0.0027213031633647527,
+  "volume_fine": 0.0026446944791073345
+ },
+ "params": {
+  "c": {
+   "jvp": {
+    "cloud": {
+     "rms_error_T": 2.412926139712403,
+     "rms_exact_T": 0.6350143547559922,
+     "finite_points": 80,
+     "points": 80,
+     "relative_error": 3.799797786680875,
+     "gate_pass": false
+    },
+    "volume": {
+     "rms_error_T": 3.0798573882621643,
+     "rms_exact_T": 0.6384587414061671,
+     "finite_points": 2304,
+     "points": 2304,
+     "relative_error": 4.8238941509031,
+     "gate_pass": false
+    },
+    "volume_fine": {
+     "rms_error_T": 3.001416132488622,
+     "rms_exact_T": 0.6389882190018871,
+     "finite_points": 5760,
+     "points": 5760,
+     "relative_error": 4.697138449871418,
+     "gate_pass": false
+    }
+   },
+   "linear": {
+    "raw": {
+     "relative_residual": 4.0825711451775406e-14,
+     "rhs_norm": 127.48583231152838
+    },
+    "preconditioned": {
+     "relative_residual": 3.3129099744603116e-13,
+     "rhs_norm": 35.074810684590304
+    }
+   },
+   "fd": [
+    {
+     "relative_step": 0.0001,
+     "absolute_step": 0.0001,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 0.2771245806852126,
+       "rhs_norm": 127.4858335495123
+      },
+      "preconditioned": {
+       "relative_residual": 0.19567245629900873,
+       "rhs_norm": 35.07481086106537
+      }
+     },
+     "augmented_jvp": {
+      "cloud": {
+       "rms_error_T": 4.3538653429728855,
+       "rms_exact_T": 0.6350143547559922,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 6.856325861556126,
+       "minus_fd_rms_T": 4.467223952981653
+      },
+      "volume": {
+       "rms_error_T": 3.492425665691797,
+       "rms_exact_T": 0.6384587414061671,
+       "finite_points": 2304,
+       "points": 2304,
+       "relative_error": 5.470088259736156,
+       "minus_fd_rms_T": 3.5057410358021786
+      }
+     },
+     "frozen_drift_norm": 0.325239585216269,
+     "endpoints": [
+      {
+       "base_operator": 0.000686718315471982,
+       "own_operator": 2.4944631104800987e-14,
+       "host": {
+        "fsqr": 9.740229992824512e-11,
+        "fsqz": 9.541808081143625e-11,
+        "fsql": 7.762939161864954e-11,
+        "iterations": 73,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 0.0006859291391443393,
+       "own_operator": 2.4223151273442998e-14,
+       "host": {
+        "fsqr": 9.078236358687073e-11,
+        "fsqz": 8.790033908993858e-11,
+        "fsql": 6.189628669861542e-11,
+        "iterations": 81,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 1.011424497558742,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.24050100985777895,
+       "rms_exact_T": 0.6350143547559922,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 0.3787331861973306,
+       "minus_jvp_rms_T": 2.5979615682035178,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.290259156854727,
+       "rms_exact_T": 0.6384587414061671,
+       "finite_points": 2304,
+       "points": 2304,
+       "relative_error": 0.45462476747588826,
+       "minus_jvp_rms_T": 3.094526944748928,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 37.47258234099718
+    }
+   ]
+  },
+  "delta": {
+   "jvp": {
+    "cloud": {
+     "rms_error_T": 12.332668219140459,
+     "rms_exact_T": 0.0,
+     "finite_points": 80,
+     "points": 80,
+     "null_scaled_rms": 0.19269794092406967,
+     "gate_pass": false
+    },
+    "volume": {
+     "rms_error_T": 14.687430544525212,
+     "rms_exact_T": 0.0,
+     "finite_points": 2304,
+     "points": 2304,
+     "null_scaled_rms": 0.22949110225820643,
+     "gate_pass": false
+    },
+    "volume_fine": {
+     "rms_error_T": 14.462649644784634,
+     "rms_exact_T": 0.0,
+     "finite_points": 5760,
+     "points": 5760,
+     "null_scaled_rms": 0.2259789006997599,
+     "gate_pass": false
+    }
+   },
+   "linear": {
+    "raw": {
+     "relative_residual": 1.624558047462253e-14,
+     "rhs_norm": 1857.5893936709256
+    },
+    "preconditioned": {
+     "relative_residual": 3.966847205436938e-12,
+     "rhs_norm": 15.016656941552007
+    }
+   },
+   "fd": [
+    {
+     "relative_step": 0.0001,
+     "absolute_step": 1.5625e-06,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 0.11205675614345598,
+       "rhs_norm": 1857.58939583582
+      },
+      "preconditioned": {
+       "relative_residual": 2.5818506461012434,
+       "rhs_norm": 15.016656959466376
+      }
+     },
+     "augmented_jvp": {
+      "cloud": {
+       "rms_error_T": 24.85241105137702,
+       "rms_exact_T": 0.0,
+       "finite_points": 80,
+       "points": 80,
+       "null_scaled_rms": 0.3883189226777659,
+       "minus_fd_rms_T": 25.242280867899822
+      },
+      "volume": {
+       "rms_error_T": 17.34709794135996,
+       "rms_exact_T": 0.0,
+       "finite_points": 2304,
+       "points": 2304,
+       "null_scaled_rms": 0.27104840533374935,
+       "minus_fd_rms_T": 18.020317548609732
+      }
+     },
+     "frozen_drift_norm": 1.8403945257672327,
+     "endpoints": [
+      {
+       "base_operator": 6.056924257790609e-05,
+       "own_operator": 2.5017765419214038e-14,
+       "host": {
+        "fsqr": 9.652699124686254e-11,
+        "fsqz": 7.498354093093129e-11,
+        "fsql": 5.748893391340184e-11,
+        "iterations": 71,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 6.058941504298658e-05,
+       "own_operator": 2.4097742827243348e-14,
+       "host": {
+        "fsqr": 6.584141691100384e-11,
+        "fsqz": 9.2375616587024e-11,
+        "fsql": 2.5202041034703144e-11,
+        "iterations": 46,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 1.0498271932079997,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 1.8773049636767274,
+       "rms_exact_T": 0.0,
+       "finite_points": 80,
+       "points": 80,
+       "null_scaled_rms": 0.029332890057448865,
+       "minus_jvp_rms_T": 12.855294055070894,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 2.2877269767138535,
+       "rms_exact_T": 0.0,
+       "finite_points": 2304,
+       "points": 2304,
+       "null_scaled_rms": 0.03574573401115396,
+       "minus_jvp_rms_T": 15.460171686833524,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 34.53415264398791
+    }
+   ]
+  },
+  "a": {
+   "jvp": {
+    "cloud": {
+     "rms_error_T": 2.070267605977185,
+     "rms_exact_T": 0.9813673244549679,
+     "finite_points": 80,
+     "points": 80,
+     "relative_error": 2.10957462551239,
+     "gate_pass": false
+    },
+    "volume": {
+     "rms_error_T": 2.7219914933883813,
+     "rms_exact_T": 0.9482298250021615,
+     "finite_points": 2304,
+     "points": 2304,
+     "relative_error": 2.870603119219728,
+     "gate_pass": false
+    },
+    "volume_fine": {
+     "rms_error_T": 2.6510524056284877,
+     "rms_exact_T": 0.947144481174708,
+     "finite_points": 5760,
+     "points": 5760,
+     "relative_error": 2.798994723952238,
+     "gate_pass": false
+    }
+   },
+   "linear": {
+    "raw": {
+     "relative_residual": 2.4891578071387114e-14,
+     "rhs_norm": 204.32618162194217
+    },
+    "preconditioned": {
+     "relative_residual": 1.9475673833776476e-13,
+     "rhs_norm": 54.35466996256512
+    }
+   },
+   "fd": [
+    {
+     "relative_step": 0.0001,
+     "absolute_step": 0.0001224744871391589,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 0.1717138212822463,
+       "rhs_norm": 204.32617228482286
+      },
+      "preconditioned": {
+       "relative_residual": 0.12009336291598638,
+       "rhs_norm": 54.35466713064363
+      }
+     },
+     "augmented_jvp": {
+      "cloud": {
+       "rms_error_T": 4.142764993173592,
+       "rms_exact_T": 0.9813673244549679,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 4.221421367859789,
+       "minus_fd_rms_T": 4.288541866044319
+      },
+      "volume": {
+       "rms_error_T": 3.1423589199164486,
+       "rms_exact_T": 0.9482298250021615,
+       "finite_points": 2304,
+       "points": 2304,
+       "relative_error": 3.313921200389669,
+       "minus_fd_rms_T": 3.196700844312406
+      }
+     },
+     "frozen_drift_norm": 0.3071181243785758,
+     "endpoints": [
+      {
+       "base_operator": 0.0008086265606977726,
+       "own_operator": 2.2762768553659268e-14,
+       "host": {
+        "fsqr": 8.654363714189059e-11,
+        "fsqz": 9.0735503339597e-11,
+        "fsql": 4.986576134936296e-11,
+        "iterations": 81,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 0.0007914907786067782,
+       "own_operator": 2.932560447413468e-14,
+       "host": {
+        "fsqr": 9.59509489184744e-11,
+        "fsqz": 9.62961421901237e-11,
+        "fsql": 4.847646888498299e-11,
+        "iterations": 91,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 1.021057228934501,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.3996315976973432,
+       "rms_exact_T": 0.9813673244549679,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 0.40721918056451567,
+       "minus_jvp_rms_T": 2.319739489422679,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.46279466979853207,
+       "rms_exact_T": 0.9482298250021615,
+       "finite_points": 2304,
+       "points": 2304,
+       "relative_error": 0.48806170993142634,
+       "minus_jvp_rms_T": 2.7810942058436057,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 35.71227418797207
+    }
+   ]
+  }
+ },
+ "tangent_report": {
+  "residual_norm": [
+   5.204830799541692e-12,
+   2.9768983323624713e-11,
+   5.053504703867426e-12
+  ],
+  "tolerance": [
+   1.274858323115284e-07,
+   1.8575893936709257e-06,
+   2.043261816219422e-07
+  ],
+  "iterations": [
+   0,
+   0,
+   0
+  ],
+  "converged": [
+   true,
+   true,
+   true
+  ]
+ },
+ "transpose": {
+  "cloud": {
+   "trials": [
+    {
+     "forward": [
+      -12.861384949343567,
+      11.854509659820781,
+      4.147746296734918
+     ],
+     "reverse": [
+      -12.861384953759982,
+      11.8545096854073,
+      4.147746299602064
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.1306016196756205e-11,
+      1.3351493533488395e-11,
+      8.173501201447745e-12
+     ],
+     "mismatch_relative": [
+      3.433857001783782e-10,
+      2.158378562146608e-09,
+      6.9125385810097e-10
+     ]
+    },
+    {
+     "forward": [
+      11.575375438245036,
+      -45.95661866407746,
+      6.245471083024896
+     ],
+     "reverse": [
+      11.575375443093662,
+      -45.956618688630456,
+      6.245471080416825
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.4625158295103306e-11,
+      1.5096119456302695e-11,
+      8.760317562950727e-12
+     ],
+     "mismatch_relative": [
+      4.188742225349079e-10,
+      5.342646343736177e-10,
+      4.175938323267654e-10
+     ]
+    },
+    {
+     "forward": [
+      -5.126192229255732,
+      -10.426745618880659,
+      13.484601714509122
+     ],
+     "reverse": [
+      -5.126192231216467,
+      -10.42674560584334,
+      13.484601714578108
+     ],
+     "mismatch_over_cauchy_bound": [
+      5.494389211911153e-12,
+      7.446768424744405e-12,
+      2.1527024822709678e-13
+     ],
+     "mismatch_relative": [
+      3.824933980790121e-10,
+      1.2503727679420011e-09,
+      5.11595341673067e-12
+     ]
+    }
+   ],
+   "names": [
+    "c",
+    "delta",
+    "a"
+   ],
+   "max_mismatch_over_bound": 1.5096119456302695e-11,
+   "max_mismatch_relative": 2.158378562146608e-09
+  },
+  "volume": {
+   "trials": [
+    {
+     "forward": [
+      -220.5799851958185,
+      1126.498831389367,
+      233.9953663065766
+     ],
+     "reverse": [
+      -220.579985327612,
+      1126.4988321609553,
+      233.99536638133577
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.2117001545564096e-11,
+      1.5303134366375536e-11,
+      7.441704035213533e-12
+     ],
+     "mismatch_relative": [
+      5.97486271458939e-10,
+      6.849436728102433e-10,
+      3.1948990376701724e-10
+     ]
+    },
+    {
+     "forward": [
+      164.46465143475817,
+      -779.3687837126805,
+      -89.75662721809499
+     ],
+     "reverse": [
+      164.4646515399864,
+      -779.368784310385,
+      -89.75662728480113
+     ],
+     "mismatch_over_cauchy_bound": [
+      9.773826611507439e-12,
+      1.197602077853605e-11,
+      6.708185132328632e-12
+     ],
+     "mismatch_relative": [
+      6.398227422793029e-10,
+      7.669083861552267e-10,
+      7.431889738300266e-10
+     ]
+    },
+    {
+     "forward": [
+      188.13702505902302,
+      -794.2830444401969,
+      -123.0616320466473
+     ],
+     "reverse": [
+      188.13702519904894,
+      -794.2830451794206,
+      -123.06163213096364
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.294296047151776e-11,
+      1.473990581333617e-11,
+      8.438083418164696e-12
+     ],
+     "mismatch_relative": [
+      7.442762413387283e-10,
+      9.306803861254854e-10,
+      6.851553901578448e-10
+     ]
+    }
+   ],
+   "names": [
+    "c",
+    "delta",
+    "a"
+   ],
+   "max_mismatch_over_bound": 1.5303134366375536e-11,
+   "max_mismatch_relative": 9.306803861254854e-10
+  }
+ },
+ "mean_absB": {
+  "exact": 0.9415063217893858,
+  "vmex": 0.9414998313197879,
+  "d_exact": {
+   "c": 0.28110205277101386,
+   "delta": 0.0,
+   "a": 0.6374509776791857
+  },
+  "d_jvp": {
+   "c": 0.2917559041921418,
+   "delta": -0.03206769526333204,
+   "a": 0.6289173702643545
+  }
+ },
+ "timing": {
+  "base_solve_s": 50.288331622010446,
+  "tangent_solve_s_all_rhs": 274.58220829399943,
+  "field_jvp_s": 24.499869402992772,
+  "transpose_s": 147.71052543699625
+ },
+ "schema": 1,
+ "tag": "_aug",
+ "vmex_commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+ "vmex_version": "0.12.0",
+ "jax": "0.11.2",
+ "devices": [
+  "cpu:0"
+ ],
+ "env": {
+  "JAX_PLATFORMS": "cpu",
+  "CUDA_VISIBLE_DEVICES": "",
+  "OMP_NUM_THREADS": "4"
+ },
+ "command": "python sensitivity_vmex.py --case integer_3d --ns 17 --params c delta a --seed exact --ftol 1e-10 --steps 1e-4 --augment --vol 16 24 6 --vol-fine 8 24 6 --tag _aug --out /home/rjorge/vab-sensI/out/i3d",
+ "script_sha256": "7e3ffcdb50709780d564ff571270c020492c258b0e105c6cdf5732ec57026808",
+ "map_sha256": "971931e0ddda5e8693dbc266e08a6b2c6dd86b5f87172b4b89da9160a75eb3da"
+}

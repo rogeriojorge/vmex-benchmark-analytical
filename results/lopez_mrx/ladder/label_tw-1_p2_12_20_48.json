@@ -1,0 +1,61 @@
+{
+ "args": {
+  "chart": "label",
+  "twist": -1,
+  "mpol": 10,
+  "ntor": 72,
+  "cache": null,
+  "ns": [
+   12,
+   20,
+   48
+  ],
+  "p": 2,
+  "pert": [],
+  "turns": 20,
+  "steps": 48,
+  "lines": [
+   6,
+   8
+  ],
+  "no_score": false,
+  "batch": 0,
+  "out": "/Users/rogerio/local/vmex-bench-work/mrxJ/benchmarks/../results/lopez_mrx/ladder/label_tw-1_p2_12_20_48.json"
+ },
+ "expected_rotation": 1.0,
+ "build_s": 41.61535620689392,
+ "flux_cut_spread": 1.7726293583559258e-11,
+ "dofs_2form": 27936,
+ "solve_done_s": 43.43904399871826,
+ "score": {
+  "B_rel_volume_l2": 6.30364802279825e-05,
+  "thinning": 1,
+  "B_rel_surface_l2": 4.818041007506939e-05,
+  "B_rel_surface_max": 9.356960555133097e-05,
+  "B_rel_near_axis_l2": 0.0003528445035342277,
+  "weak_curl_over_B_over_a": 6.213952476610983e-14,
+  "div_over_B_over_a": 1.5169090344583766e-16,
+  "pointwise_curl_over_B_over_a": 0.01694531935316742,
+  "pointwise_div_over_B_over_a": 4.664586901050157e-16,
+  "energy": 0.00219351614736348,
+  "energy_target": 0.0021935162603818016,
+  "energy_rel_error": 5.152381299389219e-08,
+  "volume": 0.0005040841624776127,
+  "volume_rel_error": 0.0,
+  "circulation_rel_error_max": 1.1651096447298007e-06,
+  "enclosed_current_over_aB_max": 1.6572781735022242e-08
+ },
+ "score_done_s": 61.13929009437561,
+ "closure": {
+  "ok": true,
+  "turns": 20,
+  "steps": 48,
+  "n_lines": 49,
+  "return_defect_max": 1.4679757371043823e-05,
+  "return_defect_rms": 5.800168583631347e-06,
+  "rotation_dev_max": 3.851627358497645e-06,
+  "radial_excursion_max": 3.4725563328730225e-05
+ },
+ "total_s": 61.90033507347107,
+ "max_rss_gb": 5.496045568
+}

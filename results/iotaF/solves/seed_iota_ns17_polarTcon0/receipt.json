@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "run_id": "lopez_D_iota-ns17-seed_polarTcon0-vmex",
+  "gauge_c": 1,
+  "kind": "polar:eta",
+  "ai": null,
+  "protocol": "seed",
+  "closure": "iota",
+  "ns": 17,
+  "mpol": 10,
+  "ntor": 72,
+  "ladder": {
+    "ns_array": [
+      17
+    ],
+    "ftol_array": [
+      1e-12
+    ],
+    "niter_per_stage": 6000,
+    "tcon0": 0.0
+  },
+  "deck_sha256": "7c1b0003f407a3490fe7a8e300123997efcd3afff7c43b2cdd1ee8d9475581f2",
+  "source_deck": "input.lopez_polar_eta_10_72",
+  "source_deck_sha256": "ff8ffde3478ca5194fee5437ad1c3738fc82d36e2eabd40c0cba0ded69bab65d",
+  "code": "vmex",
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.2",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "3b73d6f88b832aaa6c63dc7574feb7de9e80d064",
+    "tracked_tree_clean": false,
+    "tracked_diff_sha256": "2a9c0a6c553b4bb691091d6e1d8143fd6e8b456b14ff0dc9adb9940e59a05e0a"
+  },
+  "started_utc": "2026-10-23T21:50:06.281742+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/lopez_solve.py",
+    "--protocol",
+    "seed",
+    "--closure",
+    "iota",
+    "--ns",
+    "17",
+    "--niter",
+    "6000",
+    "--ftol",
+    "1e-12",
+    "--kind",
+    "polar:eta",
+    "--tcon0",
+    "0.0",
+    "--tag",
+    "_polarTcon0",
+    "--out",
+    "results/iotaF/solves/seed_iota_ns17_polarTcon0"
+  ],
+  "jax": "0.11.2",
+  "runner_sha256": "5fd36c1f07266c01d6b13839b50182f99e3fde9fc7cdfaac34c56c861373fd96",
+  "omp_threads": "4",
+  "wall_seconds": 407.2720752879977,
+  "finished_utc": "2026-10-23T21:56:53.554336+00:00",
+  "wout": {
+    "path": "wout_lopez_D_iota-ns17-seed_polarTcon0-vmex.nc",
+    "sha256": "5d6128bab698a117aae8e114324b0dfbb1f1ec88e7421cdee2761d810fdfa8ec"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 6000,
+  "fsq_final": [
+    3.0454377355791616e-06,
+    2.530480464264878e-06,
+    1.973118647299143e-06
+  ],
+  "seed_seconds": 15.338842402008595
+}

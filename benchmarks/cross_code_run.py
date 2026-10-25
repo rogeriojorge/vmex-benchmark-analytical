@@ -22,6 +22,8 @@ import time
 
 import numpy as np
 
+from evidence import source_metadata
+
 ROOT = Path(__file__).resolve().parents[1]
 LADDER = (17, 33, 65, 129, 257)
 
@@ -30,11 +32,15 @@ def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def git_commit(path):
-    out = subprocess.run(["git", "-C", str(path), "rev-parse", "HEAD"], capture_output=True, text=True)
-    dirty = subprocess.run(["git", "-C", str(path), "status", "--porcelain", "--untracked-files=no"],
-                           capture_output=True, text=True)
-    return {"commit": out.stdout.strip() or None, "tracked_tree_clean": dirty.stdout.strip() == ""}
+def imported_source(module, env):
+    """Where ``module`` is actually imported from under ``env``; None when it is not importable."""
+    out = subprocess.run([sys.executable, "-c", f"import {module}; print({module}.__file__)"],
+                         env=env, capture_output=True, text=True)
+    return out.stdout.strip() if out.returncode == 0 else None
+
+
+def write_receipt(out, receipt):
+    (out/"receipt.json").write_text(json.dumps(receipt, indent=2)+"\n")
 
 
 def make_deck(deck, ns, ftol, niter, out):
@@ -66,21 +72,29 @@ def main(argv=None):
     name = f"{case}_ns{args.ns}"
     deck_path = out/f"input.{name}"
     ladder = make_deck(args.deck, args.ns, args.ftol, args.niter, deck_path)
-    receipt = {"schema": 1, "run_id": run_id, "case_deck": args.deck, "deck_sha256": sha256(deck_path),
+    receipt = {"schema": 2, "run_id": run_id, "case_deck": args.deck, "deck_sha256": sha256(deck_path),
                "ladder": ladder, "code": args.code, "started_utc": datetime.now(timezone.utc).isoformat(),
-               "runner_sha256": sha256(__file__), "host": os.uname().nodename.split(".")[0]}
+               "status": "running", "runner_sha256": sha256(__file__), "host": os.uname().nodename.split(".")[0],
+               "benchmark": {**source_metadata(__file__, "rogeriojorge/vmex-benchmark-analytical", None),
+                             "cases_json_sha256": sha256(ROOT/"cases.json"),
+                             "analytic_sha256": sha256(ROOT/"benchmarks/analytic.py")}}
     env = dict(os.environ)
     if args.code == "vmex":
-        env["PYTHONPATH"] = str(args.vmex_path)
+        if args.vmex_path is not None:
+            env["PYTHONPATH"] = str(args.vmex_path)
         cmd = [sys.executable, "-m", "vmex", deck_path.name]
-        receipt["code_identity"] = {"repository": "uwplasma/vmex", **git_commit(args.vmex_path)}
+        module = imported_source("vmex", env)
+        if module is None:
+            raise SystemExit("vmex is not importable with the given --vmex-path / environment")
+        receipt["code_identity"] = source_metadata(module, "uwplasma/vmex", None)
     elif args.code == "vmec2000":
+        if not args.vmec2000:
+            raise SystemExit("xvmec2000 not found; pass --vmec2000")
         cmd = [args.vmec2000, deck_path.name]
         binary = Path(args.vmec2000).resolve()
-        receipt["code_identity"] = {"repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
-                                    "binary_sha256": sha256(binary), **git_commit(binary.parent)}
+        receipt["code_identity"] = {**source_metadata(binary, "PrincetonUniversity/STELLOPT (VMEC2000)", None),
+                                    "binary_sha256": sha256(binary)}
     else:
-        import vmecpp
         import importlib.metadata
         cmd = [sys.executable, "-c",
                "import vmecpp,sys; o=vmecpp.run(vmecpp.VmecInput.from_file(sys.argv[1]), verbose=True); "
@@ -88,6 +102,7 @@ def main(argv=None):
         receipt["code_identity"] = {"repository": "proximafusion/vmecpp",
                                     "version": importlib.metadata.version("vmecpp")}
     receipt["command"] = cmd
+    write_receipt(out, receipt)  # a killed run still leaves its starting record
     t0 = time.perf_counter()
     with open(out/"stdout.log", "w") as log:
         proc = subprocess.run(cmd, cwd=out, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -96,7 +111,8 @@ def main(argv=None):
     wout = out/f"wout_{name}.nc"
     receipt["wout"] = {"path": wout.name, "sha256": sha256(wout)} if wout.exists() else None
     receipt["status"] = "wout_written" if wout.exists() else "failed_no_wout"
-    (out/"receipt.json").write_text(json.dumps(receipt, indent=2)+"\n")
+    receipt["finished_utc"] = datetime.now(timezone.utc).isoformat()
+    write_receipt(out, receipt)
     print(run_id, receipt["status"], "%.1fs" % receipt["wall_seconds"], flush=True)
 
 

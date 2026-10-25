@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "run_id": "lopez_D_iota-ns17-seed_polarAi1p05-vmex",
+  "gauge_c": 1,
+  "kind": "polar:eta",
+  "ai": [
+    1.05
+  ],
+  "protocol": "seed",
+  "closure": "iota",
+  "ns": 17,
+  "mpol": 10,
+  "ntor": 72,
+  "ladder": {
+    "ns_array": [
+      17
+    ],
+    "ftol_array": [
+      1e-12
+    ],
+    "niter_per_stage": 6000,
+    "tcon0": null
+  },
+  "deck_sha256": "22c91098dc62b34f7b2068fa99cc41c62bbc0c848e915a9f49730159461ae1ee",
+  "source_deck": "input.lopez_polar_eta_10_72",
+  "source_deck_sha256": "ff8ffde3478ca5194fee5437ad1c3738fc82d36e2eabd40c0cba0ded69bab65d",
+  "code": "vmex",
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.2",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "3b73d6f88b832aaa6c63dc7574feb7de9e80d064",
+    "tracked_tree_clean": false,
+    "tracked_diff_sha256": "2a9c0a6c553b4bb691091d6e1d8143fd6e8b456b14ff0dc9adb9940e59a05e0a"
+  },
+  "started_utc": "2026-10-23T22:04:46.129050+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/lopez_solve.py",
+    "--protocol",
+    "seed",
+    "--closure",
+    "iota",
+    "--ns",
+    "17",
+    "--niter",
+    "6000",
+    "--ftol",
+    "1e-12",
+    "--kind",
+    "polar:eta",
+    "--ai",
+    "1.05",
+    "--tag",
+    "_polarAi1p05",
+    "--out",
+    "results/iotaF/solves/seed_iota_ns17_polarAi1p05"
+  ],
+  "jax": "0.11.2",
+  "runner_sha256": "5fd36c1f07266c01d6b13839b50182f99e3fde9fc7cdfaac34c56c861373fd96",
+  "omp_threads": "4",
+  "wall_seconds": 298.0364584540075,
+  "finished_utc": "2026-10-23T22:09:44.166219+00:00",
+  "wout": {
+    "path": "wout_lopez_D_iota-ns17-seed_polarAi1p05-vmex.nc",
+    "sha256": "86a8892bcb6d38e058780d0a1848d446e8a7843fc95bb61ebc1a4b3e6cf9eb55"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 6000,
+  "fsq_final": [
+    5.0062661244929535e-05,
+    3.1606502015852135e-05,
+    1.1385466458770993e-05
+  ],
+  "seed_seconds": 18.495697487000143
+}

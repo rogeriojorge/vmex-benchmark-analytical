@@ -164,30 +164,33 @@ def validate_sheared_surface_chart_sampled(case, *, ntheta=64, nt=1025):
         raise ValueError("Sampled sheared surface is not a single-valued physical-angle graph.")
 
 
-def surface(case, label, theta, phi):
-    """NumPy boundary sampler. Its bisection is NOT an AD input map.
+def surface(case, label, theta, phi, xp=np):
+    """Boundary sampler; ``xp=jnp`` makes the integer and Solov'ev charts differentiable.
 
+    The sheared branch uses a NumPy bisection, which is NOT an AD input map (it needs ``xp=np``).
     The local agent must implement the implicit derivative of phi(t)=phi_target
     before using sheared boundaries in exact-family adjoint tests (plan P4).
     """
-    label, theta, phi = np.broadcast_arrays(label, theta, phi)
-    phi0 = np.mod(phi-case.phase, 2*np.pi)
+    label, theta, phi = xp.broadcast_arrays(label, theta, phi)
+    phi0 = xp.mod(phi-case.phase, 2*np.pi)
     if case.family == "integer":
         a, b, c, _ = case.parameters
         w = np.sqrt(1-case.tau**2)
         u0 = -w*w*(a*a-b*b)/(4*c*c)
         beta = 2*phi0+theta
-        u, v = u0+np.sqrt(label)*np.cos(beta), np.sqrt(label)*np.sin(beta)
-        ell = np.sqrt((1+np.sqrt(1-4*(u*u+v*v)))/2)
+        u, v = u0+xp.sqrt(label)*xp.cos(beta), xp.sqrt(label)*xp.sin(beta)
+        ell = xp.sqrt((1+xp.sqrt(1-4*(u*u+v*v)))/2)
         A, C, D, E = a*(ell+u/ell), a*v/ell, b*v/ell, b*(ell-u/ell)
-        ct, st = E*np.cos(phi0)-C*np.sin(phi0), A*np.sin(phi0)-D*np.cos(phi0)
-        norm = np.hypot(ct, st)
+        ct, st = E*xp.cos(phi0)-C*xp.sin(phi0), A*xp.sin(phi0)-D*xp.cos(phi0)
+        norm = xp.hypot(ct, st)
         ct, st = ct/norm, st/norm
         c2, s2 = ct*ct-st*st, 2*st*ct  # cos, sin of 2 zeta; then shift by asin(tau)
         c2, s2 = w*c2-case.tau*s2, w*s2+case.tau*c2
-        xyz = np.stack(((A*ct+C*st)/w, (D*ct+E*st)/w,
+        xyz = xp.stack(((A*ct+C*st)/w, (D*ct+E*st)/w,
                         c*(v*c2-u*s2-case.tau/2)/(w*w)), -1)
     elif case.family == "sheared":
+        if xp is not np:
+            raise ValueError("the sheared surface sampler is NumPy only")
         eps, S, lam, _ = case.parameters
         lo = np.floor(phi0/(np.pi/2))*(np.pi/2)
         hi = lo+np.pi/2
@@ -199,11 +202,11 @@ def surface(case, label, theta, phi):
         xyz = shear_chart(np.sqrt(2*label), theta, (lo+hi)/2, eps, S, lam, case.tau)
     else:
         R0, b, g, chi, _, _ = case.parameters
-        U = np.sqrt(label/b)/np.sqrt(1-chi*chi)*np.cos(theta)
-        Z = np.sqrt(label/g)*(np.sin(theta)-chi/np.sqrt(1-chi*chi)*np.cos(theta))
-        R = np.sqrt(R0*R0+U)
-        xyz = np.stack((R*np.cos(phi0), R*np.sin(phi0), Z), -1)
-    return rotate(xyz, case.phase, np)+np.array([0., 0., case.zshift])
+        U = xp.sqrt(label/b)/np.sqrt(1-chi*chi)*xp.cos(theta)
+        Z = xp.sqrt(label/g)*(xp.sin(theta)-chi/np.sqrt(1-chi*chi)*xp.cos(theta))
+        R = xp.sqrt(R0*R0+U)
+        xyz = xp.stack((R*xp.cos(phi0), R*xp.sin(phi0), Z), -1)
+    return rotate(xyz, case.phase, xp)+xp.array([0., 0., case.zshift])
 
 
 def shear_flux_rates(k, eps, S, lam, tau=0., n=512, xp=np):

@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "run_id": "integer_3d_tau-seed-ns65-vmex",
+  "case": "integer_3d_tau",
+  "code": "vmex",
+  "protocol": "seed",
+  "ns": 65,
+  "ladder": {
+    "ns_array": [
+      65
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "f11b3faa20733b090587c886b7b4d66100a5b3cc1c9fc02f1ded8cb48251e785",
+  "started_utc": "2026-10-24T00:00:37.963094+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "integer_3d_tau",
+    "--code",
+    "vmex",
+    "--protocol",
+    "seed",
+    "--ns",
+    "65",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "f6e5b26e16a72b6a2ea9c1bd1826a2e7614ff191d63becaff7724c0c2ae8d4f9",
+  "omp_threads": "4",
+  "load1_start": 17.73046875,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "7b1003072fb19cada0b941d97d441fbc976aadf5219926b61ff24e94d3a5a88d",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.12.0",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "jax": "0.11.2",
+  "vmex_version": "0.12.0",
+  "compilation_cache": "/home/rjorge/vab-matrixG/cache/integer_3d_tau-seed-ns65-vmex",
+  "seed": {
+    "seconds": 0.8430303759960225,
+    "type": "exact_field_lambda_zero",
+    "lambda_certificates": null
+  },
+  "wall_seconds": 551.8625945870008,
+  "wout": {
+    "path": "wout_integer_3d_tau-seed-ns65-vmex.nc",
+    "sha256": "c574ccc00a2a717c56efce9b508cc944dcfee6e081008a457f691833ab77ed09"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 20000,
+  "fsq_final": [
+    5.5685968304675625e-11,
+    2.961278523306271e-11,
+    2.474903561113231e-11
+  ],
+  "jacobian_resets": 0,
+  "fsq_first_iteration": [
+    0.07861499979445055,
+    0.3332215985764516,
+    0.00017997660148644652
+  ],
+  "process_seconds": 558.4328781070071,
+  "load1_end": 27.5244140625,
+  "finished_utc": "2026-10-24T00:09:55.823069+00:00",
+  "fsq_leq_ftol": false
+}

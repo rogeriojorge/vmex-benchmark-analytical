@@ -1,0 +1,51 @@
+{
+  "schema": 2,
+  "evidence": "analytic_projection",
+  "status": "passed",
+  "vmex_commit": "fcf211f20692e557345fa41fe53d83b411ad53a2",
+  "case": "sheared_A",
+  "ns": 129,
+  "mpol": 16,
+  "ntor": 16,
+  "angular_fit_grid": 64,
+  "no_nonlinear_solve": true,
+  "flux_map": "label_at_s",
+  "seed": "full_flux_lambda",
+  "lambda_grid": 65,
+  "lambda_certificates": {
+    "gradient_reconstruction_relative": 4.6158168713988e-07,
+    "closedness_scaled_rms": 4.60594966018239e-08,
+    "period_mean_scaled_max": 4.594300269214266e-07,
+    "minimum_straight_angle_derivative": 0.6410434855553123
+  },
+  "field_path": "projected state -> WOUT surface field",
+  "elapsed_seconds": 12.49716625000292,
+  "max_B_relative_surface_l2": 7.962471578754729e-06,
+  "rows": [
+    {
+      "index": 16,
+      "B_relative_surface_l2": 7.962471578754729e-06,
+      "label_max_over_edge": 7.112179326199743e-11
+    },
+    {
+      "index": 32,
+      "B_relative_surface_l2": 2.9731184232062745e-06,
+      "label_max_over_edge": 3.2088339921695514e-10
+    },
+    {
+      "index": 64,
+      "B_relative_surface_l2": 1.3431718893068041e-06,
+      "label_max_over_edge": 2.2997216376117363e-09
+    },
+    {
+      "index": 96,
+      "B_relative_surface_l2": 1.1645596359813229e-06,
+      "label_max_over_edge": 1.11261841010243e-08
+    },
+    {
+      "index": 128,
+      "B_relative_surface_l2": 1.7734084047003281e-06,
+      "label_max_over_edge": 9.360242977532859e-08
+    }
+  ]
+}

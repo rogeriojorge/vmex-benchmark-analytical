@@ -1,0 +1,476 @@
+{
+ "schema": 1,
+ "note": "WOUTs are not committed. sha256 as recorded when each file was written (VMEX caf09ee7, JAX 0.11, CPU float64, macOS arm64 2026-10-24); regenerate with the command. Runs launched with --no-wout wrote the file, scored it and removed it, so they have a record without an entry here.",
+ "files": [
+  {
+   "run_id": "integer_3d-ns17-tcon1-exact",
+   "file": "wout_integer_3d-ns17-tcon1-exact.nc",
+   "sha256": "40b2bedfebe6851fa3a38b59579128544843fa03e17057c304e25ac9529bf642",
+   "regenerate": "python benchmarks/mech_solve.py --case integer_3d --ns 17 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "integer_3d-ns17-tcon1-vmec",
+   "file": "wout_integer_3d-ns17-tcon1-vmec.nc",
+   "sha256": "4f5b3d60813eec57d243e4378525e471b61d7dc31cd1178fb230f4773cee0136",
+   "regenerate": "python benchmarks/mech_solve.py --case integer_3d --ns 17 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "integer_3d_tau-ns17-tcon1-exact",
+   "file": "wout_integer_3d_tau-ns17-tcon1-exact.nc",
+   "sha256": "89d5f5936af037d786c0f47cd56ca95dbba59fe4b85cf02281a060ed898542b4",
+   "regenerate": "python benchmarks/mech_solve.py --case integer_3d_tau --ns 17 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "integer_3d_tau-ns17-tcon1-exact-polar",
+   "file": "wout_integer_3d_tau-ns17-tcon1-exact-polar.nc",
+   "sha256": "4d1594f0257eb7fe0b2b2269f5f00d1a939c3c0a0da287d773be2cf480372252",
+   "regenerate": "python benchmarks/mech_solve.py --case integer_3d_tau --ns 17 --tcon0 1 --baseline exact --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "integer_3d_tau-ns17-tcon1-vmec",
+   "file": "wout_integer_3d_tau-ns17-tcon1-vmec.nc",
+   "sha256": "a2a8f7282953e74bd826b8284ade42746e326a0953199855dbd43527fcf4bf41",
+   "regenerate": "python benchmarks/mech_solve.py --case integer_3d_tau --ns 17 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "integer_3d_tau-ns17-tcon1-vmec-polar",
+   "file": "wout_integer_3d_tau-ns17-tcon1-vmec-polar.nc",
+   "sha256": "dad26703058ef3e5bdc464dc58bf9d7d6745d979db33408b4af60bd94fab0d9b",
+   "regenerate": "python benchmarks/mech_solve.py --case integer_3d_tau --ns 17 --tcon0 1 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "sheared_A-ns17-tcon1-exact",
+   "file": "wout_sheared_A-ns17-tcon1-exact.nc",
+   "sha256": "765d47eb98bf5deaff63f1ec8f77c7f188702aaede4e47ef47fbb69ae6b9a96d",
+   "regenerate": "python benchmarks/mech_solve.py --case sheared_A --ns 17 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "sheared_A-ns17-tcon1-vmec",
+   "file": "wout_sheared_A-ns17-tcon1-vmec.nc",
+   "sha256": "b2cd0d57e9220640bcf51633a8068db392330ecf80f6c5603eb23bad7ebd1d96",
+   "regenerate": "python benchmarks/mech_solve.py --case sheared_A --ns 17 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon0-vmec",
+   "file": "wout_solovev_asymmetric-ns129-tcon0-vmec.nc",
+   "sha256": "0748a76aeba4409ee4fc52cc3da05b68e6aafcbdbeb151a09fca284c9cc297a6",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon0-vmec-defect_blockforce_Z_cc0",
+   "file": "wout_solovev_asymmetric-ns129-tcon0-vmec-defect_blockforce_Z_cc0.nc",
+   "sha256": "fe7cac84c2529fb8a01910bac53c9c93c9a09f2baf384c9d8dcea40242226c44",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 0 --baseline vmec --defect block:force_Z_cc:0 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon0-vmec-defect_blockforce_Z_cc0+force_R_cc0+force_R_sc1+force_Z_cc1+force_lambda_cc1",
+   "file": "wout_solovev_asymmetric-ns129-tcon0-vmec-defect_blockforce_Z_cc0+force_R_cc0+force_R_sc1+force_Z_cc1+force_lambda_cc1.nc",
+   "sha256": "c3d4ef59afe31a235c0bdfaf06304b68be8b89c87dc0e8439b35852d88be9f34",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 0 --baseline vmec --defect block:force_Z_cc:0+force_R_cc:0+force_R_sc:1+force_Z_cc:1+force_lambda_cc:1 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon0-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns129-tcon0-vmec-polar.nc",
+   "sha256": "71ef1fee4caeaa09712cdd7f35ec1e4fa2a6fafab168df4528d56a04ed5b6d86",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 0 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon1-exact",
+   "file": "wout_solovev_asymmetric-ns129-tcon1-exact.nc",
+   "sha256": "3b7aaad94c10af378c177943838293d749433f398171a138783a328e47de0435",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon1-exact-polar",
+   "file": "wout_solovev_asymmetric-ns129-tcon1-exact-polar.nc",
+   "sha256": "e2ab1f374b64b18dc8ceeb16e685f765501c73ca112698439d15f902f449c459",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 1 --baseline exact --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon1-vmec",
+   "file": "wout_solovev_asymmetric-ns129-tcon1-vmec.nc",
+   "sha256": "a69ac96d8f7c2616b4f0791fda75f9d77e63def72d296848fe6a3f5786f03957",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns129-tcon1-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns129-tcon1-vmec-polar.nc",
+   "sha256": "4be1f1435b0cbd3c159aa5c03052b1b0ba8e5424d4eb030fe5c2fc7198c85dd0",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 129 --tcon0 1 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns17-tcon0-vmec",
+   "file": "wout_solovev_asymmetric-ns17-tcon0-vmec.nc",
+   "sha256": "8bde6d4427f58e5be0e98b1ba6ec483c133099cd6bfe5edd913808ad67498da6",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 17 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns17-tcon0-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns17-tcon0-vmec-polar.nc",
+   "sha256": "ac0fb170559796f20a256d0eeabd7e7951340fcd6827d3fac7a7b4d04d971c22",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 17 --tcon0 0 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns17-tcon1-exact",
+   "file": "wout_solovev_asymmetric-ns17-tcon1-exact.nc",
+   "sha256": "d6061ffd78f2549394fd8356da39174964128e7b0cb4dfb9d5a09b6bb0cddbcf",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 17 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns17-tcon1-exact-polar",
+   "file": "wout_solovev_asymmetric-ns17-tcon1-exact-polar.nc",
+   "sha256": "867c804596501ea8d57b2851c6634ad3ba7e2dbc3c5205aac889a339dd214d0b",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 17 --tcon0 1 --baseline exact --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns17-tcon1-vmec",
+   "file": "wout_solovev_asymmetric-ns17-tcon1-vmec.nc",
+   "sha256": "0fb15d131c153e28e385e55ceeb2f7cce644221cfda63f270e5ad425fdc4a3f2",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 17 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns17-tcon1-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns17-tcon1-vmec-polar.nc",
+   "sha256": "ac4f37ccf95c01e9cfdf866eef1a520216158c548509894f305978dc9b6cc83f",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 17 --tcon0 1 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon0-vmec",
+   "file": "wout_solovev_asymmetric-ns33-tcon0-vmec.nc",
+   "sha256": "9dacae606d455f6d9e861a02e5ab49404cbee70bd5f774320bb9f50a9a82170f",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon0-vmec-defect_blockforce_R_sc+force_Z_cc+force_lambda_cc",
+   "file": "wout_solovev_asymmetric-ns33-tcon0-vmec-defect_blockforce_R_sc+force_Z_cc+force_lambda_cc.nc",
+   "sha256": "24de450a489f2fa685909e88f959d9e46e095a59be7123e61ad734e525898590",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 0 --baseline vmec --defect block:force_R_sc+force_Z_cc+force_lambda_cc --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon0-vmec-defect_blockforce_Z_cc0",
+   "file": "wout_solovev_asymmetric-ns33-tcon0-vmec-defect_blockforce_Z_cc0.nc",
+   "sha256": "00d6b21bccbacdf7793287e602a6aa8e4e245f4d6242ece280b0d421cf000954",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 0 --baseline vmec --defect block:force_Z_cc:0 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon0-vmec-defect_blockforce_Z_cc0+force_R_cc0+force_R_sc1+force_Z_cc1+force_lambda_cc1",
+   "file": "wout_solovev_asymmetric-ns33-tcon0-vmec-defect_blockforce_Z_cc0+force_R_cc0+force_R_sc1+force_Z_cc1+force_lambda_cc1.nc",
+   "sha256": "ec2cfc48c8df1a2eb89ec959eeab369cead9c5a505a8cec35da22bc99e5fcea5",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 0 --baseline vmec --defect block:force_Z_cc:0+force_R_cc:0+force_R_sc:1+force_Z_cc:1+force_lambda_cc:1 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon0-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns33-tcon0-vmec-polar.nc",
+   "sha256": "240594e7df04ce8cb70efb47502bbe897988ab0205bd13685744e33821c0cfba",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 0 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon1-exact",
+   "file": "wout_solovev_asymmetric-ns33-tcon1-exact.nc",
+   "sha256": "87558782c883252e3b5b805a3512c81fb3fe56c58520aaa1a7b536bfb449dc00",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon1-exact-polar",
+   "file": "wout_solovev_asymmetric-ns33-tcon1-exact-polar.nc",
+   "sha256": "b4d5df12d80c28576f86ce814402e346d3fa870aec66e0d1c4743092b3e84dde",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 1 --baseline exact --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon1-vmec",
+   "file": "wout_solovev_asymmetric-ns33-tcon1-vmec.nc",
+   "sha256": "a17e34271bd189044195bcbd028a942e8de5148453ed52f69a1bbb5ede58e10f",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns33-tcon1-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns33-tcon1-vmec-polar.nc",
+   "sha256": "4d352f487e9171082cc6b0242837026f0028e62f0659700c3a04ea937b4baed8",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 33 --tcon0 1 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon0-vmec",
+   "file": "wout_solovev_asymmetric-ns65-tcon0-vmec.nc",
+   "sha256": "8249e2baf72c90a4f1f3440b9f8c3a7acf2ab34c7b18fb39440ed45fd051bf32",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon0-vmec-defect_blockforce_Z_cc0",
+   "file": "wout_solovev_asymmetric-ns65-tcon0-vmec-defect_blockforce_Z_cc0.nc",
+   "sha256": "a1ed27c326724c901e671ee8373d0c295f8a9dcc0088c74b432622d486aa9866",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 0 --baseline vmec --defect block:force_Z_cc:0 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon0-vmec-defect_blockforce_Z_cc0+force_R_cc0+force_R_sc1+force_Z_cc1+force_lambda_cc1",
+   "file": "wout_solovev_asymmetric-ns65-tcon0-vmec-defect_blockforce_Z_cc0+force_R_cc0+force_R_sc1+force_Z_cc1+force_lambda_cc1.nc",
+   "sha256": "9d809aeea2ca4ef2e0204d93ccb1d1586c8f6d62272534d06c28cd205a6d2a33",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 0 --baseline vmec --defect block:force_Z_cc:0+force_R_cc:0+force_R_sc:1+force_Z_cc:1+force_lambda_cc:1 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon0-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns65-tcon0-vmec-polar.nc",
+   "sha256": "22484b4b6d1925887c825f2701721e833f99c4808859b0bec7720bcc50693338",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 0 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon1-exact",
+   "file": "wout_solovev_asymmetric-ns65-tcon1-exact.nc",
+   "sha256": "0051df4fca9d5a54b4804c7d04e10e32ea79375c848a58d4dca793872dc19604",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon1-exact-polar",
+   "file": "wout_solovev_asymmetric-ns65-tcon1-exact-polar.nc",
+   "sha256": "1edef8c02a66841d3a2122322fffa945aec45a6053560869d9c9a72f4d250df9",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 1 --baseline exact --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon1-vmec",
+   "file": "wout_solovev_asymmetric-ns65-tcon1-vmec.nc",
+   "sha256": "772e775b2caee5c0caf51fb85e59e1d78b3c6440d26fc2e3db28856a7afeaedb",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_asymmetric-ns65-tcon1-vmec-polar",
+   "file": "wout_solovev_asymmetric-ns65-tcon1-vmec-polar.nc",
+   "sha256": "5dcde6ccc3273f84f2e00d68e710ed04743e8e24a440281fc4c4ee67989b702e",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_asymmetric --ns 65 --tcon0 1 --baseline vmec --polar --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0-vmec",
+   "file": "wout_solovev_symmetric-ns129-tcon0-vmec.nc",
+   "sha256": "57fb765482bc6904cba51b4dafaa4d0e013cb83cacab81c055d01b6394415503",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.01-exact",
+   "file": "wout_solovev_symmetric-ns129-tcon0.01-exact.nc",
+   "sha256": "f15862603b99c31a05bdd18b3ecc3eac4d1f8610a828b488c915802d8ca093a6",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.01 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.01-vmec",
+   "file": "wout_solovev_symmetric-ns129-tcon0.01-vmec.nc",
+   "sha256": "c287b93b30ae444dd626afc7bacd4a7b9a4bbc4f3d8af3b3ff778d33b02b0f85",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.01 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.03-exact",
+   "file": "wout_solovev_symmetric-ns129-tcon0.03-exact.nc",
+   "sha256": "5f52456abfc3a86503a65e3f316f604f57795a9d874d1349660b22deeae2b2f9",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.03 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.03-vmec",
+   "file": "wout_solovev_symmetric-ns129-tcon0.03-vmec.nc",
+   "sha256": "78bed88a611b93627c1ae24e65d64168ef8dc03a50957294dbcd1f1071d5a7c4",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.03 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.1-exact",
+   "file": "wout_solovev_symmetric-ns129-tcon0.1-exact.nc",
+   "sha256": "59c42232776f2e8f963acd36aefb5cb28cea4e22d880910624280978989393b3",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.1-vmec",
+   "file": "wout_solovev_symmetric-ns129-tcon0.1-vmec.nc",
+   "sha256": "7da43bfb042f801a7a7bc8301065f1c445081ee3c00ff158117f3c032a59c9e4",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.3-exact",
+   "file": "wout_solovev_symmetric-ns129-tcon0.3-exact.nc",
+   "sha256": "6a1d9f22d232184ca88917f8b81ac4aa4b2a90760d74a9ad7424965df147bd16",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.3 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon0.3-vmec",
+   "file": "wout_solovev_symmetric-ns129-tcon0.3-vmec.nc",
+   "sha256": "81724b501fa46280974892f8932acd48f851998aadb75e3bb813371a53e4f9c2",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 0.3 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon1-exact",
+   "file": "wout_solovev_symmetric-ns129-tcon1-exact.nc",
+   "sha256": "83add1adf95d8cf958c7def78602a1d6a3463599721ccf5980c927e903aae1b6",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon1-exact-defect_mhdaxis2",
+   "file": "wout_solovev_symmetric-ns129-tcon1-exact-defect_mhdaxis2.nc",
+   "sha256": "14a795035f8ff6bea27cb7f6dde5eaf5f7d60509bfad8b8a47503af6d0682c40",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 1 --baseline exact --defect mhdaxis:2 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon1-exact-defect_mhdaxis4",
+   "file": "wout_solovev_symmetric-ns129-tcon1-exact-defect_mhdaxis4.nc",
+   "sha256": "eb1867a40dfeda5ab981f4184bf5a1ccdf7068594844e466cfddeb544cdc51f7",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 1 --baseline exact --defect mhdaxis:4 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon1-exact-defect_mhdbulk2",
+   "file": "wout_solovev_symmetric-ns129-tcon1-exact-defect_mhdbulk2.nc",
+   "sha256": "abb956434a45d26a73a689c3a1baaf382a8142a5a6703f2e67263cd78ff2e720",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 1 --baseline exact --defect mhdbulk:2 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns129-tcon1-vmec",
+   "file": "wout_solovev_symmetric-ns129-tcon1-vmec.nc",
+   "sha256": "ebf0feba5b7e4b0e21d4dfc2157bd9aeab0b72090abfd660a6e9e310eaa7ca04",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 129 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns17-tcon0-vmec",
+   "file": "wout_solovev_symmetric-ns17-tcon0-vmec.nc",
+   "sha256": "2df0b36b292d498a29318de0cb0ec766ed27b9e156d038e67ba99c86337e4645",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 17 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns17-tcon1-exact",
+   "file": "wout_solovev_symmetric-ns17-tcon1-exact.nc",
+   "sha256": "8eeac4047512b832bc1f9b1d88ebd70ac7bd764cad214711690dd73e8c791571",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 17 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns17-tcon1-vmec",
+   "file": "wout_solovev_symmetric-ns17-tcon1-vmec.nc",
+   "sha256": "f692413c6005b8fc0d5ac7e6105afaf927583b54a108725c7701a0d4c1b2806f",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 17 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns33-tcon0-vmec",
+   "file": "wout_solovev_symmetric-ns33-tcon0-vmec.nc",
+   "sha256": "e0bf56dc2e168ab279f777d84d81a16540b673a2dc11413f6eeda70aa213db44",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 33 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns33-tcon1-exact",
+   "file": "wout_solovev_symmetric-ns33-tcon1-exact.nc",
+   "sha256": "fae23fdebf302263619695ee96d54118bb34b12e2167c0fae9c780d360b6fcd4",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 33 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns33-tcon1-exact-defect_mhdaxis2",
+   "file": "wout_solovev_symmetric-ns33-tcon1-exact-defect_mhdaxis2.nc",
+   "sha256": "5aeb7234653fa22f3dae4a4c502f74f6c6cc3214283fd3c758ef5cede0012a8a",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 33 --tcon0 1 --baseline exact --defect mhdaxis:2 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns33-tcon1-exact-defect_mhdaxis4",
+   "file": "wout_solovev_symmetric-ns33-tcon1-exact-defect_mhdaxis4.nc",
+   "sha256": "cad3e88d82be7449320de0795275a9cb53d14d1bd367c893a5f56e105efe436f",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 33 --tcon0 1 --baseline exact --defect mhdaxis:4 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns33-tcon1-exact-defect_mhdbulk2",
+   "file": "wout_solovev_symmetric-ns33-tcon1-exact-defect_mhdbulk2.nc",
+   "sha256": "4490f87ea0ca7562160d3bb77863e2d8df7fe37face1a83305149a7ab8cf4303",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 33 --tcon0 1 --baseline exact --defect mhdbulk:2 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns33-tcon1-vmec",
+   "file": "wout_solovev_symmetric-ns33-tcon1-vmec.nc",
+   "sha256": "2a9c3d4a2b9e8f061cd6cbc2f3a52655eef4c63986bfb542325f277059d81805",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 33 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0-vmec",
+   "file": "wout_solovev_symmetric-ns65-tcon0-vmec.nc",
+   "sha256": "97a9fc94deaf2e905ec56e69d0395bcae7fec9260a6a83e8e01b2a2e4e7218d1",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.01-exact",
+   "file": "wout_solovev_symmetric-ns65-tcon0.01-exact.nc",
+   "sha256": "75f1e5df965e4d1772012ed74103a5fc4c569fe3bfa084a92897c2808b42e723",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.01 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.01-vmec",
+   "file": "wout_solovev_symmetric-ns65-tcon0.01-vmec.nc",
+   "sha256": "2bba107a843f576e18ae56dcbdca3510887c3c908045837062d4f2775486c40c",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.01 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.03-exact",
+   "file": "wout_solovev_symmetric-ns65-tcon0.03-exact.nc",
+   "sha256": "3fa65570d173cc1b39792e27c37bb31fe143dfa689c17d79f22ed528d66c79cf",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.03 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.03-vmec",
+   "file": "wout_solovev_symmetric-ns65-tcon0.03-vmec.nc",
+   "sha256": "55995a6869bef4df7c0c8ff5ae8df7b68db7f3d77ed05027bed1eead967b8136",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.03 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.1-exact",
+   "file": "wout_solovev_symmetric-ns65-tcon0.1-exact.nc",
+   "sha256": "45b7066582b6f6041984be1008371e164c96831e37c8856a4c319e2526e86fc1",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.1-vmec",
+   "file": "wout_solovev_symmetric-ns65-tcon0.1-vmec.nc",
+   "sha256": "78cec53e13048865a9c41e949b0b87d5b77868d3713bafdacf0b23eb158ce978",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.3-exact",
+   "file": "wout_solovev_symmetric-ns65-tcon0.3-exact.nc",
+   "sha256": "46aa286cbda208712b53abffba4428513e184b1b4f0477fd4db1095e934c4e34",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.3 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon0.3-vmec",
+   "file": "wout_solovev_symmetric-ns65-tcon0.3-vmec.nc",
+   "sha256": "0a26dd9050c778257e3ce2e9fa12a927c232e75dc5587672a2d21cce01387e16",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 0.3 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon1-exact",
+   "file": "wout_solovev_symmetric-ns65-tcon1-exact.nc",
+   "sha256": "2dd74366edb79820fa309c2a89511a60b30f1fa020084917e90cf937855ffe59",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 1 --baseline exact --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon1-exact-defect_mhdaxis2",
+   "file": "wout_solovev_symmetric-ns65-tcon1-exact-defect_mhdaxis2.nc",
+   "sha256": "7f943d51767741d479205dc613c43c226ddd092b3e82592a389369f1fa9d0b38",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 1 --baseline exact --defect mhdaxis:2 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon1-exact-defect_mhdaxis4",
+   "file": "wout_solovev_symmetric-ns65-tcon1-exact-defect_mhdaxis4.nc",
+   "sha256": "2754b65f6c9bca46919b10962626c575eab7c56f7375fdc33310a193287c8755",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 1 --baseline exact --defect mhdaxis:4 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon1-exact-defect_mhdbulk2",
+   "file": "wout_solovev_symmetric-ns65-tcon1-exact-defect_mhdbulk2.nc",
+   "sha256": "41726a8c00c1739700ac62f4560a547f29843f50d0727450a318149d63d587df",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 1 --baseline exact --defect mhdbulk:2 --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "solovev_symmetric-ns65-tcon1-vmec",
+   "file": "wout_solovev_symmetric-ns65-tcon1-vmec.nc",
+   "sha256": "3c5afc306308f360343e46b79533f900f4d7cd9ab21412c55ec9ce9c24daac05",
+   "regenerate": "python benchmarks/mech_solve.py --case solovev_symmetric --ns 65 --tcon0 1 --baseline vmec --ftol 1e-14 --niter 20000"
+  },
+  {
+   "run_id": "lopez_D-ns17-m10n72-polar_eta-tcon1-exact",
+   "file": "wout_lopez_D-ns17-m10n72-polar_eta-tcon1-exact.nc",
+   "bytes": 6126240,
+   "sha256": "b312b6e5fd3554377ced073a62dda1bfe12384bc733048df9241b791f2dc66e5",
+   "regenerate": "python benchmarks/mech_lopez.py --ns 17 --niter 6000 --baseline exact --out results/mechanism/lopez  (office, OMP 4)"
+  },
+  {
+   "run_id": "lopez_D-ns17-m10n72-polar_eta-tcon1-vmec",
+   "file": "wout_lopez_D-ns17-m10n72-polar_eta-tcon1-vmec.nc",
+   "bytes": 6126240,
+   "sha256": "9dcd9bfb10ecb29c3833a86215e1050ec62c49560ce2d2eb8a1f3c9d8be877f7",
+   "regenerate": "python benchmarks/mech_lopez.py --ns 17 --niter 6000 --baseline vmec --out results/mechanism/lopez  (office, OMP 4)"
+  }
+ ]
+}

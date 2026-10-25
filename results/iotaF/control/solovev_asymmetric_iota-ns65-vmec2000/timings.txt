@@ -1,0 +1,65 @@
+ ====================== PARALLEL TIMINGS ====================
+               total  :        2.385809
+                rank  :               0
+mgrid file read time  :        0.000000
+        No. of procs  :               1
+
+      --- non-vacuum  :             547             17              1       0.497359
+      --- non-vacuum  :             318             33              1       0.407434
+      --- non-vacuum  :             609             65              1       1.435322
+
+             runvmec  :        2.385631
+
+         init radial  :        0.000000
+             eqsolve  :        2.364615
+             fileout  :        0.012339
+
+              evolve  :        2.356127
+             funct3d  :        2.340114
+            nfunct3d  :            1474
+
+             totzsps  :        0.347963
+             totzspa  :        0.346360
+              symrzl  :        0.051989
+            jacobian  :        0.035395
+              bcovar  :        0.143659
+              vacuum  :        0.000000
+
+            - precal  :        0.000000
+           - surface  :        0.000000
+
+           - bextern  :        0.000000
+
+           -- becoil  :        0.000000
+           -- tolicu  :        0.000000
+           -- belicu  :        0.000000
+
+           - scalpot  :        0.000000
+
+           -- analyt  :        0.000000
+           -- greenf  :        0.000000
+            -- fourp  :        0.000000
+            -- fouri  :        0.000000
+
+            - solver  :        0.000000
+
+               alias  :        0.174373
+              forces  :        0.232511
+           symforces  :        0.087365
+             tomnsps  :        0.135045
+             tomnspa  :        0.119583
+             residue  :        0.727284
+          -- tridslv  :        0.684825
+
+ ============================================================
+
+           allgather  :        0.000000
+           allreduce  :        0.003397
+           broadcast  :        0.000371
+           sendrecv   :        0.005672
+
+     Fill_blocks      :        0.000000
+     Compute blocks   :        0.000000
+     Forward solve    :        0.000000
+     Backward solve   :        0.000000
+ ============================================================

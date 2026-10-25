@@ -1,0 +1,26 @@
+{
+ "what": "xvmec reset=<wout> (VMEC2000 70c637a, PARVMEC 9.0 build on office) as a hot start: iteration-1 FSQR FSQZ FSQL of the first force pass on solovev_symmetric NS17 (tcon0 1, NITER 2)",
+ "no_reset": [
+  0.00634,
+  0.000728,
+  0.00388
+ ],
+ "no_reset_note": "equals VMEX's cold iteration 1 on the same deck (6.337e-3, 7.281e-4, 3.878e-3)",
+ "reset_exact_seed_wout_written_by_vmex": [
+  0.028,
+  0.000458,
+  0.0146
+ ],
+ "reset_vmec2000_own_converged_wout": [
+  0.028,
+  0.00044,
+  0.0146
+ ],
+ "reset_vmex_converged_wout": [
+  0.028,
+  0.00044,
+  0.0146
+ ],
+ "verdict": "reset= is parsed and changes the start, but not to the state in the file: VMEC2000's own converged state (fsq 1e-14) comes back at 2.8e-2/4.4e-4/1.5e-2, the same numbers for every reset file; this build cannot be used as a hot start, so the comparison of the two operators on an identical state was done the other way round (VMEX force at the WOUT written by VMEC2000, crosscode_*.json)",
+ "commands": "xvmec input.solovev_symmetric-ns17-tcon1 reset=<file>   (run in /tmp/vtest on office, 2026-10-24)"
+}

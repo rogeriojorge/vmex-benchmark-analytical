@@ -114,16 +114,23 @@ def score(eq, case, nodes, weights=None):
     return {"points": int(len(nodes)), "B_relative_l2": rel(B, Bx), "J_relative_l2": rel(J, Jx),
             "gradp_relative_l2": rel(gp, gpx),
             "force_over_gradp": float(np.sqrt(np.sum(w*np.sum(force**2, 1))/np.sum(w*np.sum(gpx**2, 1)))),
-            "min_abs_sqrt_g": float(np.min(np.abs(jac)))}
+            "min_abs_sqrt_g": float(np.min(np.abs(jac))),
+            "sqrt_g_range": [float(np.min(jac)), float(np.max(jac))]}
 
 
-def score_everywhere(eq, case, rings=(1e-4, 1e-3, 1e-2, 0.1, 0.3, 0.7, 0.99), n=16, volume=(16, 32, 32)):
+RINGS = (1e-4, 1e-3, 1e-2, 0.1, 0.3, float(np.sqrt(0.5)), 0.7, 0.99)
+
+
+def score_everywhere(eq, case, rings=RINGS, n=16, volume=(16, 32, 32)):
+    """Rings keyed by rho (s = rho^2; rho = sqrt(0.5) is the s = 0.5 surface) and two volume rules."""
     th = 2*np.pi*np.arange(n)/n
     ze = 2*np.pi*np.arange(n)/(n*case.nfp)
     T, Zt = np.meshgrid(th, ze, indexing="ij")
-    out = {"rings": {}, "volume": {}}
+    out = {"grids": {"ring_angles": [n, n], "volume": list(volume)}, "rings": {}, "volume": {}}
     for rho in rings:
         out["rings"][f"{rho:g}"] = score(eq, case, np.column_stack((np.full(T.size, rho), T.ravel(), Zt.ravel())))
+    signs = [np.sign(v) for r in out["rings"].values() for v in r["sqrt_g_range"]]
+    out["orientation_consistent"] = bool(len(set(signs)) == 1)
     nr, nt, nz = volume
     for rule in ("gauss", "midpoint"):
         if rule == "gauss":
@@ -146,9 +153,28 @@ def main():
     parser.add_argument("--sym", choices=("auto", "true", "false"), default="auto")
     parser.add_argument("--maxiter", type=int, default=150)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--rescore", type=Path, help="score a saved .h5 instead of solving; writes record_v2.json")
     args = parser.parse_args()
     desc.set_device("cpu")
     case = cases()[args.case]
+    if args.rescore:
+        from desc.io import load
+        eq = load(str(args.rescore))
+        target = args.output_dir/"record_v2.json"
+        if target.exists():
+            raise SystemExit(f"{target} exists; scores are not overwritten")
+        record = {"schema": 2, "evidence": "desc_exact_case_everywhere", "case": args.case,
+                  "rescored_artifact": {"path": args.rescore.name, "sha256": sha256(args.rescore)},
+                  "resolution": {"L": int(eq.L), "M": int(eq.M), "N": int(eq.N), "NFP": int(eq.NFP),
+                                 "sym": bool(eq.sym)},
+                  "desc_version": desc.__version__, "script_sha256": sha256(__file__),
+                  "nested": bool(eq.is_nested()), "solved": score_everywhere(eq, case)}
+        previous = args.output_dir/"record.json"
+        if previous.exists():
+            record["solver"] = json.loads(previous.read_text()).get("solver")
+        target.write_text(json.dumps(record, indent=2, allow_nan=False)+"\n")
+        print(args.case, "rescored", record["solved"]["rings"][f"{np.sqrt(0.5):g}"]["B_relative_l2"])
+        return
     axisymmetric = case.family == "solovev" or args.case.endswith("axisymmetric")
     N = args.N if args.N is not None else (0 if axisymmetric else args.M)
     L = args.L if args.L is not None else args.M+2
@@ -156,7 +182,7 @@ def main():
     args.output_dir.mkdir(parents=True, exist_ok=False)
     t0 = time.perf_counter()
     eq, fit_errors = build(case, args.M, N, L, sym)
-    record = {"schema": 1, "evidence": "desc_exact_case_everywhere", "case": args.case,
+    record = {"schema": 2, "evidence": "desc_exact_case_everywhere", "case": args.case,
               "resolution": {"L": L, "M": args.M, "N": N, "NFP": case.nfp, "sym": sym},
               "profile_fit_errors": fit_errors, "desc_version": desc.__version__,
               "jax": jax.__version__, "python": platform.python_version(),
@@ -168,6 +194,7 @@ def main():
     record["solver"] = {"success": bool(info.get("success", False)), "message": str(info.get("message", "")),
                         "iterations": int(info.get("nit", -1)), "solve_seconds": time.perf_counter()-t1}
     record["solved"] = score_everywhere(eq, case)
+    record["nested_final"] = bool(eq.is_nested())
     h5 = args.output_dir/f"desc_{args.case}_M{args.M}.h5"
     eq.save(str(h5))
     record["equilibrium_artifact"] = {"path": h5.name, "sha256": sha256(h5)}

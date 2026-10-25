@@ -1,0 +1,8 @@
+repeat1_ladder_solovev_asymmetric_loose_M10 --case solovev_asymmetric --M 10 --levels q2 --avail-mem-gb 6 --seed zero --closure iota --optimizer lsq-exact --grid default --tol published
+repeat1_ladder_integer_3d_loose_M8 --case integer_3d --M 8 --levels q2 --avail-mem-gb 6 --seed zero --closure iota --optimizer lsq-exact --grid default --tol published
+repeat1_ladder_sheared_A_pub_M10 --case sheared_A --M 10 --levels q2 --avail-mem-gb 6 --seed exact --closure current --optimizer matrix-free --grid quadrature --tol published --N 20 --L 10
+repeat1_ladder_sheared_A_loose_M8 --case sheared_A --M 8 --levels q2 --avail-mem-gb 6 --seed zero --closure iota --optimizer lsq-exact --grid default --tol published
+repeat2_ladder_solovev_asymmetric_loose_M10 --case solovev_asymmetric --M 10 --levels q2 --avail-mem-gb 6 --seed zero --closure iota --optimizer lsq-exact --grid default --tol published
+repeat2_ladder_integer_3d_loose_M8 --case integer_3d --M 8 --levels q2 --avail-mem-gb 6 --seed zero --closure iota --optimizer lsq-exact --grid default --tol published
+repeat2_ladder_sheared_A_pub_M10 --case sheared_A --M 10 --levels q2 --avail-mem-gb 6 --seed exact --closure current --optimizer matrix-free --grid quadrature --tol published --N 20 --L 10
+repeat2_ladder_sheared_A_loose_M8 --case sheared_A --M 8 --levels q2 --avail-mem-gb 6 --seed zero --closure iota --optimizer lsq-exact --grid default --tol published

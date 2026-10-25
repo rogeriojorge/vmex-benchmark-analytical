@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "evidence": "published_protocol_reproduction",
+  "case": "sheared_A",
+  "protocol": "benchmarks/upstream/landreman_sheared_desc.py run unchanged with its defaults (L=M=10, N=20, matrix-free TRF/LSMR, current prescribed, iota free, QuadratureGrid solve, lambda initialised from the exact full field)",
+  "script_git_blob": "e54499a810da26518cff4f0d3f1940b45e8d1789",
+  "script_sha256": "9bd4035dda1a05461bcbd850cab274d27b3e83e8527fa47bbc3de2da22545244",
+  "command": "CUDA_VISIBLE_DEVICES='' JAX_PLATFORMS=cpu nice -n 10 ~/desc-env/bin/python published/landreman_sheared_desc.py --output-dir run_default",
+  "host": "office (CPU only), fresh directory ~/vab-shearD",
+  "environment": {
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "published_environment": "desc-opt 0.17.3, JAX 0.9.2"
+  },
+  "parameters_match_cases_json": {
+    "epsilon": 1.08,
+    "S": 3,
+    "lambda": 3.5,
+    "delta": 0.245
+  },
+  "published_numbers": "The upstream script prints no stored results; its published content is the expected reference values it computes (iota axis/edge 5.68886661/6.21844919, volume-averaged beta 19.662357%) and the acceptance tolerances in the script. The paper (arXiv:2609.26742v2) reports no DESC numbers for this configuration.",
+  "reference_checks": "14 of 14 passed",
+  "final_resolution_checks": "23 of 23 passed",
+  "solver": {
+    "success": true,
+    "message": "`gtol` termination condition is satisfied.",
+    "function_evaluations": 3,
+    "accepted_iterations": 2,
+    "first_order_optimality": 3.53412676873534e-06,
+    "initial_cost": 2.9571e-07,
+    "final_cost": 1.5181e-08
+  },
+  "key_values": {
+    "B_relative_rms": 2.1877743255104667e-05,
+    "B_relative_max": 9.128159232790887e-05,
+    "J_relative_rms": 0.0001956864785860188,
+    "pressure_gradient_relative_rms": 3.611357340891426e-05,
+    "force_relative_rms": 0.0006341787006058964,
+    "force_relative_max": 0.004670622997589215,
+    "iota_max_absolute": 6.997949072395926e-05,
+    "iota_shear_relative": 6.332757756988272e-05,
+    "axis_distance_over_minor_radius": 5.810979512286739e-06,
+    "beta_volume_relative_to_paper": 9.157215821176123e-07
+  },
+  "tolerances": {
+    "B_relative_rms": 0.0001,
+    "B_relative_max": 0.001,
+    "J_relative_rms": 0.001,
+    "pressure_gradient_relative_rms": 0.002,
+    "force_relative_rms": 0.001,
+    "force_relative_max": 0.01,
+    "iota_max_absolute": 0.0001,
+    "iota_shear_relative": 0.001,
+    "axis_distance_over_minor_radius": 0.001,
+    "beta_volume_relative_to_paper": 0.001
+  },
+  "beta_volume_percent": {
+    "DESC": 19.662374509391352,
+    "paper": 19.662356504147144
+  },
+  "elapsed_seconds": 168.77103006700054,
+  "passed": true,
+  "artifacts": {
+    "landreman_sheared_desc_checks.json": "91673e03f13316365ae769b607af2353c043d5d229b0f1d6491771d2a8e2d9dd",
+    "landreman_sheared_desc.h5": "83c057d9f022f72e47578997651438ce754096e706b21fc67ce0b2fd41ade10d",
+    "log.txt": "6bcf76016dc089b9bf83bdeca58dd4a96e70aa6c90b4accf049d858d23477519"
+  },
+  "contrast": "The earlier results/desc/general/sheared_A_M8 and _M10 runs (desc_general_case.py: lambda = 0 start, prescribed iota, ForceBalance via eq.solve, 150 iterations) recorded solver.success = false. Differences: lambda seed, current instead of iota prescribed, quadrature solve grid, solver."
+}

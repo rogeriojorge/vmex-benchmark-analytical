@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "run_id": "lopez_D_iota-ns33-cold_strict-vmex",
+  "protocol": "cold",
+  "closure": "iota",
+  "ns": 33,
+  "mpol": 10,
+  "ntor": 72,
+  "ladder": {
+    "ns_array": [
+      17,
+      33
+    ],
+    "ftol_array": [
+      1e-12,
+      1e-12
+    ],
+    "niter_per_stage": 3000,
+    "tcon0": null
+  },
+  "deck_sha256": "6a8722f3fc34ae03e5bdd22020e0a75120e3260dc60961a0775324c3d32e90cd",
+  "source_deck": "input.lopez_D_iota",
+  "source_deck_sha256": "9fb72db9df786a156b80370776e346f77e502b40acb56ab8db010781f45c3521",
+  "code": "vmex",
+  "code_identity": {
+    "repository": "uwplasma/vmex",
+    "version": "0.11.2",
+    "distribution_version": null,
+    "version_source": "checkout_pyproject",
+    "commit": "3b73d6f88b832aaa6c63dc7574feb7de9e80d064",
+    "tracked_tree_clean": false,
+    "tracked_diff_sha256": "2a9c0a6c553b4bb691091d6e1d8143fd6e8b456b14ff0dc9adb9940e59a05e0a"
+  },
+  "started_utc": "2026-10-23T18:35:36.417119+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/lopez_solve.py",
+    "--protocol",
+    "cold",
+    "--closure",
+    "iota",
+    "--ns",
+    "33",
+    "--niter",
+    "3000",
+    "--ftol",
+    "1e-12",
+    "--tag",
+    "_strict",
+    "--out",
+    "results/lopez/solves/cold_iota_ns33_strict"
+  ],
+  "jax": "0.11.2",
+  "runner_sha256": "73eb50a055db19e3754a8557c542b5460d2f972d51400035bf5aa5a958a3c68a",
+  "omp_threads": "4",
+  "wall_seconds": 579.2175416639948,
+  "finished_utc": "2026-10-23T18:45:15.635179+00:00",
+  "wout": {
+    "path": "wout_lopez_D_iota-ns33-cold_strict-vmex.nc",
+    "sha256": "bc34f58abfd51cce4450373fe8168cc2ead8afc3b187e760ec9a80c6c6ff9d8c"
+  },
+  "converged": false,
+  "ier_flag": 2,
+  "iterations_final_stage": 3000,
+  "fsq_final": [
+    5.88480962325632e-05,
+    6.521841425364331e-05,
+    9.931937095095806e-06
+  ]
+}

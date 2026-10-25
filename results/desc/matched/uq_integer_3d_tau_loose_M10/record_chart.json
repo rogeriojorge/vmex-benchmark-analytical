@@ -1,0 +1,103 @@
+{
+  "schema": 3,
+  "evidence": "desc_exact_chart_rescore",
+  "case": "integer_3d_tau",
+  "artifact": {
+    "path": "results/ladder_integer_3d_tau_loose_M10/desc_integer_3d_tau_M10.h5",
+    "sha256": "f7b740671d86b8402310f1d0ecba3fe8dfe2a2edebf1afece145583b51dc4343"
+  },
+  "resolution": {
+    "L": 12,
+    "M": 10,
+    "N": 10,
+    "sym": false
+  },
+  "chart": {
+    "q2": {
+      "all": {
+        "B": 2.0057612239240736e-07,
+        "J": 6.1313073384521235e-06,
+        "force": 5.992255531643018e-05,
+        "B_max_abs_over_Bmax": 1.8949391004447694e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 1.4900956496460102e-09,
+        "J": 4.7203560961024056e-08,
+        "force": 4.353838315302489e-06,
+        "B_max_abs_over_Bmax": 2.9822883123352977e-09,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.177720958211869e-07,
+        "J": 3.5977723568389927e-06,
+        "force": 3.665447129101012e-05,
+        "B_max_abs_over_Bmax": 9.502198139008091e-07,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 5.438279874053914e-07,
+        "J": 1.6609836248769745e-05,
+        "force": 0.00011850129468800407,
+        "B_max_abs_over_Bmax": 1.8949391004447694e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    },
+    "q3": {
+      "all": {
+        "B": 2.005769039941264e-07,
+        "J": 6.131307748656319e-06,
+        "force": 5.9922553553060994e-05,
+        "B_max_abs_over_Bmax": 1.9288657649717545e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "axis": {
+        "B": 1.344177900348478e-09,
+        "J": 5.309032777360619e-08,
+        "force": 3.6489613611934857e-06,
+        "B_max_abs_over_Bmax": 3.0358638100061543e-09,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "bulk": {
+        "B": 1.0747863544180519e-07,
+        "J": 3.296470967529194e-06,
+        "force": 3.3760329213839006e-05,
+        "B_max_abs_over_Bmax": 8.921424200150754e-07,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      },
+      "edge": {
+        "B": 5.213579866873173e-07,
+        "J": 1.590164509038448e-05,
+        "force": 0.00011398319283105476,
+        "B_max_abs_over_Bmax": 1.9288657649717545e-06,
+        "outside_boundary_points": 0,
+        "outside_boundary_volume_fraction": 0.0
+      }
+    }
+  },
+  "chart_seconds": {
+    "q2": 94.11295207598596,
+    "q3": 266.87049282100634
+  },
+  "environment": {
+    "host": "pop-os",
+    "loadavg": [
+      10.57568359375,
+      10.09375,
+      11.02734375
+    ],
+    "cpu_count": 36,
+    "omp_num_threads": "4",
+    "desc": "0.17.3+32.gc9ec78e2d",
+    "jax": "0.6.2",
+    "python": "3.10.12",
+    "avail_mem_gb": 6.0
+  }
+}

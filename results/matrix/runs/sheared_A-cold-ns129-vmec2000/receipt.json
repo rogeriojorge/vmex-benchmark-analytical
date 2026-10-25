@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "run_id": "sheared_A-cold-ns129-vmec2000",
+  "case": "sheared_A",
+  "code": "vmec2000",
+  "protocol": "cold",
+  "ns": 129,
+  "ladder": {
+    "ns_array": [
+      129
+    ],
+    "ftol_array": [
+      1e-14
+    ],
+    "niter_per_stage": 20000,
+    "tcon0": null
+  },
+  "ftol": 1e-14,
+  "deck_sha256": "0ca044a292bebdba7b160e7594e9b6a74f25a334254baa9253a2d39788de9ffc",
+  "started_utc": "2026-10-24T06:24:18.247202+00:00",
+  "status": "wout_written",
+  "host": "pop-os",
+  "argv": [
+    "benchmarks/matrix_solve.py",
+    "--case",
+    "sheared_A",
+    "--code",
+    "vmec2000",
+    "--protocol",
+    "cold",
+    "--ns",
+    "129",
+    "--xvmec",
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "--out-parent",
+    "/home/rjorge/vab-matrixG/runs"
+  ],
+  "runner_sha256": "12e4608493818e66b78f0d8ff2cfe2608558978fc92a5f8468620072fd50293d",
+  "omp_threads": "4",
+  "load1_start": 10.89404296875,
+  "benchmark": {
+    "repository": "rogeriojorge/vmex-benchmark-analytical",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": null,
+    "tracked_tree_clean": null,
+    "tracked_diff_sha256": null,
+    "cases_json_sha256": "69a3607bc669800fd68c1613df19dc877e5150c0aa737d4bad313fde7ad8bb93",
+    "analytic_sha256": "1b20ab940f0c1be8a2e370c8b339634e981f0b7d061953c1f9e96b685b7329b2"
+  },
+  "code_identity": {
+    "repository": "PrincetonUniversity/STELLOPT (VMEC2000)",
+    "version": null,
+    "distribution_version": null,
+    "version_source": "installed_distribution",
+    "commit": "70c637a56a535de7b72a5721d4294a7c1a6cf739",
+    "tracked_tree_clean": true,
+    "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "binary_sha256": "1dec62d1c8026f6ed5dccc1e5199dd5320ee702c354153c296d81d3411f751e0"
+  },
+  "command": [
+    "/home/rjorge/local/refcodes/VMEC2000/build/build/bin/xvmec",
+    "input.sheared_A-cold-ns129-vmec2000"
+  ],
+  "wall_seconds": 641.7448269809829,
+  "returncode": 0,
+  "cpu_seconds": 640.8498060000001,
+  "peak_rss_bytes": 165261312,
+  "code_total_seconds": 639.97,
+  "wout": {
+    "path": "wout_sheared_A-cold-ns129-vmec2000.nc",
+    "sha256": "36fa6dbbe2301c30de33eec1bd796908f3aa2e530bbf7209557174f8a9b91e8b"
+  },
+  "ier_flag": 0,
+  "fsq_final": [
+    1.1086896783718688e-06,
+    1.1206475838308873e-06,
+    1.2117452432546942e-06
+  ],
+  "process_seconds": 642.3435107530095,
+  "load1_end": 8.93994140625,
+  "finished_utc": "2026-10-24T06:35:00.226329+00:00",
+  "fsq_leq_ftol": false
+}

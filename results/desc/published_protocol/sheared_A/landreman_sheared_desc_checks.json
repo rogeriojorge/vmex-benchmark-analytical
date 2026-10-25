@@ -1,0 +1,333 @@
+{
+  "passed": true,
+  "mode": "MHD",
+  "analytic_tests_skipped": false,
+  "python_executable": "/home/rjorge/desc-env/bin/python",
+  "initial_guess": null,
+  "desc_version": "0.17.3+32.gc9ec78e2d",
+  "jax_version": "0.6.2",
+  "parameters": {
+    "epsilon": 1.08,
+    "S": 3.0,
+    "kappa": 1.0,
+    "lambda": 3.5,
+    "k_b": 0.7,
+    "p_boundary_Pa": 0,
+    "Psi_Wb": 0.03943704324346292,
+    "mu_0": 1.25663706127e-06
+  },
+  "reference_checks": {
+    "reference_div_B_relative": {
+      "value": 4.8055336976040534e-17,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    "reference_force_relative": {
+      "value": 2.4246162329553587e-15,
+      "tolerance": 1e-11,
+      "passed": true
+    },
+    "reference_B_dot_grad_psi_relative": {
+      "value": 2.6397479917559105e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    "reference_positive_chi_rate_relative": {
+      "value": 5.329070518200751e-15,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    "reference_current_line_integral_relative": {
+      "value": 1.1102230246251565e-16,
+      "tolerance": 1e-09,
+      "passed": true
+    },
+    "reference_map_psi_relative": {
+      "value": 3.2853538483805657e-15,
+      "tolerance": 1e-11,
+      "passed": true
+    },
+    "reference_nonpositive_jacobian_count": {
+      "value": 0.0,
+      "tolerance": 0,
+      "passed": true
+    },
+    "flux_quadrature_relative": {
+      "value": 6.661338147750939e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    "flux_radius_fit_absolute": {
+      "value": 5.928590951498336e-13,
+      "tolerance": 1e-11,
+      "passed": true
+    },
+    "pressure_profile_relative": {
+      "value": 3.4287142478297034e-16,
+      "tolerance": 1e-11,
+      "passed": true
+    },
+    "current_profile_relative": {
+      "value": 5.135441043181181e-13,
+      "tolerance": 1e-11,
+      "passed": true
+    },
+    "iota_axis_formula_absolute": {
+      "value": 8.881784197001252e-16,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    "iota_quadrature_absolute": {
+      "value": 4.440892098500626e-15,
+      "tolerance": 1e-12,
+      "passed": true
+    },
+    "beta_quadrature_convergence_relative": {
+      "value": 6.994405055138486e-15,
+      "tolerance": 1e-10,
+      "passed": true
+    }
+  },
+  "resolution_history": [
+    {
+      "L": 10,
+      "M": 10,
+      "N": 20,
+      "solver_success": true,
+      "solver_message": "`gtol` termination condition is satisfied.",
+      "iterations": 2,
+      "optimizer": "matrix-free",
+      "jac_chunk_size": 16,
+      "solver_details": {
+        "success": true,
+        "message": "`gtol` termination condition is satisfied.",
+        "nit": 2,
+        "nfev": 3,
+        "njev": 3,
+        "cost": 1.518115417338454e-08,
+        "optimality": 3.53412676873534e-06,
+        "status": 1,
+        "solver": "scipy-trf-lsmr-jvp-vjp",
+        "reduced_dimension": 3195,
+        "residual_dimension": 79704,
+        "lsmr_maxiter": 80,
+        "lsmr_tol": 1e-05,
+        "operator_evaluations": {
+          "residual": 3,
+          "jvp": 170,
+          "vjp": 165,
+          "jacobian": 3
+        },
+        "elapsed_seconds": 73.3112317789928
+      },
+      "solver_tolerances": {
+        "ftol": 1e-08,
+        "xtol": 1e-10,
+        "gtol": 1e-05,
+        "maxiter": 30
+      },
+      "solve_grid": {
+        "kind": "QuadratureGrid",
+        "L": 22,
+        "num_rho": 12,
+        "M": 20,
+        "N": 40,
+        "NFP": 2
+      },
+      "checks": {
+        "B_relative_rms": {
+          "value": 2.1877743255104667e-05,
+          "tolerance": 0.0001,
+          "passed": true
+        },
+        "B_relative_max": {
+          "value": 9.128159232790887e-05,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "J_relative_rms": {
+          "value": 0.0001956864785860188,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "pressure_gradient_relative_rms": {
+          "value": 3.611357340891426e-05,
+          "tolerance": 0.002,
+          "passed": true
+        },
+        "force_relative_rms": {
+          "value": 0.0006341787006058964,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "force_relative_max": {
+          "value": 0.004670622997589215,
+          "tolerance": 0.01,
+          "passed": true
+        },
+        "surface_psi_max_over_psi_b": {
+          "value": 1.6130530552088346e-05,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "pressure_max_over_axis_pressure": {
+          "value": 1.6130530551974054e-05,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "B_dot_grad_analytic_psi_relative_rms": {
+          "value": 1.727591617685947e-05,
+          "tolerance": 0.0001,
+          "passed": true
+        },
+        "div_B_relative_rms": {
+          "value": 7.723842303296033e-17,
+          "tolerance": 1e-10,
+          "passed": true
+        },
+        "nonpositive_jacobian_count": {
+          "value": 0.0,
+          "tolerance": 0,
+          "passed": true
+        },
+        "nonfinite_value_count": {
+          "value": 0.0,
+          "tolerance": 0,
+          "passed": true
+        },
+        "boundary_psi_max_over_psi_b": {
+          "value": 1.6130530552088346e-05,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "axis_distance_over_minor_radius": {
+          "value": 5.810979512286739e-06,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "iota_max_absolute": {
+          "value": 6.997949072395926e-05,
+          "tolerance": 0.0001,
+          "passed": true
+        },
+        "iota_shear_relative": {
+          "value": 6.332757756988272e-05,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "volume_m3_relative_to_paper": {
+          "value": 1.8708923299470825e-10,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "mean_psi_relative_to_paper": {
+          "value": 5.209827832475256e-07,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "mean_P2_relative_to_paper": {
+          "value": 8.939208029357104e-07,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "horizontal_B2_over_kappa2_relative_to_paper": {
+          "value": 2.4165317069613224e-07,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "mean_pressure_Pa_relative_to_paper": {
+          "value": 6.037185853458027e-07,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "mean_B2_T2_relative_to_paper": {
+          "value": 3.1200271255471534e-07,
+          "tolerance": 0.001,
+          "passed": true
+        },
+        "beta_volume_relative_to_paper": {
+          "value": 9.157215821176123e-07,
+          "tolerance": 0.001,
+          "passed": true
+        }
+      },
+      "profiles": {
+        "rho": [
+          0.0,
+          0.08333333333333333,
+          0.16666666666666666,
+          0.25,
+          0.3333333333333333,
+          0.41666666666666663,
+          0.5,
+          0.5833333333333333,
+          0.6666666666666666,
+          0.75,
+          0.8333333333333333,
+          0.9166666666666666,
+          1.0
+        ],
+        "iota_DESC": [
+          5.688807835345153,
+          5.691714199449392,
+          5.7004865002225396,
+          5.715285059367045,
+          5.736380319997517,
+          5.76416082099294,
+          5.799150190526998,
+          5.842037963511365,
+          5.893728687187199,
+          5.955411657488631,
+          6.028648563066025,
+          6.115466287511963,
+          6.218423953011193
+        ],
+        "iota_analytic": [
+          5.688866614088494,
+          5.691775949071513,
+          5.700554293443054,
+          5.715355038857769,
+          5.736441964989194,
+          5.764202216529771,
+          5.799166166201358,
+          5.842036171301365,
+          5.893727331243121,
+          5.955425016613057,
+          6.028666548018938,
+          6.115458626852595,
+          6.218449194572589
+        ],
+        "volume_averages": {
+          "paper": {
+            "volume_m3": 1.5887817387065333,
+            "mean_psi": 0.13151140170986486,
+            "mean_P2": 0.12450365669973441,
+            "horizontal_B2_over_kappa2": 0.08407107554719692,
+            "mean_pressure_Pa": 7372.355675440913,
+            "mean_B2_T2": 0.09423463935942014,
+            "beta_volume": 0.19662356504147144
+          },
+          "DESC": {
+            "volume_m3": 1.5887817384092893,
+            "mean_psi": 0.13151133319468877,
+            "mean_P2": 0.12450354540332564,
+            "horizontal_B2_over_kappa2": 0.08407105523115495,
+            "mean_pressure_Pa": 7372.360126269053,
+            "mean_B2_T2": 0.09423460995795704,
+            "beta_volume": 0.1966237450939135
+          },
+          "grid": {
+            "kind": "QuadratureGrid",
+            "num_rho": 12,
+            "M": 16,
+            "N": 36,
+            "NFP": 2
+          }
+        },
+        "min_jacobian": 0.0023674278696334725,
+        "aspect_ratio": 7.873666801280814
+      }
+    }
+  ],
+  "elapsed_seconds": 168.77103006700054
+}

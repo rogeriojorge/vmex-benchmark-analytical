@@ -1,0 +1,895 @@
+{
+ "case": "integer_axisymmetric",
+ "ns": 129,
+ "mpol": 13,
+ "ntor": 0,
+ "nfp": 1,
+ "tcon0": 1.0,
+ "seed": "cold",
+ "ftol": 1e-14,
+ "refine_tol": 1e-11,
+ "adjoint_tol": 1e-10,
+ "s_max": 0.9,
+ "volume_rule": [
+  24,
+  32,
+  2
+ ],
+ "points": {
+  "cloud": 80,
+  "volume": 1536
+ },
+ "volume_weight_sum": 0.27758262378063814,
+ "host_solve": {
+  "fsqr": 9.658433665772898e-15,
+  "fsqz": 3.5325775108509777e-15,
+  "fsql": 1.7128614311725738e-16,
+  "iterations": 764,
+  "converged": true
+ },
+ "root": {
+  "preconditioned": 1.7421135075542418e-13,
+  "raw": 3.328678645081061e-11
+ },
+ "base_field_error": {
+  "cloud": 0.00022431063165302107,
+  "volume": 5.8432776874248544e-05
+ },
+ "params": {
+  "c": {
+   "jvp": {
+    "cloud": {
+     "rms_error_T": 0.0012806730334808767,
+     "rms_exact_T": 0.1504111505356769,
+     "finite_points": 80,
+     "points": 80,
+     "relative_error": 0.00851448199764356,
+     "gate_pass": false
+    },
+    "volume": {
+     "rms_error_T": 0.0010291698193127616,
+     "rms_exact_T": 0.16933883636471697,
+     "finite_points": 1536,
+     "points": 1536,
+     "relative_error": 0.006077577013084973,
+     "gate_pass": false
+    }
+   },
+   "linear": {
+    "raw": {
+     "relative_residual": 4.9174073801371995e-15,
+     "rhs_norm": 2543.4609835444667
+    },
+    "preconditioned": {
+     "relative_residual": 7.792831073196875e-15,
+     "rhs_norm": 27.060267544394634
+    }
+   },
+   "fd": [
+    {
+     "relative_step": 0.001,
+     "absolute_step": 0.001,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 4.436500053974975e-09,
+       "rhs_norm": 2543.4609835444753
+      },
+      "preconditioned": {
+       "relative_residual": 1.225122921436929e-09,
+       "rhs_norm": 27.060267544394772
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.696020444101505e-13,
+       "own_operator": 1.696020444101505e-13,
+       "host": {
+        "fsqr": 8.466474133401188e-15,
+        "fsqz": 5.08484622442708e-15,
+        "fsql": 1.1098610041989734e-15,
+        "iterations": 102,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.6127179125447614e-13,
+       "own_operator": 1.6127179125447614e-13,
+       "host": {
+        "fsqr": 8.167110036494767e-15,
+        "fsqz": 6.008965700262387e-15,
+        "fsql": 3.1930644153805842e-15,
+        "iterations": 111,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 2.9156029718308682e-05,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.0013163110378027576,
+       "rms_exact_T": 0.1504111505356769,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 0.00875141924727538,
+       "minus_jvp_rms_T": 6.18721344108017e-05,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.0010248322582862147,
+       "rms_exact_T": 0.16933883636471697,
+       "finite_points": 1536,
+       "points": 1536,
+       "relative_error": 0.006051962327643266,
+       "minus_jvp_rms_T": 1.3614381056923165e-05,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 10.455054503996507
+    },
+    {
+     "relative_step": 0.0001,
+     "absolute_step": 0.0001,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 4.667931815716301e-10,
+       "rhs_norm": 2543.460983544515
+      },
+      "preconditioned": {
+       "relative_residual": 8.23702970087208e-11,
+       "rhs_norm": 27.06026754439595
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.5938819860658988e-13,
+       "own_operator": 1.5938819860658988e-13,
+       "host": {
+        "fsqr": 7.075914439680712e-15,
+        "fsqz": 5.54227133336926e-15,
+        "fsql": 7.161375095697446e-16,
+        "iterations": 102,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.8562707609106583e-13,
+       "own_operator": 1.8562707609106583e-13,
+       "host": {
+        "fsqr": 4.892668655857237e-15,
+        "fsqz": 5.939823466967135e-15,
+        "fsql": 4.502139805852221e-16,
+        "iterations": 81,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 3.0540495229569026e-06,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.0012843664848107908,
+       "rms_exact_T": 0.1504111505356769,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 0.008539037699243876,
+       "minus_jvp_rms_T": 6.523942208665574e-06,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.0010287654766391926,
+       "rms_exact_T": 0.16933883636471697,
+       "finite_points": 1536,
+       "points": 1536,
+       "relative_error": 0.00607518924024887,
+       "minus_jvp_rms_T": 1.413260135129026e-06,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 6.706123684998602
+    },
+    {
+     "relative_step": 3e-05,
+     "absolute_step": 3e-05,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 2.8398411945627726e-10,
+       "rhs_norm": 2543.4609835427746
+      },
+      "preconditioned": {
+       "relative_residual": 1.5349130548769044e-10,
+       "rhs_norm": 27.06026754437985
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.7245967273863625e-13,
+       "own_operator": 1.7245967273863625e-13,
+       "host": {
+        "fsqr": 6.52483533485269e-15,
+        "fsqz": 6.010352495472868e-15,
+        "fsql": 2.7359448460991593e-16,
+        "iterations": 75,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.8058906910564625e-13,
+       "own_operator": 1.8058906910564625e-13,
+       "host": {
+        "fsqr": 5.4521695272583775e-15,
+        "fsqz": 5.520610128010592e-15,
+        "fsql": 2.7582538871323926e-16,
+        "iterations": 66,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 5.0499355553260165e-09,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.001280674853914185,
+       "rms_exact_T": 0.1504111505356769,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 0.00851449410069112,
+       "minus_jvp_rms_T": 2.6947213582931365e-08,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.0010291697195444675,
+       "rms_exact_T": 0.16933883636471697,
+       "finite_points": 1536,
+       "points": 1536,
+       "relative_error": 0.006077576423921281,
+       "minus_jvp_rms_T": 8.533475043306303e-09,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 6.625688717002049
+    },
+    {
+     "relative_step": 1e-05,
+     "absolute_step": 1e-05,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 6.707472063862205e-10,
+       "rhs_norm": 2543.460983562737
+      },
+      "preconditioned": {
+       "relative_residual": 3.465824300563517e-10,
+       "rhs_norm": 27.06026754460588
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.7135379999093733e-13,
+       "own_operator": 1.7135379999093733e-13,
+       "host": {
+        "fsqr": 7.146682654454648e-15,
+        "fsqz": 8.482169645848316e-15,
+        "fsql": 2.9474484652362587e-16,
+        "iterations": 60,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.697231083357914e-13,
+       "own_operator": 1.697231083357914e-13,
+       "host": {
+        "fsqr": 3.719723706399028e-15,
+        "fsqz": 4.082016935749945e-15,
+        "fsql": 1.556075069250302e-16,
+        "iterations": 54,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 1.6550911981831235e-08,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.0012806768020091714,
+       "rms_exact_T": 0.1504111505356769,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 0.008514507052490102,
+       "minus_jvp_rms_T": 1.5105438123028484e-08,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.0010291696895439815,
+       "rms_exact_T": 0.16933883636471697,
+       "finite_points": 1536,
+       "points": 1536,
+       "relative_error": 0.006077576246758814,
+       "minus_jvp_rms_T": 9.596037270858874e-09,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 6.196893621003255
+    },
+    {
+     "relative_step": 3e-06,
+     "absolute_step": 3e-06,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 2.4436517127742508e-09,
+       "rhs_norm": 2543.460983513505
+      },
+      "preconditioned": {
+       "relative_residual": 1.206447773539407e-09,
+       "rhs_norm": 27.060267544028985
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.7531158287945023e-13,
+       "own_operator": 1.7531158287945023e-13,
+       "host": {
+        "fsqr": 4.412058355391559e-15,
+        "fsqz": 4.39330945358802e-15,
+        "fsql": 1.346279361469718e-16,
+        "iterations": 48,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.7598089906894265e-13,
+       "own_operator": 1.7598089906894265e-13,
+       "host": {
+        "fsqr": 6.104311756269017e-15,
+        "fsqz": 6.559588911257378e-15,
+        "fsql": 1.1095074387871587e-16,
+        "iterations": 36,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 5.439750386427633e-08,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.0012807672775602458,
+       "rms_exact_T": 0.1504111505356769,
+       "finite_points": 80,
+       "points": 80,
+       "relative_error": 0.008515108574057833,
+       "minus_jvp_rms_T": 6.098528643259262e-07,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.0010291699505850498,
+       "rms_exact_T": 0.16933883636471697,
+       "finite_points": 1536,
+       "points": 1536,
+       "relative_error": 0.006077577788289829,
+       "minus_jvp_rms_T": 1.606410251735305e-07,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 6.429544916987652
+    }
+   ]
+  },
+  "delta": {
+   "jvp": {
+    "cloud": {
+     "rms_error_T": 0.0836096674087684,
+     "rms_exact_T": 0.0,
+     "finite_points": 80,
+     "points": 80,
+     "null_scaled_rms": 0.0013064010532620064,
+     "gate_pass": false
+    },
+    "volume": {
+     "rms_error_T": 0.05104893999907918,
+     "rms_exact_T": 0.0,
+     "finite_points": 1536,
+     "points": 1536,
+     "null_scaled_rms": 0.0007976396874856122,
+     "gate_pass": false
+    }
+   },
+   "linear": {
+    "raw": {
+     "relative_residual": 4.106962470043554e-15,
+     "rhs_norm": 133229.90711868202
+    },
+    "preconditioned": {
+     "relative_residual": 2.032755284552292e-13,
+     "rhs_norm": 59.87554767673571
+    }
+   },
+   "fd": [
+    {
+     "relative_step": 0.001,
+     "absolute_step": 1.5625e-05,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 1.0315562261176184e-11,
+       "rhs_norm": 133229.92360010507
+      },
+      "preconditioned": {
+       "relative_residual": 5.224667122694985e-08,
+       "rhs_norm": 59.87554999006889
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.7567139365371034e-13,
+       "own_operator": 1.7567139365371034e-13,
+       "host": {
+        "fsqr": 5.963281071168749e-15,
+        "fsqz": 6.195829915643369e-15,
+        "fsql": 3.64461000096957e-15,
+        "iterations": 111,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.6038833612193927e-13,
+       "own_operator": 1.6038833612193927e-13,
+       "host": {
+        "fsqr": 7.00671253304091e-15,
+        "fsqz": 7.697579890955634e-15,
+        "fsql": 6.8814953004294925e-15,
+        "iterations": 123,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 1.2108951702620972e-07,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.08360956603765127,
+       "rms_exact_T": 0.0,
+       "finite_points": 80,
+       "points": 80,
+       "null_scaled_rms": 0.001306399469338301,
+       "minus_jvp_rms_T": 8.88038911084818e-06,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.05104823706059165,
+       "rms_exact_T": 0.0,
+       "finite_points": 1536,
+       "points": 1536,
+       "null_scaled_rms": 0.0007976287040717446,
+       "minus_jvp_rms_T": 3.595287712759733e-06,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 5.213345515992842
+    },
+    {
+     "relative_step": 0.0001,
+     "absolute_step": 1.5625e-06,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 7.889453885952367e-11,
+       "rhs_norm": 133229.90728311826
+      },
+      "preconditioned": {
+       "relative_residual": 1.2976398945452797e-09,
+       "rhs_norm": 59.87554769958913
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.7193534094276232e-13,
+       "own_operator": 1.7193534094276232e-13,
+       "host": {
+        "fsqr": 8.961396347430798e-15,
+        "fsqz": 7.281968853003831e-15,
+        "fsql": 2.7949225438927832e-15,
+        "iterations": 108,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.601111478573608e-13,
+       "own_operator": 1.601111478573608e-13,
+       "host": {
+        "fsqr": 6.775819183805189e-15,
+        "fsqz": 9.39503639361724e-15,
+        "fsql": 1.913590514351063e-16,
+        "iterations": 87,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 2.427758267809624e-09,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.08360965968784437,
+       "rms_exact_T": 0.0,
+       "finite_points": 80,
+       "points": 80,
+       "null_scaled_rms": 0.0013064009326225682,
+       "minus_jvp_rms_T": 9.106567784037151e-07,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.051048932613939765,
+       "rms_exact_T": 0.0,
+       "finite_points": 1536,
+       "points": 1536,
+       "null_scaled_rms": 0.0007976395720928088,
+       "minus_jvp_rms_T": 1.0472955361514643e-07,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 4.450551257003099
+    },
+    {
+     "relative_step": 3e-05,
+     "absolute_step": 4.6875e-07,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 3.1791813592814254e-10,
+       "rhs_norm": 133229.90713200456
+      },
+      "preconditioned": {
+       "relative_residual": 4.142164745552603e-09,
+       "rhs_norm": 59.87554767812911
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.9635456357807572e-13,
+       "own_operator": 1.9635456357807572e-13,
+       "host": {
+        "fsqr": 5.6403139966440354e-15,
+        "fsqz": 8.304348235412059e-15,
+        "fsql": 3.5082554914003663e-16,
+        "iterations": 81,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.7214158723336425e-13,
+       "own_operator": 1.7214158723336425e-13,
+       "host": {
+        "fsqr": 6.5304189371514086e-15,
+        "fsqz": 7.401543372886242e-15,
+        "fsql": 1.976952431891426e-16,
+        "iterations": 72,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 5.40835900433058e-09,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.08360992492801413,
+       "rms_exact_T": 0.0,
+       "finite_points": 80,
+       "points": 80,
+       "null_scaled_rms": 0.0013064050770002207,
+       "minus_jvp_rms_T": 2.474559274432251e-06,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.05104894046730602,
+       "rms_exact_T": 0.0,
+       "finite_points": 1536,
+       "points": 1536,
+       "null_scaled_rms": 0.0007976396948016566,
+       "minus_jvp_rms_T": 5.678728602097573e-07,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 4.3592715240083635
+    },
+    {
+     "relative_step": 1e-05,
+     "absolute_step": 1.5625e-07,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 8.542602918613195e-10,
+       "rhs_norm": 133229.9071189649
+      },
+      "preconditioned": {
+       "relative_residual": 1.140977762722333e-08,
+       "rhs_norm": 59.875547679194646
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.6864966466221327e-13,
+       "own_operator": 1.6864966466221327e-13,
+       "host": {
+        "fsqr": 6.826503019118077e-15,
+        "fsqz": 7.135790495102564e-15,
+        "fsql": 1.5247717225195068e-16,
+        "iterations": 66,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.6956237917160279e-13,
+       "own_operator": 1.6956237917160279e-13,
+       "host": {
+        "fsqr": 5.485182931843368e-15,
+        "fsqz": 7.732268771112426e-15,
+        "fsql": 1.2344459050479954e-16,
+        "iterations": 60,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 1.8885574824783097e-08,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.08361044442857044,
+       "rms_exact_T": 0.0,
+       "finite_points": 80,
+       "points": 80,
+       "null_scaled_rms": 0.001306413194196413,
+       "minus_jvp_rms_T": 5.720857656246048e-06,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.051048950416473345,
+       "rms_exact_T": 0.0,
+       "finite_points": 1536,
+       "points": 1536,
+       "null_scaled_rms": 0.000797639850257396,
+       "minus_jvp_rms_T": 1.4529909606841177e-06,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 4.10112907999428
+    },
+    {
+     "relative_step": 3e-06,
+     "absolute_step": 4.6875e-08,
+     "branch_residual": {
+      "raw": {
+       "relative_residual": 3.0678942435434653e-09,
+       "rhs_norm": 133229.90710669098
+      },
+      "preconditioned": {
+       "relative_residual": 3.96991952802829e-08,
+       "rhs_norm": 59.87554766750116
+      }
+     },
+     "frozen_drift_norm": 0.0,
+     "endpoints": [
+      {
+       "base_operator": 1.7949051036020805e-13,
+       "own_operator": 1.7949051036020805e-13,
+       "host": {
+        "fsqr": 4.990733066772127e-15,
+        "fsqz": 6.352913639062129e-15,
+        "fsql": 8.663844385081525e-17,
+        "iterations": 54,
+        "converged": true
+       }
+      },
+      {
+       "base_operator": 1.7279483726269946e-13,
+       "own_operator": 1.7279483726269946e-13,
+       "host": {
+        "fsqr": 5.480057391391376e-15,
+        "fsqz": 9.4618267683315e-15,
+        "fsql": 1.013637008165668e-16,
+        "iterations": 45,
+        "converged": true
+       }
+      }
+     ],
+     "dstate_branch_minus_tangent_rel": 4.8302101050733085e-08,
+     "scores": {
+      "cloud": {
+       "rms_error_T": 0.08360315024473416,
+       "rms_exact_T": 0.0,
+       "finite_points": 80,
+       "points": 80,
+       "null_scaled_rms": 0.0013062992225739713,
+       "minus_jvp_rms_T": 3.7121197028524564e-05,
+       "gate_pass": false
+      },
+      "volume": {
+       "rms_error_T": 0.0510489429311805,
+       "rms_exact_T": 0.0,
+       "finite_points": 1536,
+       "points": 1536,
+       "null_scaled_rms": 0.0007976397332996953,
+       "minus_jvp_rms_T": 1.012932109531194e-05,
+       "gate_pass": false
+      }
+     },
+     "two_solves_s": 4.164944250005647
+    }
+   ]
+  }
+ },
+ "tangent_report": {
+  "residual_norm": [
+   1.254354315042761e-11,
+   5.45180948220181e-10
+  ],
+  "tolerance": [
+   2.5434609835444667e-06,
+   0.00013322990711868202
+  ],
+  "iterations": [
+   0,
+   0
+  ],
+  "converged": [
+   true,
+   true
+  ]
+ },
+ "transpose": {
+  "cloud": {
+   "trials": [
+    {
+     "forward": [
+      -2.8110161671470535,
+      0.12614193755853517
+     ],
+     "reverse": [
+      -2.8110161671445,
+      0.12614193778203386
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.0924875988701146e-13,
+      1.7202603231449348e-11
+     ],
+     "mismatch_relative": [
+      9.083949734908363e-13,
+      1.7718032218765466e-09
+     ]
+    },
+    {
+     "forward": [
+      -0.3866135975073657,
+      0.30795501427486976
+     ],
+     "reverse": [
+      -0.3866135975054583,
+      0.3079550140400258
+     ],
+     "mismatch_over_cauchy_bound": [
+      9.615105049136309e-14,
+      2.1298097404922022e-11
+     ],
+     "mismatch_relative": [
+      4.933512862981184e-12,
+      7.625918290398827e-10
+     ]
+    },
+    {
+     "forward": [
+      -1.415199322169587,
+      0.35708947066135543
+     ],
+     "reverse": [
+      -1.415199322160939,
+      0.35708947052189366
+     ],
+     "mismatch_over_cauchy_bound": [
+      4.0500908530315984e-13,
+      1.1749930717895376e-11
+     ],
+     "mismatch_relative": [
+      6.1109365565282425e-12,
+      3.9055135174672166e-10
+     ]
+    }
+   ],
+   "names": [
+    "c",
+    "delta"
+   ],
+   "max_mismatch_over_bound": 2.1298097404922022e-11,
+   "max_mismatch_relative": 1.7718032218765466e-09
+  },
+  "volume": {
+   "trials": [
+    {
+     "forward": [
+      -0.7093193055895122,
+      -1.7213996874551407
+     ],
+     "reverse": [
+      -0.7093193055466112,
+      -1.7213996879617142
+     ],
+     "mismatch_over_cauchy_bound": [
+      9.469317774084259e-14,
+      2.486163555288645e-12
+     ],
+     "mismatch_relative": [
+      6.048195183029105e-11,
+      2.942799707685627e-10
+     ]
+    },
+    {
+     "forward": [
+      0.7114371536108874,
+      3.7978790589280536
+     ],
+     "reverse": [
+      0.7114371536627062,
+      3.797879060999051
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.1451962501787045e-13,
+      1.0176737168261454e-11
+     ],
+     "mismatch_relative": [
+      7.283675195929796e-11,
+      5.453037240983406e-10
+     ]
+    },
+    {
+     "forward": [
+      2.985378045389101,
+      -0.3539824169738913
+     ],
+     "reverse": [
+      2.98537804539397,
+      -0.35398241470643477
+     ],
+     "mismatch_over_cauchy_bound": [
+      1.0845978113616355e-14,
+      1.1230642672284922e-11
+     ],
+     "mismatch_relative": [
+      1.6309472444564529e-12,
+      6.405562669560969e-09
+     ]
+    }
+   ],
+   "names": [
+    "c",
+    "delta"
+   ],
+   "max_mismatch_over_bound": 1.1230642672284922e-11,
+   "max_mismatch_relative": 6.405562669560969e-09
+  }
+ },
+ "mean_absB": {
+  "exact": 1.0052819478364587,
+  "vmex": 1.0052820269650709,
+  "d_exact": {
+   "c": 0.014009217323658682,
+   "delta": 0.0
+  },
+  "d_jvp": {
+   "c": 0.013920262338595387,
+   "delta": 7.042529403854577e-05
+  }
+ },
+ "timing": {
+  "base_solve_s": 23.496828866002033,
+  "tangent_solve_s_all_rhs": 39.75757774700469,
+  "field_jvp_s": 15.785217078999267,
+  "transpose_s": 201.90236118000757
+ },
+ "schema": 1,
+ "vmex_commit": "caf09ee7faca2e1c74d139ef6910f05e02654514",
+ "vmex_version": "0.12.0",
+ "jax": "0.11.2",
+ "devices": [
+  "cpu:0"
+ ],
+ "env": {
+  "JAX_PLATFORMS": "cpu",
+  "CUDA_VISIBLE_DEVICES": "",
+  "OMP_NUM_THREADS": "4"
+ },
+ "command": "python sensitivity_vmex.py --case integer_axisymmetric --ns 129 --steps 1e-3 1e-4 3e-5 1e-5 3e-6 --vol 24 32 2 --out /home/rjorge/vab-sensI/out/axisym",
+ "script_sha256": "f2925db2b71e9dd1b1fe66d33193a3a51dd094c216db9987607a6f713182c5fb",
+ "map_sha256": "9fa976651128504baa309436ef23e814d8f1c183f1b8d5ea04c1f73f1dc5c560"
+}
